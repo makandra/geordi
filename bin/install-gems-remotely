@@ -1,5 +1,5 @@
 #!/usr/bin/env ruby
 
-# we need to port this to Ruby
-exec "#{$0}.sh", *ARGV
-
+# sorry
+path = Gem.bin_path('geordi', 'install-gems-remotely.sh')
+exec path, *ARGV
