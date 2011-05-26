@@ -1,0 +1,12 @@
+#!/usr/bin/env ruby
+
+branch = ARGV[0] or raise "Need the branch name as first argument"
+
+`git status`.include?('working directory clean') or raise 'Dirty working directory. Nothing was pushed.'
+`git checkout #{branch}`
+`git push origin #{branch}`
+`git config branch.#{branch}.remote origin`
+`git config branch.#{branch}.merge #{branch}`
+
+puts "#{branch} is now tracking origin/#{branch}"
+

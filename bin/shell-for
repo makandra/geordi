@@ -1,0 +1,44 @@
+#!/usr/bin/env ruby
+
+def quoted_text(line)
+  line.match(/["'].*["']/).to_s.gsub(/["']/, '')
+end
+
+def read_deploy_files
+  all_deploy_files = Dir["config/deploy/*.rb"]
+  
+  deploy_file = all_deploy_files.find do |file|
+    file.match(/\/#{@stage}.rb$/)
+  end  
+  raise "Unknown stage: #{@stage}" unless deploy_file
+  
+  @specific = File.open(deploy_file).readlines
+  @for_all = File.open("config/deploy.rb").readlines
+end
+
+def build_command
+  path = quoted_text(@deploy_to) + "/current"
+
+  @command = "ssh #{quoted_text(@user)}@#{quoted_text(@server)}"
+  @command += %( -t "cd #{path} && bash --login") unless path.match /#\{/
+end
+
+begin
+  @stage = ARGV.shift
+  
+  raise "Usage: shell_for DEPLOYMENT_STAGE" unless @stage
+  raise "Run me from inside a Rails project" unless File.exists?("config/deploy.rb")
+
+  read_deploy_files
+  @user      = @specific.find{ |line| line =~ /^set :user, /}       || @for_all.find{ |line| line =~ /^set :user, / }
+  @server    = @specific.find{ |line| line =~ /^server / }          || @for_all.find{ |line| line =~ /^server / }
+  @deploy_to = @specific.find{ |line| line =~ /^set :deploy_to, /}  || @for_all.find{ |line| line =~ /^set :deploy_to, / }
+  
+  build_command
+  
+  exec @command
+  
+rescue Exception => e
+  $stderr.puts e.message
+  exit 1
+end

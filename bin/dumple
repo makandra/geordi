@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+fail_gently = ARGV.include?("--fail-gently")
+
+if ARGV.include?("-i")
+  puts "*******************************************************"
+  puts
+  system("du -sh ~/dumps")
+  puts
+  puts "*******************************************************"
+  exit
+end
+
+require "yaml"
+
+config_path = 'config/database.yml'
+unless File.exist?(config_path) 
+  if fail_gently
+    puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+    puts "*                                                             *"
+    puts "*                                                             *"
+    puts "*     Script is not called from inside a Rails project,       *"
+    puts "*                                                             *"
+    puts "*            THE DATABASE WILL NOT BE DUMPED.                 *"
+    puts "*                                                             *"
+    puts "*                                                             *"
+    puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+    sleep 5
+    exit
+  else
+    raise "Call me from inside a Rails project."
+  end
+end
+config = YAML::load(File.open(config_path))
+
+environment = ARGV.reject{ |arg| arg[0].chr == '-' }.first || 'production'
+config = config[environment] or raise "No production environment found. Please do `dumple [env_name]`"
+
+dump_dir = "#{ENV['HOME']}/dumps"
+unless File.directory?(dump_dir)
+  Dir.mkdir(dump_dir)
+  system("chmod 700 #{dump_dir}")
+end
+dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
+
+puts
+puts "Dumping database for environment \"#{environment}\"..."
+
+system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path}"
+system "chmod 600 #{dump_path}"
+
+dump_size_kb = (File.size(dump_path) / 1024).round
+
+puts "Dumped to #{dump_path} (#{dump_size_kb} KB)"
+puts
+

@@ -1,0 +1,10 @@
+#!/bin/sh
+
+echo "Removing execute flags:"
+for pattern in *.rb *.html *.erb *.haml *.yml *.css *.sass *.rake *.png *.jpg *.gif *.pdf *.txt *.rdoc Rakefile VERSION README Capfile
+do
+  echo "- $pattern"
+  find . -name "$pattern" -exec chmod -x {} \;
+done
+echo "Done."
+

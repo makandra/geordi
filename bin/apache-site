@@ -1,0 +1,2 @@
+#!/bin/sh
+sudo a2dissite \*; sudo a2ensite default $1 && sudo apache2ctl restart

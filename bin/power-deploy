@@ -1,0 +1,3 @@
+#!/bin/sh
+cap $1 deploy && cap $1 deploy:migrate && cap $1 deploy:restart
+
