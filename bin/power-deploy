@@ -1,3 +1,4 @@
-#!/bin/sh
-cap $1 deploy && cap $1 deploy:migrate && cap $1 deploy:restart
+#!/usr/bin/env ruby
 
+stage = ARGV[0]
+exec "cap #{stage} deploy && cap #{stage} deploy:migrate && cap #{stage} deploy:restart"

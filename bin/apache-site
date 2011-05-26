@@ -1,2 +1,4 @@
-#!/bin/sh
-sudo a2dissite \*; sudo a2ensite default $1 && sudo apache2ctl restart
+#!/usr/bin/env ruby
+
+site = ARGV[0]
+exec "sudo a2dissite \*; sudo a2ensite default #{site} && sudo apache2ctl restart"
