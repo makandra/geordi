@@ -9,8 +9,8 @@ Gem::Specification.new do |s|
   s.authors     = ["Henning Koch"]
   s.email       = ["henning.koch@makandra.de"]
   s.homepage    = "http://makandra.com"
-  s.summary     = 'Collection of command line tools used in our daily work with Ruby, Rails and Linux.'
-  s.description = 'Collection of command line tools used in our daily work with Ruby, Rails and Linux.'
+  s.summary     = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
+  s.description = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
 
   s.rubyforge_project = "geordi"
 
