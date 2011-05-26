@@ -2,7 +2,7 @@
 
 puts "Removing execute flags:"
 for pattern in %w[*.rb *.html *.erb *.haml *.yml *.css *.sass *.rake *.png *.jpg *.gif *.pdf *.txt *.rdoc Rakefile VERSION README Capfile]
-  puts "- #{pattern"
-  `find . -name "#{pattern}" -exec chmod -x {} \;
+  puts "- #{pattern}"
+  `find . -name "#{pattern}" -exec chmod -x {} \`
 end
 puts "Done."
