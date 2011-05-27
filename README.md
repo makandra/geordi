@@ -103,10 +103,9 @@ More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-t
 dump-for
 --------
 
-Combination of dumple
-Opens an SSH shell on the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
+Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target, then copies the dump to your project root.
 
-    shell-for production
+    dump-for production
 
-More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
+More information at http://makandra.com/notes/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
 
