@@ -23,7 +23,7 @@ More information at http://makandra.com/notes/807-shell-script-to-quickly-switch
 b
 -
 
-Run the given command under `bundle exec` if a `Gemfile` is present in your working directory. If no `Gemfile` is present it just runs the given command:
+Runs the given command under `bundle exec` if a `Gemfile` is present in your working directory. If no `Gemfile` is present just runs the given command:
 
     b spec spec/models
 
@@ -43,7 +43,7 @@ More information at http://makandra.com/notes/1008-dump-your-database-with-dumpl
 install-gems-remotely
 ---------------------
 
-Installs all gems in your `Gemfile.lock` as well as vendored gems on the given host:
+Installs all gems in your `Gemfile.lock`, as well as vendored gems, to the given host:
 
     install-gems-remotely my.server.com
 
@@ -63,7 +63,7 @@ This script is considered legacy and will be removed eventually. You should [fix
 power-rake
 ----------
 
-Runs the given rake task in each Rails environment in `development`, `test`, `cucumber`, `performance`, if it exists:
+Runs the given rake task in each Rails environment in `development`, `test`, `cucumber`, `performance`, if existing:
 
     power-rake db:migrate
 
@@ -83,14 +83,27 @@ More information at http://makandra.com/notes/520-create-a-remote-branch-in-git
 remove-executable-flags
 -----------------------
 
-Recursively removes executable flags from files in the working directory that probably shouldn't have them:
+Recursively removes executable flags from files in the working directory that probably shouldn't have them (like Ruby, HTML, CSS, image, Rake and similar files).
 
     remove-executable-flags
+    
+More information at http://makandra.com/notes/659-recursively-remove-unnecessary-execute-flags
 
 
 shell-for
 ---------
 
+Opens an SSH shell on the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
+
+    shell-for production
+
+More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
+
+
+dump-for
+--------
+
+Combination of dumple
 Opens an SSH shell on the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
 
     shell-for production

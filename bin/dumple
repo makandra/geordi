@@ -11,46 +11,64 @@ if ARGV.include?("-i")
   exit
 end
 
+###
+
 require "yaml"
-
 config_path = 'config/database.yml'
-unless File.exist?(config_path) 
-  if fail_gently
-    puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-    puts "*                                                             *"
-    puts "*                                                             *"
-    puts "*     Script is not called from inside a Rails project,       *"
-    puts "*                                                             *"
-    puts "*            THE DATABASE WILL NOT BE DUMPED.                 *"
-    puts "*                                                             *"
-    puts "*                                                             *"
-    puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
-    sleep 5
-    exit
-  else
-    raise "Call me from inside a Rails project."
+
+begin
+  # go to project root
+  current = Dir.pwd
+  until (File.exists? config_path)
+    Dir.chdir '..'
+    if current == Dir.pwd
+      if fail_gently
+        puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+        puts "*                                                             *"
+        puts "*                                                             *"
+        puts "*     Script is not called from inside a Rails project,       *"
+        puts "*                                                             *"
+        puts "*            THE DATABASE WILL NOT BE DUMPED.                 *"
+        puts "*                                                             *"
+        puts "*                                                             *"
+        puts "* * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * *"
+        sleep 5
+        exit
+      else
+        raise "Call me from inside a Rails project."
+      end
+    end
+    current = Dir.pwd
   end
+
+  config = YAML::load(File.open(config_path))
+
+  environment = ARGV.reject{ |arg| arg[0].chr == '-' }.first || 'production'
+  config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT"
+
+  dump_dir = "#{ENV['HOME']}/dumps"
+  unless File.directory?(dump_dir)
+    Dir.mkdir(dump_dir)
+    system("chmod 700 #{dump_dir}")
+  end
+  
+  if ARGV.find{ |arg| arg == '--for_download'}
+    dump_path = "#{dump_dir}/dump_for_download.dump"
+  else
+    dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
+  end
+
+  puts
+  puts "Dumping database for \"#{environment}\" environment ..."
+
+  system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path}"
+  system "chmod 600 #{dump_path}"
+
+  dump_size_kb = (File.size(dump_path) / 1024).round
+
+  puts "Dumped to #{dump_path} (#{dump_size_kb} KB)"
+  puts
+rescue Exception => e
+  $stderr.puts e.message
+  exit 1
 end
-config = YAML::load(File.open(config_path))
-
-environment = ARGV.reject{ |arg| arg[0].chr == '-' }.first || 'production'
-config = config[environment] or raise "No production environment found. Please do `dumple [env_name]`"
-
-dump_dir = "#{ENV['HOME']}/dumps"
-unless File.directory?(dump_dir)
-  Dir.mkdir(dump_dir)
-  system("chmod 700 #{dump_dir}")
-end
-dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
-
-puts
-puts "Dumping database for environment \"#{environment}\"..."
-
-system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path}"
-system "chmod 600 #{dump_path}"
-
-dump_size_kb = (File.size(dump_path) / 1024).round
-
-puts "Dumped to #{dump_path} (#{dump_size_kb} KB)"
-puts
-

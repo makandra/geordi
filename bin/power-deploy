@@ -1,4 +1,8 @@
 #!/usr/bin/env ruby
 
 stage = ARGV[0]
+puts "NOTE: This Script is considered legacy and will be removed eventually."
+puts "NOTE: You should fix your deploy scripts (see http://makandra.com/notes/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations)"
+puts "Note: and use `cap deploy:migrations` (see http://makandra.com/notes/1000-deploy-and-migrate-with-a-single-capistrano-command) instead."
+puts
 exec "cap #{stage} deploy && cap #{stage} deploy:migrate && cap #{stage} deploy:restart"

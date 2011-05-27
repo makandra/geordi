@@ -1,4 +1,9 @@
 #!/bin/sh
+if [ -z "$1" ]; then
+  echo "Please specify the remote server name"
+  exit 1
+fi
+mkdir -p tmp
 if ls vendor/gems/*/*.gemspec > /dev/null 2>&1; then
   tar cf tmp/gemfiles_for_remote_install Gemfile Gemfile.lock vendor/gems/*/*.gemspec
 else

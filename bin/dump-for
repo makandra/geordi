@@ -1,0 +1,57 @@
+#!/usr/bin/env ruby
+
+def unquote(line)
+  if line  
+    line.match(/["'](.*)["']/)
+    $1
+  end
+end
+
+def find_project_root
+  current = Dir.pwd
+  until (File.exists? 'Capfile')
+    Dir.chdir '..'
+    return nil if current == Dir.pwd
+    current = Dir.pwd
+  end
+  @project_root = current
+end
+
+begin
+  require 'rubygems'
+  require 'net/ssh'
+  
+  stage = ARGV.shift
+  
+  find_project_root or raise 'Call me from inside a Rails project'
+  
+  data = if stage
+    deploy_file = Dir['config/deploy/*.rb'].find do |file|
+      file.match(/\/#{stage}.rb$/)
+    end
+    deploy_file or raise "Unknown stage: #{stage}"
+    
+    File.open(deploy_file).readlines
+  else
+    []
+  end + File.open("config/deploy.rb").readlines
+
+  user        = unquote data.find{ |line| line =~ /^set :user,/}
+  server      = unquote data.find{ |line| line =~ /^server / }
+  deploy_to   = unquote data.find{ |line| line =~ /^set :deploy_to,/}
+  environment = unquote data.find{ |line| line =~ /^set :rails_env,/}
+  (user and server and deploy_to and environment) or raise "Could not find required data (user, server, deploy target and environment).\nUsage: dump-for DEPLOYMENT_STAGE"
+  
+  path = deploy_to + "/current"
+  raise "#{path} is not a valid path. Exiting." if path.match /#\{/
+
+  command = "cd #{path} && dumple #{environment} --for_download"
+  Net::SSH.start(server, user){ |ssh| puts ssh.exec!(command) }
+
+  puts "Downloading dump_for_download..."
+  exec "scp #{user}@#{server}:~/dumps/why_production_dump_for_download.dump #{@project_root}"
+  
+rescue Exception => e
+  $stderr.puts e.message
+  exit 1
+end
