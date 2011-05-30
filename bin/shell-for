@@ -40,9 +40,16 @@ begin
   (user and server and deploy_to) or raise "Could not find required data (user, server and deploy-target).\nUsage: shell-for DEPLOYMENT_STAGE"
   
   path = deploy_to + "/current"
+  command = %(ssh #{user}@#{server})
+  
+  if path.match /#\{.*\}/
+    puts %(NOTE: "#{path}" is not a valid path.)
+    puts %(NOTE: Connecting to deploy user home.)
+    sleep 2
+  else
+    command += %( -t "cd #{path} && bash --login")
+  end
 
-  command = "ssh #{user}@#{server}"
-  command += %( -t "cd #{path} && bash --login") unless path.match /#\{/
   exec command
   
 rescue Exception => e

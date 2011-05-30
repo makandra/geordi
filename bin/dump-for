@@ -43,13 +43,17 @@ begin
   (user and server and deploy_to and environment) or raise "Could not find required data (user, server, deploy target and environment).\nUsage: dump-for DEPLOYMENT_STAGE"
   
   path = deploy_to + "/current"
-  raise "#{path} is not a valid path. Exiting." if path.match /#\{/
+  if path.match /#\{.*\}/
+    puts %(NOTE: "#{path}" is not a valid path.)
+    puts %(NOTE: You will need to fetch the dump yourself.)
+    raise ""
+  end
 
-  command = "cd #{path} && dumple #{environment} --for_download"
-  Net::SSH.start(server, user){ |ssh| puts ssh.exec!(command) }
+  command = %(ssh #{user}@#{server} -t "cd #{path} && dumple #{environment} --for_download")
+  system command
 
   puts "Downloading dump_for_download..."
-  exec "scp #{user}@#{server}:~/dumps/why_production_dump_for_download.dump #{@project_root}"
+  exec "scp #{user}@#{server}:~/dumps/dump_for_download.dump #{@project_root}"
   
 rescue Exception => e
   $stderr.puts e.message
