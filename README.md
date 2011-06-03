@@ -30,6 +30,17 @@ Runs the given command under `bundle exec` if a `Gemfile` is present in your wor
 More information at http://makandra.com/notes/684-automatically-run-bundle-exec-if-required
 
 
+dump-for
+--------
+
+Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target, then copies the dump to your project root.
+
+    dump-for production
+
+More information at http://makandra.com/notes/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
+
+     
+
 dumple
 ------
 
@@ -97,15 +108,14 @@ Opens an SSH shell on the given [Capistrano multistage](https://github.com/capis
 
     shell-for production
 
-More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
+More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target   
 
 
-dump-for
---------
+tests
+-----
 
-Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target, then copies the dump to your project root.
+Runs both RSpec and Cucumber. Call from any project directory:
 
-    dump-for production
+    tests
 
-More information at http://makandra.com/notes/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
-
+More information at http://makandra.com/notes/1197-bash-script-to-run-specs-and-features
