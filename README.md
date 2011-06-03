@@ -1,5 +1,5 @@
 Geordi
-=====
+======
 
 Geordi is a collection of command line tools we use in our daily work with Ruby, Rails and Linux at [makandra](http://makandra.com/).
 
@@ -28,6 +28,16 @@ Runs the given command under `bundle exec` if a `Gemfile` is present in your wor
     b spec spec/models
 
 More information at http://makandra.com/notes/684-automatically-run-bundle-exec-if-required
+
+
+cleanup-directory
+-----------------
+
+Removes unnecessary files from your project directory:
+
+    cleanup-directory
+
+More information at http://makandra.com/notes/951-shell-script-to-clean-up-a-project-directory
 
 
 dump-for
@@ -101,6 +111,16 @@ Recursively removes executable flags from files in the working directory that pr
 More information at http://makandra.com/notes/659-recursively-remove-unnecessary-execute-flags
 
 
+rspec-and-cucumber
+--------------
+
+Runs both RSpec and Cucumber. Call from any project directory:
+
+    rspec-and-cucumber
+
+More information at http://makandra.com/notes/1197-bash-script-to-run-specs-and-features
+
+
 shell-for
 ---------
 
@@ -109,13 +129,3 @@ Opens an SSH shell on the given [Capistrano multistage](https://github.com/capis
     shell-for production
 
 More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target   
-
-
-tests
------
-
-Runs both RSpec and Cucumber. Call from any project directory:
-
-    tests
-
-More information at http://makandra.com/notes/1197-bash-script-to-run-specs-and-features

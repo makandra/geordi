@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+File.delete 'rerun.txt' if FileTest.exists? 'rerun.txt'
+
+if File.open('Gemfile').read.scan(/rspec_spinner/).any?
+  spec = "script/spec -r rspec_spinner -f RspecSpinner::Bar -c spec"
+else
+  spec = "script/spec spec"
+end
+
+if File.open('Gemfile').read.scan(/cucumber_spinner/).any?
+  cucumber = "script/cucumber --format CucumberSpinner::CuriousProgressBarFormatter features"
+else
+  cucumber = "script/cucumber --format progress features"
+end
+
+exec "bundle exec #{spec} && bundle exec #{cucumber}"
+
