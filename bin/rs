@@ -8,7 +8,7 @@ rspec1 = File.exists?('script/spec')
 rspec_args = rspec1 ? ["spec", "-c"] : ["rspec"]
 
 # Check if rspec_spinner is available
-spinner_available = File.open('Gemfile').read.scan(/rspec_spinner/).any?
+spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/rspec_spinner/).any?
 spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::Bar'] : []
 
 # Run examples in 'spec' unless an argument is given
