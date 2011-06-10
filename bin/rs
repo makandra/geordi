@@ -1,0 +1,18 @@
+#!/usr/bin/env ruby
+
+# Print some whitespace
+4.times { puts }
+
+# Check if we're looking at a Rails 2 / rspec 1 project
+rspec1 = File.exists?('script/spec')
+rspec_args = rspec1 ? ["spec", "-c"] : ["rspec"]
+
+# Check if rspec_spinner is available
+spinner_available = File.open('Gemfile').read.scan(/rspec_spinner/).any?
+spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::Bar'] : []
+
+# Run examples in 'spec' unless an argument is given
+ARGV[0] ||= 'spec'
+
+# Run rspec behind bundler
+exec *["b", rspec_args, spinner_args, ARGV].flatten

@@ -30,6 +30,18 @@ Runs the given command under `bundle exec` if a `Gemfile` is present in your wor
 More information at http://makandra.com/notes/684-automatically-run-bundle-exec-if-required
 
 
+
+cu
+-----
+
+Runs Cucumber with the arguments you want, bundle exec, cucumber_spinner detection, etc.:
+
+    cu features/users.feature
+
+More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+
+
+
 cleanup-directory
 -----------------
 
@@ -111,14 +123,14 @@ Recursively removes executable flags from files in the working directory that pr
 More information at http://makandra.com/notes/659-recursively-remove-unnecessary-execute-flags
 
 
-rspec-and-cucumber
---------------
+rs
+-----
 
-Runs both RSpec and Cucumber. Call from any project directory:
+Runs RSpec with the arguments you want, RSpec 1/2 detection, bundle exec, rspec_spinner detection, etc.:
 
-    rspec-and-cucumber
+    rs spec/models/user_spec.rb
 
-More information at http://makandra.com/notes/1197-bash-script-to-run-specs-and-features
+More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
 
 
 shell-for
@@ -129,3 +141,13 @@ Opens an SSH shell on the given [Capistrano multistage](https://github.com/capis
     shell-for production
 
 More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target   
+
+
+tests
+--------------
+
+Runs both `rs` and `cu`. Call from any project directory:
+
+    tests
+
+More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
