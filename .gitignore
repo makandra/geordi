@@ -3,3 +3,4 @@
 .idea
 Gemfile.lock
 pkg/*
+.DS_Store

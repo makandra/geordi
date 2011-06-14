@@ -31,12 +31,12 @@ More information at http://makandra.com/notes/684-automatically-run-bundle-exec-
 
 
 
-cu
+cuc
 -----
 
 Runs Cucumber with the arguments you want, bundle exec, cucumber_spinner detection, etc.:
 
-    cu features/users.feature
+    cuc features/users.feature
 
 More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
 

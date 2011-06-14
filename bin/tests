@@ -4,4 +4,4 @@
 File.delete 'rerun.txt' if File.exists? 'rerun.txt'
 
 # Run rspec and cucumber
-exec "rs && cu"
+exec "rs && cuc"
