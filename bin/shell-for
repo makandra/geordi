@@ -14,25 +14,26 @@ def find_project_root
     return nil if current == Dir.pwd
     current = Dir.pwd
   end
-  current
+  @project_root = current
 end
 
 begin
   stage = ARGV.shift
+  no_bash = ARGV.shift if ARGV.first == '--no-bash'
   remote_command = ARGV.join(' ').strip
   
   find_project_root or raise 'Call me from inside a Rails project!'
   
   data = if stage
-    deploy_file = Dir['config/deploy/*.rb'].find do |file|
+    deploy_file = Dir["#{@project_root}/config/deploy/*.rb"].find do |file|
       file.match(/\/#{stage}.rb$/)
     end
-    deploy_file or raise "Unknown stage: #{stage}"
+    deploy_file or raise "Stage does not exist: #{stage}"
     
     File.open(deploy_file).readlines
   else
     []
-  end + File.open("config/deploy.rb").readlines
+  end + File.open("#{@project_root}/config/deploy.rb").readlines
 
   user      = unquote data.find{ |line| line =~ /^set :user, /}
   server    = unquote data.find{ |line| line =~ /^server / }
@@ -42,20 +43,20 @@ begin
   
   path = deploy_to + "/current"
   ssh = %(ssh #{user}@#{server})
-  
+
+  commands = []
   if path.match /#\{.*\}/
     puts %(NOTE: "#{path}" is not a valid path.)
     puts %(NOTE: Connecting to deploy user home.)
-    puts
     sleep 2
-    
-    exec ssh
   else
-    command = remote_command.empty? ? "bash --login" : remote_command
-    
-    exec ssh + %( -t "cd #{path} && #{command}")
+    commands << "cd #{path}"
   end
+  commands << remote_command unless remote_command.empty?
+  commands << "bash --login" unless no_bash
   
+  exec ssh + %( -t "#{commands.join(' && ')}")
+
 rescue Exception => e
   $stderr.puts e.message
   exit 1

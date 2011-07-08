@@ -14,10 +14,10 @@ begin
   stage = ARGV.shift
   root = find_project_root or raise 'Call me from inside a Rails project!'
 
-  if File.exists? "#{root}/script/console"
-    exec "shell-for #{stage} script/console #{stage}"
+  if File.exists? "#{root}/script/console" # => Rails 2
+    exec "shell-for #{stage} --no-bash script/console #{stage}"
   else
-    exec "shell-for #{stage} bundle exec rails console #{stage}"
+    exec "shell-for #{stage} --no-bash bundle exec rails console #{stage}"
   end
 rescue Exception => e
   $stderr.puts e.message

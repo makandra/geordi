@@ -30,11 +30,21 @@ Runs the given command under `bundle exec` if a `Gemfile` is present in your wor
 More information at http://makandra.com/notes/684-automatically-run-bundle-exec-if-required
 
 
+console-for
+-----------
+
+Opens a rails console remotely:
+
+    console-for staging
+
+More information at http://makandra.com/notes/1338-console-for-opens-a-rails-console-remotely-on-a-capistrano-deployment-target
+
+
 
 cuc
 -----
 
-Runs Cucumber with the arguments you want, bundle exec, cucumber_spinner detection, etc.:
+Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detection, etc.:
 
     cuc features/users.feature
 
@@ -55,7 +65,7 @@ More information at http://makandra.com/notes/951-shell-script-to-clean-up-a-pro
 dump-for
 --------
 
-Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target, then copies the dump to your project root.
+Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target.
 
     dump-for production
 
@@ -126,7 +136,7 @@ More information at http://makandra.com/notes/659-recursively-remove-unnecessary
 rs
 -----
 
-Runs RSpec with the arguments you want, RSpec 1/2 detection, bundle exec, rspec_spinner detection, etc.:
+Runs RSpec with the arguments you want: RSpec 1/2 detection, bundle exec, rspec_spinner detection, etc.:
 
     rs spec/models/user_spec.rb
 
@@ -140,13 +150,17 @@ Opens an SSH shell on the given [Capistrano multistage](https://github.com/capis
 
     shell-for production
 
+Now it can also be called with any command to be remotely executed before loading the bash. `--no-bash` skips the bash.
+
+    shell-for staging --no-bash top
+
 More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target   
 
 
 tests
 --------------
 
-Runs both `rs` and `cu`. Call from any project directory:
+Runs both `rs` and `cuc`. Call from any project directory:
 
     tests
 
