@@ -1,0 +1,25 @@
+#!/usr/bin/env ruby
+
+def find_project_root
+  current = Dir.pwd
+  until (File.exists? 'Capfile')
+    Dir.chdir '..'
+    return nil if current == Dir.pwd
+    current = Dir.pwd
+  end
+  current
+end
+
+begin
+  stage = ARGV.shift
+  root = find_project_root or raise 'Call me from inside a Rails project!'
+
+  if File.exists? "#{root}/script/console"
+    exec "shell-for #{stage} script/console #{stage}"
+  else
+    exec "shell-for #{stage} bundle exec rails console #{stage}"
+  end
+rescue Exception => e
+  $stderr.puts e.message
+  exit 1
+end

@@ -19,8 +19,9 @@ end
 
 begin
   stage = ARGV.shift
+  remote_command = ARGV.join(' ').strip
   
-  find_project_root or raise 'Call me from inside a Rails project'
+  find_project_root or raise 'Call me from inside a Rails project!'
   
   data = if stage
     deploy_file = Dir['config/deploy/*.rb'].find do |file|
@@ -40,17 +41,20 @@ begin
   (user and server and deploy_to) or raise "Could not find required data (user, server and deploy-target).\nUsage: shell-for DEPLOYMENT_STAGE"
   
   path = deploy_to + "/current"
-  command = %(ssh #{user}@#{server})
+  ssh = %(ssh #{user}@#{server})
   
   if path.match /#\{.*\}/
     puts %(NOTE: "#{path}" is not a valid path.)
     puts %(NOTE: Connecting to deploy user home.)
+    puts
     sleep 2
+    
+    exec ssh
   else
-    command += %( -t "cd #{path} && bash --login")
+    command = remote_command.empty? ? "bash --login" : remote_command
+    
+    exec ssh + %( -t "cd #{path} && #{command}")
   end
-
-  exec command
   
 rescue Exception => e
   $stderr.puts e.message

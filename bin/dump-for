@@ -18,18 +18,16 @@ def find_project_root
 end
 
 begin
-  require 'rubygems'
-  require 'net/ssh'
-  
   stage = ARGV.shift
+  dump_name = "dump_for_download.dump"
   
-  find_project_root or raise 'Call me from inside a Rails project'
+  find_project_root or raise 'Call me from inside a Rails project!'
   
   data = if stage
     deploy_file = Dir['config/deploy/*.rb'].find do |file|
       file.match(/\/#{stage}.rb$/)
     end
-    deploy_file or raise "Unknown stage: #{stage}"
+    deploy_file or raise "Stage does not exist: #{stage}"
     
     File.open(deploy_file).readlines
   else
@@ -53,7 +51,9 @@ begin
   system command
 
   puts "Downloading dump_for_download..."
-  exec "scp #{user}@#{server}:~/dumps/dump_for_download.dump #{@project_root}"
+  system "scp #{user}@#{server}:~/dumps/#{dump_name} #{@project_root}/tmp/#{environment}.dump"
+  puts
+  puts "Dumped the #{environment.upcase} database to PROJECT_ROOT/tmp/#{environment}.dump"
   
 rescue Exception => e
   $stderr.puts e.message
