@@ -7,5 +7,12 @@
 spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
 format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
 
-# Run cucumber behind bundler
-exec *["b", "cucumber", format_args, ARGV].flatten
+# Check if parallel_tests is available
+parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
+
+if parallel_tests_available
+  puts "Using parallel_tests ...\n\n"
+  exec *['b', 'rake', 'parallel:features', ARGV].flatten
+else
+  exec *["b", "cucumber", format_args, ARGV].flatten
+end

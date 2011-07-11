@@ -11,8 +11,16 @@ rspec_args = rspec1 ? ["spec", "-c"] : ["rspec"]
 spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/rspec_spinner/).any?
 spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::Bar'] : []
 
+# Check if parallel_tests is available
+parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
+
 # Run examples in 'spec' unless an argument is given
 ARGV[0] ||= 'spec'
 
-# Run rspec behind bundler
-exec *["b", rspec_args, spinner_args, ARGV].flatten
+if parallel_tests_available
+  puts "Using parallel_tests ...\n\n"
+  exec  *['b', 'rake', 'parallel:spec', ARGV].flatten
+else
+  # Run rspec behind bundler
+  exec *["b", rspec_args, spinner_args, ARGV].flatten
+end
