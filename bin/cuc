@@ -10,7 +10,9 @@ format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgress
 # Check if parallel_tests is available
 parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
 
-if parallel_tests_available
+use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
+
+if use_parallel_tests
   puts "Using parallel_tests ...\n\n"
   exec *['b', 'rake', 'parallel:features', ARGV].flatten
 else

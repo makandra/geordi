@@ -14,10 +14,12 @@ spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::
 # Check if parallel_tests is available
 parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
 
+use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
+
 # Run examples in 'spec' unless an argument is given
 ARGV[0] ||= 'spec'
 
-if parallel_tests_available
+if use_parallel_tests
   puts "Using parallel_tests ...\n\n"
   exec  *['b', 'rake', 'parallel:spec', ARGV].flatten
 else
