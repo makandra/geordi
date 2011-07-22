@@ -15,4 +15,6 @@ spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::
 ARGV[0] ||= 'spec'
 
 # Run rspec behind bundler
+puts "Running RSpec tests..."
+puts "======================"
 exec *["b", rspec_args, spinner_args, ARGV].flatten

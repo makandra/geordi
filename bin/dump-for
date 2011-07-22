@@ -1,61 +1,19 @@
 #!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../lib/geordi"
+include Geordi
 
-def unquote(line)
-  if line  
-    line.match(/["'](.*)["']/)
-    $1
-  end
-end
-
-def find_project_root
-  current = Dir.pwd
-  until (File.exists? 'Capfile')
-    Dir.chdir '..'
-    return nil if current == Dir.pwd
-    current = Dir.pwd
-  end
-  @project_root = current
-end
-
-begin
-  stage = ARGV.shift
-  dump_name = "dump_for_download.dump"
+catching_errors do
+  retrieve_data!
   
-  find_project_root or raise 'Call me from inside a Rails project!'
+  command = %(ssh #{user}@#{server} -t "cd #{path} && dumple #{env} --for_download")
+  success = system command
   
-  data = if stage
-    deploy_file = Dir['config/deploy/*.rb'].find do |file|
-      file.match(/\/#{stage}.rb$/)
-    end
-    deploy_file or raise "Stage does not exist: #{stage}"
-    
-    File.open(deploy_file).readlines
+  if success
+    puts "Downloading dump_for_download..."
+    system "scp #{user}@#{server}:~/dumps/dump_for_download.dump #{root}/tmp/#{env}.dump"
+    puts
+    puts "Dumped the #{env.upcase} database to: #{File.basename root}/tmp/#{env}.dump"
   else
-    []
-  end + File.open("config/deploy.rb").readlines
-
-  user        = unquote data.find{ |line| line =~ /^set :user,/}
-  server      = unquote data.find{ |line| line =~ /^server / }
-  deploy_to   = unquote data.find{ |line| line =~ /^set :deploy_to,/}
-  environment = unquote data.find{ |line| line =~ /^set :rails_env,/}
-  (user and server and deploy_to and environment) or raise "Could not find required data (user, server, deploy target and environment).\nUsage: dump-for DEPLOYMENT_STAGE"
-  
-  path = deploy_to + "/current"
-  if path.match /#\{.*\}/
-    puts %(NOTE: "#{path}" is not a valid path.)
-    puts %(NOTE: You will need to fetch the dump yourself.)
-    raise ""
+    raise "An error occurred. Aborting..."
   end
-
-  command = %(ssh #{user}@#{server} -t "cd #{path} && dumple #{environment} --for_download")
-  system command
-
-  puts "Downloading dump_for_download..."
-  system "scp #{user}@#{server}:~/dumps/#{dump_name} #{@project_root}/tmp/#{environment}.dump"
-  puts
-  puts "Dumped the #{environment.upcase} database to PROJECT_ROOT/tmp/#{environment}.dump"
-  
-rescue Exception => e
-  $stderr.puts e.message
-  exit 1
 end

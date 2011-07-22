@@ -1,63 +1,17 @@
 #!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../lib/geordi"
+include Geordi
 
-def unquote(line)
-  if line  
-    line.match(/["'](.*)["']/)
-    $1
-  end
-end
-
-def find_project_root
-  current = Dir.pwd
-  until (File.exists? 'Capfile')
-    Dir.chdir '..'
-    return nil if current == Dir.pwd
-    current = Dir.pwd
-  end
-  @project_root = current
-end
-
-begin
-  stage = ARGV.shift
-  no_bash = ARGV.shift if ARGV.first == '--no-bash'
-  remote_command = ARGV.join(' ').strip
+catching_errors do
+  retrieve_data!
+  no_bash         = ARGV.delete('--no-bash')
+  remote_command  = ARGV.join(' ').strip
   
-  find_project_root or raise 'Call me from inside a Rails project!'
-  
-  data = if stage
-    deploy_file = Dir["#{@project_root}/config/deploy/*.rb"].find do |file|
-      file.match(/\/#{stage}.rb$/)
-    end
-    deploy_file or raise "Stage does not exist: #{stage}"
-    
-    File.open(deploy_file).readlines
-  else
-    []
-  end + File.open("#{@project_root}/config/deploy.rb").readlines
-
-  user      = unquote data.find{ |line| line =~ /^set :user, /}
-  server    = unquote data.find{ |line| line =~ /^server / }
-  deploy_to = unquote data.find{ |line| line =~ /^set :deploy_to, /}
-  
-  (user and server and deploy_to) or raise "Could not find required data (user, server and deploy-target).\nUsage: shell-for DEPLOYMENT_STAGE"
-  
-  path = deploy_to + "/current"
   ssh = %(ssh #{user}@#{server})
 
-  commands = []
-  if path.match /#\{.*\}/
-    puts %(NOTE: "#{path}" is not a valid path.)
-    puts %(NOTE: Connecting to deploy user home.)
-    sleep 2
-  else
-    commands << "cd #{path}"
-  end
+  commands = [ "cd #{path}" ]
   commands << remote_command unless remote_command.empty?
   commands << "bash --login" unless no_bash
   
   exec ssh + %( -t "#{commands.join(' && ')}")
-
-rescue Exception => e
-  $stderr.puts e.message
-  exit 1
 end

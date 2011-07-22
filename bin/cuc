@@ -8,4 +8,6 @@ spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/c
 format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
 
 # Run cucumber behind bundler
+puts "Running Cucumber tests..."
+puts "========================="
 exec *["b", "cucumber", format_args, ARGV].flatten
