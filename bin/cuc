@@ -2,12 +2,21 @@
 
 # Print some whitespace
 4.times { puts }
+puts "Running Cucumber tests..."
+puts "========================="
 
 # Check if cucumber_spinner is available
 spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
 format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
 
-# Run cucumber behind bundler
-puts "Running Cucumber tests..."
-puts "========================="
-exec *["b", "cucumber", format_args, ARGV].flatten
+# Check if parallel_tests is available
+parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
+
+use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
+
+if use_parallel_tests
+  puts "Using parallel_tests ...\n\n"
+  exec *['b', 'rake', 'parallel:features', ARGV].flatten
+else
+  exec *["b", "cucumber", format_args, ARGV].flatten
+end

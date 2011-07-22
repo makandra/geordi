@@ -2,6 +2,8 @@
 
 # Print some whitespace
 4.times { puts }
+puts "Running RSpec tests..."
+puts "======================"
 
 # Check if we're looking at a Rails 2 / rspec 1 project
 rspec1 = File.exists?('script/spec')
@@ -11,10 +13,18 @@ rspec_args = rspec1 ? ["spec", "-c"] : ["rspec"]
 spinner_available = File.exists?('Gemfile') && File.open('Gemfile').read.scan(/rspec_spinner/).any?
 spinner_args = spinner_available ? ['-r', 'rspec_spinner', '-f', 'RspecSpinner::Bar'] : []
 
+# Check if parallel_tests is available
+parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
+
+use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
+
 # Run examples in 'spec' unless an argument is given
 ARGV[0] ||= 'spec'
 
-# Run rspec behind bundler
-puts "Running RSpec tests..."
-puts "======================"
-exec *["b", rspec_args, spinner_args, ARGV].flatten
+if use_parallel_tests
+  puts "Using parallel_tests ...\n\n"
+  exec  *['b', 'rake', 'parallel:spec', ARGV].flatten
+else
+  # Run rspec behind bundler
+  exec *["b", rspec_args, spinner_args, ARGV].flatten
+end
