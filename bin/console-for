@@ -6,8 +6,8 @@ catching_errors do
   retrieve_data!
 
   if File.exists? "#{root}/script/console" # => Rails 2
-    system "shell-for #{env} --no-bash script/console #{env}"
+    system "shell-for #{stage} --no-bash script/console #{env}"
   else
-    system "shell-for #{env} --no-bash bundle exec rails console #{env}"
+    system "shell-for #{stage} --no-bash bundle exec rails console #{env}"
   end
 end
