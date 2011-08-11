@@ -5,7 +5,7 @@ if [ -z "$1" ]; then
 fi
 mkdir -p tmp
 if ls vendor/gems/*/*.gemspec > /dev/null 2>&1; then
-  tar cf tmp/gemfiles_for_remote_install Gemfile Gemfile.lock vendor/gems/*/*.gemspec
+  tar cf tmp/gemfiles_for_remote_install Gemfile Gemfile.lock vendor/gems
 else
   tar cf tmp/gemfiles_for_remote_install Gemfile Gemfile.lock
 fi
