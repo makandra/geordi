@@ -1,0 +1,5 @@
+#!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../lib/geordi/setup_firefox_for_selenium"
+require 'tempfile'
+
+Geordi::SetupFirefoxForSelenium.run

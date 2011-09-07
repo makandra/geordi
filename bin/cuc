@@ -1,4 +1,12 @@
 #!/usr/bin/env ruby
+require File.dirname(__FILE__) + "/../lib/geordi/setup_firefox_for_selenium"
+
+def exec_with_shell_expansion(*args)
+  escaped_args = args.collect do |arg|
+    arg.gsub(/([\\ "])/) { |match| "\\#{$1}" }
+  end
+  exec escaped_args.join(' ')
+end
 
 # Print some whitespace
 4.times { puts }
@@ -14,9 +22,11 @@ parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') 
 
 use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
 
+use_firefox_for_selenium = "PATH=#{Geordi::SetupFirefoxForSelenium::FIREFOX_FOR_SELENIUM_PATH}:$PATH"
+
 if use_parallel_tests
   puts "Using parallel_tests ...\n\n"
-  exec *['b', 'rake', 'parallel:features', ARGV].flatten
+  exec_with_shell_expansion *[use_firefox_for_selenium, 'b', 'rake', 'parallel:features', ARGV].flatten
 else
-  exec *["b", "cucumber", format_args, ARGV].flatten
+  exec_with_shell_expansion *[use_firefox_for_selenium, "b", "cucumber", format_args, ARGV].flatten
 end
