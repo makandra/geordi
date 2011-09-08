@@ -39,6 +39,7 @@ module Geordi
       def check_if_run_before
         if File.exists?(ORIGINAL_FIREFOX_BINARY)
           puts "It looks like you have run this script before. No good can come from running this script a second time on the same copy of Firefox."
+          puts
           puts "Press ENTER to continue anyway or press CTRL+C to abort."
           gets
         end
