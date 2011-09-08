@@ -44,7 +44,7 @@ More information at http://makandra.com/notes/1338-console-for-opens-a-rails-con
 cuc
 -----
 
-Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detection, etc.:
+Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detection, separate Firefox for Selenium, etc.:
 
     cuc features/users.feature
 
@@ -141,6 +141,16 @@ Runs RSpec with the arguments you want: RSpec 1/2 detection, bundle exec, rspec_
     rs spec/models/user_spec.rb
 
 More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+
+
+setup-firefox-for-selenium
+--------------------------
+
+Helps you create an frozen version of Firefox, so your Selenium tests will no longer break whenever Firefox updates:
+
+    setup-firefox-for-selenium
+
+More information at http://makandra.com/notes/1575-how-to-install-an-frozen-version-of-firefox-for-your-selenium-tests
 
 
 shell-for
