@@ -93,6 +93,15 @@ Installs all gems in your `Gemfile.lock`, as well as vendored gems, to the given
 More information at http://makandra.com/notes/692-install-a-local-gemfile-on-a-remote-server
 
 
+migrate-all
+---------------------
+
+Runs `power-rake db:migrate` if parallel_tests does not exist in your `Gemfile`. Otherwise it runs the migration
+in your development environment and executes `b rake parallel:prepare` after that.
+
+    migrate-all
+
+
 power-deploy
 ------------
 
