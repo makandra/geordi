@@ -17,7 +17,7 @@ Enables the given virtual host in `/etc/apache2/sites-available` and disables al
 
     site makandra-com
 
-More information at http://makandra.com/notes/807-shell-script-to-quickly-switch-apache-sites
+More information at http://makandracards.com/makandra/807-shell-script-to-quickly-switch-apache-sites
 
 
 b
@@ -27,7 +27,7 @@ Runs the given command under `bundle exec` if a `Gemfile` is present in your wor
 
     b spec spec/models
 
-More information at http://makandra.com/notes/684-automatically-run-bundle-exec-if-required
+More information at http://makandracards.com/makandra/684-automatically-run-bundle-exec-if-required
 
 
 console-for
@@ -37,7 +37,7 @@ Opens a rails console remotely:
 
     console-for staging
 
-More information at http://makandra.com/notes/1338-console-for-opens-a-rails-console-remotely-on-a-capistrano-deployment-target
+More information at http://makandracards.com/makandra/1338-console-for-opens-a-rails-console-remotely-on-a-capistrano-deployment-target
 
 
 
@@ -48,7 +48,7 @@ Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detecti
 
     cuc features/users.feature
 
-More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
 
 
 
@@ -59,7 +59,7 @@ Removes unnecessary files from your project directory:
 
     cleanup-directory
 
-More information at http://makandra.com/notes/951-shell-script-to-clean-up-a-project-directory
+More information at http://makandracards.com/makandra/951-shell-script-to-clean-up-a-project-directory
 
 
 dump-for
@@ -69,7 +69,7 @@ Dumps the database on your server for a given [Capistrano multistage](https://gi
 
     dump-for production
 
-More information at http://makandra.com/notes/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
+More information at http://makandracards.com/makandra/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
 
      
 
@@ -80,7 +80,7 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 
     dumple development
 
-More information at http://makandra.com/notes/1008-dump-your-database-with-dumple
+More information at http://makandracards.com/makandra/1008-dump-your-database-with-dumple
 
 
 install-gems-remotely
@@ -90,7 +90,7 @@ Installs all gems in your `Gemfile.lock`, as well as vendored gems, to the given
 
     install-gems-remotely my.server.com
 
-More information at http://makandra.com/notes/692-install-a-local-gemfile-on-a-remote-server
+More information at http://makandracards.com/makandra/692-install-a-local-gemfile-on-a-remote-server
 
 
 migrate-all
@@ -109,7 +109,7 @@ Calls the Capistrano tasks `deploy`, `deploy:migrate` and `deploy:restart` on th
 
     power-deploy staging
 
-This script is considered legacy and will be removed eventually. You should [fix your deploy scripts](http://makandra.com/notes/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations) and then use [cap deploy:migrations](http://makandra.com/notes/1000-deploy-and-migrate-with-a-single-capistrano-command).
+This script is considered legacy and will be removed eventually. You should [fix your deploy scripts](http://makandracards.com/makandra/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations) and then use [cap deploy:migrations](http://makandracards.com/makandra/1000-deploy-and-migrate-with-a-single-capistrano-command).
 
 
 power-rake
@@ -119,7 +119,7 @@ Runs the given rake task in each Rails environment in `development`, `test`, `cu
 
     power-rake db:migrate
 
-More information at http://makandra.com/notes/737-run-a-rake-task-in-all-environments
+More information at http://makandracards.com/makandra/737-run-a-rake-task-in-all-environments
 
 
 remotify-local-branch
@@ -129,7 +129,7 @@ Pushes the given branch to the remote `origin` and tracks it:
 
     remotify-local-branch redesign
 
-More information at http://makandra.com/notes/520-create-a-remote-branch-in-git
+More information at http://makandracards.com/makandra/520-create-a-remote-branch-in-git
 
 
 remove-executable-flags
@@ -139,7 +139,7 @@ Recursively removes executable flags from files in the working directory that pr
 
     remove-executable-flags
     
-More information at http://makandra.com/notes/659-recursively-remove-unnecessary-execute-flags
+More information at http://makandracards.com/makandra/659-recursively-remove-unnecessary-execute-flags
 
 
 rs
@@ -149,7 +149,7 @@ Runs RSpec with the arguments you want: RSpec 1/2 detection, bundle exec, rspec_
 
     rs spec/models/user_spec.rb
 
-More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
 
 
 setup-firefox-for-selenium
@@ -159,7 +159,7 @@ Helps you create an frozen version of Firefox, so your Selenium tests will no lo
 
     setup-firefox-for-selenium
 
-More information at http://makandra.com/notes/1575-how-to-install-an-frozen-version-of-firefox-for-your-selenium-tests
+More information at http://makandracards.com/makandra/1575-how-to-install-a-frozen-version-of-firefox-for-your-selenium-tests
 
 
 shell-for
@@ -173,7 +173,7 @@ Now it can also be called with any command to be remotely executed before loadin
 
     shell-for staging --no-bash top
 
-More information at http://makandra.com/notes/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target   
+More information at http://makandracards.com/makandra/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
 
 
 tests
@@ -183,4 +183,4 @@ Runs both `rs` and `cuc`. Call from any project directory:
 
     tests
 
-More information at http://makandra.com/notes/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
