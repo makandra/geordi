@@ -83,6 +83,20 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 More information at http://makandracards.com/makandra/1008-dump-your-database-with-dumple
 
 
+
+gitpt
+-----
+
+Shell script to generate a git commit with Pivotal Tracker story ID and title. Run it from your project directory:
+
+    gitpt
+
+This lets you choose from all started, finished and rejected stories in Pivotal Tracker and commit staged changes.
+Requires the project's Pivotal Tracker ID(s) to be defined in a `.pt_project_id` file in the project's directory.
+
+More information at https://makandracards.com/makandra/1372-shell-script-to-generate-a-git-commit-with-pivotal-tracker-story-id-and-title
+
+
 install-gems-remotely
 ---------------------
 
