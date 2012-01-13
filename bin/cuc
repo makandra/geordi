@@ -8,6 +8,10 @@ def exec_with_shell_expansion(*args)
   exec escaped_args.join(' ')
 end
 
+def rerun_txt_exists_and_has_content?
+  File.exists?("rerun.txt") && !IO.read("rerun.txt").to_s.strip.empty?
+end
+
 # Print some whitespace
 4.times { puts }
 puts "Running Cucumber tests..."
@@ -20,8 +24,7 @@ format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgress
 # Check if parallel_tests is available
 parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
 
-rerun_txt_exists_and_has_content = File.exists?('rerun.txt') && File.size('rerun.txt') > 0
-use_parallel_tests = parallel_tests_available && (ARGV[0] == nil) && !rerun_txt_exists_and_has_content
+use_parallel_tests = parallel_tests_available && (ARGV[0] == nil) && !rerun_txt_exists_and_has_content?
 
 use_firefox_for_selenium = "PATH=#{Geordi::SetupFirefoxForSelenium::FIREFOX_FOR_SELENIUM_PATH}:$PATH"
 
