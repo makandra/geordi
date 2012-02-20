@@ -17,7 +17,7 @@ module Geordi
     end
 
     def serial_execution_command
-      format_args = spinner_available ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
+      format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
       [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(ARGV)].flatten.compact.join(" ")
     end
 
