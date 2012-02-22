@@ -1,5 +1,6 @@
 require 'rubygems'
 require 'geordi/setup_firefox_for_selenium'
+require 'ruby-debug'
 
 module Geordi
   class Cucumber
@@ -10,22 +11,36 @@ module Geordi
       puts "========================="
 
       consolidate_rerun_txt_files
-      show_rerun_txt_file_content
+      show_features_to_run
 
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
+
+      2.times { puts }
+      puts "command to execute:"
+      puts command
+      puts "-----------------------------------------"
+
+      2.times { puts }
       exec command
+    end
+
+
+    attr_writer :argv
+    def argv
+      @argv ||= ARGV
     end
 
     def serial_execution_command
       format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
-      [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(ARGV)].flatten.compact.join(" ")
+      [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(argv)].flatten.compact.join(" ")
     end
 
 
     def parallel_execution_command
       puts "Using parallel_tests ...\n\n"
-      parallel_tests_args = '-t features'
-      cucumber_args = ARGV.empty? ? '' : "-o '#{escape_shell_args(ARGV).join(" ")}'"
+      self.argv = argv - command_line_features
+      parallel_tests_args = "-t features #{command_line_features}"
+      cucumber_args = argv.empty? ? '' : "-o '#{escape_shell_args(argv).join(" ")}'"
       [use_firefox_for_selenium, 'b', 'parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
     end
 
@@ -41,11 +56,40 @@ module Geordi
       end
     end
 
-
-    def rerun_txt_exists_and_has_content?
-      File.exists?("rerun.txt") && !IO.read("rerun.txt").to_s.strip.empty?
+    def show_features_to_run
+      unless features_to_run.empty?
+        passed_by = (features_to_run == rerun_txt_features) ? 'rerun.txt' : 'command line'
+        2.times { puts }
+        puts "features to run (passed by #{passed_by}):"
+        puts "-----------------------------------------"
+        puts features_to_run.join("\n")
+        puts "-----------------------------------------"
+      end
     end
 
+    def features_to_run
+      @features_to_run ||= begin
+        features = command_line_features
+        features = rerun_txt_features if features.empty?
+        features
+      end
+    end
+
+    def command_line_features
+      @command_line_features ||= argv.select do |arg|
+        arg =~ /.*\.feature/i
+      end
+    end
+
+    def rerun_txt_features
+      @rerun_txt_features ||= begin
+        if File.exists?("rerun.txt")
+          IO.read("rerun.txt").to_s.strip.split(/\s+/)
+        else
+          []
+        end
+      end
+    end
 
     def consolidate_rerun_txt_files
       parallel_rerun_files = Dir.glob("parallel_rerun*.txt")
@@ -65,16 +109,8 @@ module Geordi
       end
     end
 
-
-    def show_rerun_txt_file_content
-      return unless rerun_txt_exists_and_has_content?
-
-      2.times { puts }
-      puts "content of rerun.txt:"
-      puts "-------------------------"
-      puts File.read('rerun.txt')
-      puts "-------------------------"
-      2.times { puts }
+    def features_can_run_with_parallel_tests?(features)
+      not features.any?{ |feature| feature.include? ":" }
     end
 
 
@@ -91,7 +127,7 @@ module Geordi
 
 
     def use_parallel_tests?
-      parallel_tests_available? && !rerun_txt_exists_and_has_content?
+      parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run)
     end
 
   end
