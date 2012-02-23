@@ -31,7 +31,7 @@ module Geordi
       @user   = retrieve! "user", /^set :user,/
       @server = retrieve! "server", /^server /
       @path   = retrieve!("deploy_to", /^set :deploy_to,/) + '/current'
-      @env    = retrieve! "environment", /^set :rails_env,/
+      @env    = retrieve!("environment", /^set :rails_env,/, 'production')
     
       # fix
       %w[user server path env].each do |attr|
@@ -50,10 +50,12 @@ module Geordi
     current
   end
   
-  def retrieve!(name, regex)
+  def retrieve!(name, regex, default = nil)
     if line = @lines.find{ |line| line =~ regex }
       line.match(/["'](.*)["']/)
       $1
+    elsif default
+      default
     else
       raise "Could not find :#{name} for stage '#{stage}'!\nAborting..."
     end
