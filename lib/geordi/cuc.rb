@@ -16,11 +16,6 @@ module Geordi
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
 
       2.times { puts }
-      puts "command to execute:"
-      puts command
-      puts "-----------------------------------------"
-
-      2.times { puts }
       exec command
     end
 
