@@ -15,6 +15,11 @@ module Geordi
 
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
 
+      if argv.include? "-v"
+        puts command
+        2.times { puts }
+      end
+
       2.times { puts }
       exec command
     end
