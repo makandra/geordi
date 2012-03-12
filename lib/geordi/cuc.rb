@@ -39,7 +39,9 @@ module Geordi
     def parallel_execution_command
       puts "Using parallel_tests ...\n\n"
       self.argv = argv - command_line_features
-      parallel_tests_args = "-t features #{command_line_features.join(' ')}"
+      require 'parallel_tests'
+      type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
+      parallel_tests_args = "-t #{type_arg} #{command_line_features.join(' ')}"
       cucumber_args = argv.empty? ? '' : "-o '#{escape_shell_args(argv).join(" ")}'"
       [use_firefox_for_selenium, 'b', 'parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
     end
