@@ -18,13 +18,11 @@ parallel_tests_available = ['rake', 'parallel:spec'] if File.exists?('Gemfile') 
 
 use_parallel_tests = parallel_tests_available && (ARGV[0] == nil)
 
-# Run examples in 'spec' unless an argument is given
-ARGV[0] ||= 'spec'
-
 if use_parallel_tests
   puts "Using parallel_tests ...\n\n"
-  exec  *['b', 'rake', 'parallel:spec', ARGV].flatten
+  exec 'b rake parallel:spec'
 else
   # Run rspec behind bundler
+  ARGV[0] ||= 'spec'
   exec *["b", rspec_args, spinner_args, ARGV].flatten
 end
