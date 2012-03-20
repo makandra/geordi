@@ -1,6 +1,5 @@
 require 'rubygems'
 require 'geordi/setup_firefox_for_selenium'
-require 'ruby-debug'
 
 module Geordi
   class Cucumber
