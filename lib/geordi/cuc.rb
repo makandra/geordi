@@ -59,7 +59,7 @@ module Geordi
 
     def show_features_to_run
       unless features_to_run.empty?
-        passed_by = (features_to_run == command_line_features) ? 'command line' : 'rerun.txt'
+        passed_by = (features_to_run == rerun_txt_features && features_to_run != command_line_features) ? 'rerun.txt' : 'command line'
         2.times { puts }
         puts "features to run (passed by #{passed_by}):"
         puts "-----------------------------------------"
