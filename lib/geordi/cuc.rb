@@ -129,7 +129,7 @@ module Geordi
 
 
     def use_parallel_tests?
-      parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size > 1
+      parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size != 1
     end
 
   end
