@@ -41,7 +41,7 @@ module Geordi
       self.argv = argv - command_line_features
       require 'parallel_tests'
       type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
-      parallel_tests_args = "-t #{type_arg} #{command_line_features.join(' ')}"
+      parallel_tests_args = "-t #{type_arg} #{features_to_run.join(' ')}"
       cucumber_args = argv.empty? ? '' : "-o '#{escape_shell_args(argv).join(" ")}'"
       [use_firefox_for_selenium, 'b', 'parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
     end
@@ -73,6 +73,7 @@ module Geordi
       @features_to_run ||= begin
         features = command_line_features
         features = rerun_txt_features if features.empty?
+        features = Dir["features/**/*.feature"] if features.empty?
         features
       end
     end
