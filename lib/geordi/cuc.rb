@@ -1,6 +1,5 @@
 require "rubygems"
 require 'geordi/setup_firefox_for_selenium'
-require "bundler/setup"
 
 module Geordi
   class Cucumber
@@ -39,6 +38,8 @@ module Geordi
     def parallel_execution_command
       puts "Using parallel_tests ...\n\n"
       self.argv = argv - command_line_features
+      version = File.exists?('Gemfile.lock') && File.open('Gemfile.lock').read.scan(/parallel_tests \([^\d\.]*([\d\.]+)\)/).flatten.first
+      gem 'parallel_tests', version if version
       require 'parallel_tests'
       type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
       parallel_tests_args = "-t #{type_arg} #{command_line_features.join(' ')}"
