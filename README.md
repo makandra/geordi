@@ -139,9 +139,9 @@ More information at http://makandracards.com/makandra/737-run-a-rake-task-in-all
 remotify-local-branch
 ---------------------
 
-Pushes the given branch to the remote `origin` and tracks it:
+Pushes the given branch (or current branch if no argument given) to the remote `origin` and tracks it:
 
-    remotify-local-branch redesign
+    remotify-local-branch <optional-branch-name>
 
 More information at http://makandracards.com/makandra/520-create-a-remote-branch-in-git
 
