@@ -62,6 +62,16 @@ Removes unnecessary files from your project directory:
 More information at http://makandracards.com/makandra/951-shell-script-to-clean-up-a-project-directory
 
 
+deploy-to-production
+-------------------
+
+Shows the commits between your `master` and `production` branch, then merges the changes and deploys to the production Capistrano stage:
+
+    deploy-to-production
+
+More information at https://makandracards.com/makandra/7971-shell-script-to-deploy-changes-to-production-and-not-shoot-yourself-in-the-foot
+
+
 dump-for
 --------
 

@@ -1,0 +1,56 @@
+#!/usr/bin/env ruby
+
+def header(text)
+  puts colorize(text, 44), ''
+end
+
+def colorize(text, color_code)
+  "\e[#{color_code}m#{text}\e[0m"
+end
+
+def gray(text)
+  colorize(text, 35)
+end
+
+def call_or_fail(command)
+  puts gray(command), ''
+  result = system(command) or raise "Error while calling #{command}: #{$?}"
+  puts
+  result
+end
+
+def prompt(message, default)
+  print "#{message}"
+  print " [#{default}]" if default
+  print ": "
+  input = gets.strip
+  if input.empty? && default
+    input = default
+  end
+  puts
+  input
+end
+
+puts
+
+master_branch = prompt('master branch', 'master')
+production_branch = prompt('production branch', 'production')
+production_stage = prompt('production capistrano stage', 'production')
+
+header("Checking what's on #{production_stage} right now...")
+
+call_or_fail("git checkout #{production_branch} && git pull")
+
+header("You are about to deploy the following commits from #{master_branch} to #{production_branch}:")
+
+ENV['PAGER'] = 'cat'
+
+call_or_fail("git log #{production_branch}..#{master_branch}")
+
+if prompt("Go ahead with the deployment? (y/n)", "n") == 'y'
+  puts("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
+  call_or_fail("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
+  puts 'Deployment complete.', ''
+else
+  puts 'Deployment cancelled.', ''
+end
