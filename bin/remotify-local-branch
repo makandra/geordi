@@ -1,12 +1,19 @@
 #!/usr/bin/env ruby
 
-branch = ARGV[0] or raise "Need the branch name as first argument"
+# detect current branch
+current_branch = (%x{git branch 2> /dev/null}.grep(/^\*/).first || '').scan(/^\* (.+)$/).flatten.first
 
-`git status`.include?('working directory clean') or raise 'Dirty working directory. Nothing was pushed.'
-`git checkout #{branch}`
-`git push origin #{branch}`
-`git config branch.#{branch}.remote origin`
-`git config branch.#{branch}.merge #{branch}`
+# use branch passed via command line or current branch if none was given
+branch = ARGV[0] || current_branch || raise("Need the branch name as first argument since the current branch could not be detected automatically")
+
+# switch the branch if it is not the current branch
+if branch != current_branch
+  `git status`.include?('working directory clean') or raise 'Dirty working directory. Nothing was pushed.'
+  `git checkout #{branch}`
+end
+
+# push branch to remote and track it
+`git push -u origin #{branch}`
 
 puts "#{branch} is now tracking origin/#{branch}"
 
