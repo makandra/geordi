@@ -9,10 +9,29 @@ catching_errors do
   success = system command
   
   if success
+    source_path = "~/dumps/dump_for_download.dump"
+    destination_path = "#{root}/tmp/#{env}.dump"
+
     puts "Downloading dump_for_download..."
-    system "scp #{user}@#{server}:~/dumps/dump_for_download.dump #{root}/tmp/#{env}.dump"
+    system "scp #{user}@#{server}:#{source_path} #{destination_path}"
     puts
     puts "Dumped the #{env.upcase} database to: #{File.basename root}/tmp/#{env}.dump"
+
+    # source dump if option was given
+    if ARGV.include?("-s")
+      puts "Sourcing dump into development database..."
+      if File.exists?("script/dbconsole")
+        `script/dbconsole -p < #{destination_path}`
+      else
+        `rails db < #{destination_path}`
+      end
+
+      if $?.to_i == 0
+        puts "Your database is now sourced with a fresh #{env} dump."
+      else
+        puts "Could not source the downloaded #{env} dump."
+      end
+    end
   else
     raise "An error occurred. Aborting..."
   end

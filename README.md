@@ -75,9 +75,9 @@ More information at https://makandracards.com/makandra/7971-shell-script-to-depl
 dump-for
 --------
 
-Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target.
+Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target. Passing the -s option automatically sources the dump ito your development database.
 
-    dump-for production
+    dump-for production [-s]
 
 More information at http://makandracards.com/makandra/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
 

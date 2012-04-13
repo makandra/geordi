@@ -4,3 +4,5 @@
 Gemfile.lock
 pkg/*
 .DS_Store
+.pt_project_id
+
