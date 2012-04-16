@@ -1,21 +1,33 @@
 #!/usr/bin/env ruby
 
-def header(text)
-  puts colorize(text, 44), ''
+def color_code(color_name, background_color_name = nil)
+  colors = %w[ black red green yellow blue pink cyan white ].map(&:to_sym)
+  color = 30 + colors.index(color_name)
+  if background_code = colors.index(background_color_name)
+    background = 40 + background_code
+    bold = 1
+  end
+  [ bold, color, background ].compact.join ';'
 end
 
-def colorize(text, color_code)
+def colorize(text, color_name, background_color_name = nil)
+  color_code = color_code(color_name, background_color_name)
   "\e[#{color_code}m#{text}\e[0m"
 end
 
-def gray(text)
-  colorize(text, 35)
+def header(text)
+  puts colorize(text, :yellow, :blue), ''
 end
 
-def call_or_fail(command)
-  puts gray(command), ''
-  result = system(command) or raise "Error while calling #{command}: #{$?}"
-  puts
+def call_or_fail(command, return_output = false)
+  puts colorize(command, :pink), ''
+  if return_output
+    result = `#{command}`.to_s.strip
+    $?.success? or raise "Error while calling #{command}: #{$?}"
+  else
+    result = system(command) or raise "Error while calling #{command}: #{$?}"
+    puts
+  end
   result
 end
 
@@ -31,11 +43,34 @@ def prompt(message, default)
   input
 end
 
+def success(message)
+  puts colorize(message, :green), ''
+  exit 0
+end
+
+def error(message)
+  puts colorize(message, :red), ''
+  exit 1
+end
+
 puts
+
+ENV['PAGER'] = 'cat'
 
 master_branch = prompt('master branch', 'master')
 production_branch = prompt('production branch', 'production')
 production_stage = prompt('production capistrano stage', 'production')
+
+header("Checking if your #{master_branch} is up to date")
+
+diff_size = call_or_fail("git fetch && git diff #{master_branch} origin/#{master_branch} | wc -l", true)
+changes_size = call_or_fail("git status -s | wc -l", true)
+
+if diff_size == '0' and changes_size == '0'
+  puts "All good.", ''
+else
+  error "Your #{master_branch} is not the same as on origin or holds uncommitted changes. Fix that first."
+end
 
 header("Checking what's on #{production_stage} right now...")
 
@@ -43,14 +78,13 @@ call_or_fail("git checkout #{production_branch} && git pull")
 
 header("You are about to deploy the following commits from #{master_branch} to #{production_branch}:")
 
-ENV['PAGER'] = 'cat'
+call_or_fail("git log #{production_branch}..#{master_branch} --oneline")
 
-call_or_fail("git log #{production_branch}..#{master_branch}")
-
-if prompt("Go ahead with the deployment? (y/n)", "n") == 'y'
+if prompt("Go ahead with the deployment? (y/n)", "n").downcase == 'y'
   puts("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
   call_or_fail("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
-  puts 'Deployment complete.', ''
+  success 'Deployment complete.'
 else
-  puts 'Deployment cancelled.', ''
+  error 'Deployment cancelled.'
 end
+
