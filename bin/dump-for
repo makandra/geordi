@@ -23,7 +23,7 @@ catching_errors do
       if File.exists?("script/dbconsole")
         `script/dbconsole -p < #{destination_path}`
       else
-        `rails db < #{destination_path}`
+        `rails dbconsole -p < #{destination_path}`
       end
 
       if $?.to_i == 0
