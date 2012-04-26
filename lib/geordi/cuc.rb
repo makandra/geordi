@@ -41,11 +41,12 @@ module Geordi
       gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
       type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
-      features_to_run = command_line_features.join(' ')
-      features_to_run = 'features' if features_to_run == ""
-      parallel_tests_args = "#{features_to_run} -t #{type_arg}"
+      features_to_run = command_line_features
+      features_to_run = find_all_features_recursively('features') if features_to_run.empty?
+      features_to_run = features_to_run.join(" ")
+      parallel_tests_args = "-t #{type_arg}"
       cucumber_args = command_line_args.empty? ? '' : "-o '#{escape_shell_args(command_line_args).join(" ")}'"
-      [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
+      [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args, "-- #{features_to_run}"].flatten.compact.join(" ")
     end
 
 
@@ -91,20 +92,28 @@ module Geordi
 
     def command_line_features
       @command_line_features ||= begin
-        index = argv.find_index("--") || -1
-        argv[index + 1 .. -1].map do |file_or_dir|
-          if File.directory?(file_or_dir)
-            file_or_dir = Dir.glob(File.join(file_or_dir, "**", "*.feature"))
-          end
-          file_or_dir
-        end.flatten.uniq.compact
+        index = argv.find_index("--")
+        if index.nil? && argv.first && argv.first[0,1] != "-"
+          find_all_features_recursively(argv)
+        elsif index
+          files_or_dirs = argv[index + 1 .. -1]
+          find_all_features_recursively(files_or_dirs)
+        else
+          []
+        end
       end
     end
 
     def command_line_args
       @command_line_args ||= begin
         index = argv.find_index("--")
-        index ? argv[0 .. index-1] : []
+        if index.nil? && argv.first && argv.first[0,1] == "-"
+          argv
+        elsif index
+          argv[0 .. index-1]
+        else
+          []
+        end
       end
     end
 
@@ -124,6 +133,15 @@ module Geordi
           f.puts(rerun_content.join(" "))
         end
       end
+    end
+
+    def find_all_features_recursively(files_or_dirs)
+      Array(files_or_dirs).map do |file_or_dir|
+        if File.directory?(file_or_dir)
+          file_or_dir = Dir.glob(File.join(file_or_dir, "**", "*.feature"))
+        end
+        file_or_dir
+      end.flatten.uniq.compact
     end
 
     def features_can_run_with_parallel_tests?(features)
