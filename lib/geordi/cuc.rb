@@ -41,9 +41,11 @@ module Geordi
       gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
       type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
-      parallel_tests_args = "-t #{type_arg} #{command_line_features.join(' ')}"
-      cucumber_args = argv.empty? ? '' : "-o '#{escape_shell_args(argv).join(" ")}'"
-      [use_firefox_for_selenium, 'b', 'parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
+      features_to_run = command_line_features.join(' ')
+      features_to_run = 'features' if features_to_run == ""
+      parallel_tests_args = "#{features_to_run} -t #{type_arg}"
+      cucumber_args = command_line_args.empty? ? '' : "-o '#{escape_shell_args(command_line_args).join(" ")}'"
+      [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args].flatten.compact.join(" ")
     end
 
 
@@ -77,12 +79,6 @@ module Geordi
       end
     end
 
-    def command_line_features
-      @command_line_features ||= argv.select do |arg|
-        arg =~ /.*\.feature/i
-      end
-    end
-
     def rerun_txt_features
       @rerun_txt_features ||= begin
         if File.exists?("rerun.txt")
@@ -90,6 +86,25 @@ module Geordi
         else
           []
         end
+      end
+    end
+
+    def command_line_features
+      @command_line_features ||= begin
+        index = argv.find_index("--") || -1
+        argv[index + 1 .. -1].map do |file_or_dir|
+          if File.directory?(file_or_dir)
+            file_or_dir = Dir.glob(File.join(file_or_dir, "**", "*.feature"))
+          end
+          file_or_dir
+        end.flatten.uniq.compact
+      end
+    end
+
+    def command_line_args
+      @command_line_args ||= begin
+        index = argv.find_index("--")
+        index ? argv[0 .. index-1] : []
       end
     end
 
@@ -132,7 +147,7 @@ module Geordi
       @parallel_tests_version ||= begin
         parallel_tests = `bundle list`.split("\n").detect{ |x| x =~ /parallel_tests/ }
         if parallel_tests
-          parallel_tests.scan( /\((.+?)\)/ ).flatten.first
+          parallel_tests.scan( /\(([\d\.]+).*\)/ ).flatten.first
         end
       end
     end
