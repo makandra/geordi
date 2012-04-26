@@ -38,8 +38,7 @@ module Geordi
     def parallel_execution_command
       puts "Using parallel_tests ...\n\n"
       self.argv = argv - command_line_features
-      version = File.exists?('Gemfile.lock') && File.open('Gemfile.lock').read.scan(/parallel_tests \([^\d\.]*([\d\.]+)\)/).flatten.first
-      gem 'parallel_tests', version if version
+      gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
       type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
       parallel_tests_args = "-t #{type_arg} #{command_line_features.join(' ')}"
@@ -125,9 +124,18 @@ module Geordi
 
     # Check if parallel_tests is available
     def parallel_tests_available?
-      @parallel_tests_available ||= File.exists?('Gemfile') && File.open('Gemfile').read.scan(/parallel_tests/).any?
+      not parallel_tests_version.nil?
     end
 
+    # get the current parallel test version used in Gemfile.lock (nil if not available)
+    def parallel_tests_version
+      @parallel_tests_version ||= begin
+        parallel_tests = `bundle list`.split("\n").detect{ |x| x =~ /parallel_tests/ }
+        if parallel_tests
+          parallel_tests.scan( /\((.+?)\)/ ).flatten.first
+        end
+      end
+    end
 
     def use_parallel_tests?
       parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size != 1
