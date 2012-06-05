@@ -81,8 +81,7 @@ header("You are about to deploy the following commits from #{master_branch} to #
 call_or_fail("git log #{production_branch}..#{master_branch} --oneline")
 
 if prompt("Go ahead with the deployment? (y/n)", "n").downcase == 'y'
-  puts("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
-  call_or_fail("git merge #{master_branch} && git push && cap #{production_stage} deploy:migrations")
+  call_or_fail("git merge #{master_branch} && git push && bundle exec cap #{production_stage} deploy:migrations")
   success 'Deployment complete.'
 else
   error 'Deployment cancelled.'
