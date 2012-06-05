@@ -81,7 +81,11 @@ header("You are about to deploy the following commits from #{master_branch} to #
 call_or_fail("git log #{production_branch}..#{master_branch} --oneline")
 
 if prompt("Go ahead with the deployment? (y/n)", "n").downcase == 'y'
-  call_or_fail("git merge #{master_branch} && git push && bundle exec cap #{production_stage} deploy:migrations")
+  capistrano_call = "cap #{production_stage} deploy:migrations"
+  if File.exists?('Gemfile') && File.open('Gemfile').read.scan(/capistrano/).any?
+    capistrano_call = "bundle exec #{capistrano_call}"
+  end
+  call_or_fail("git merge #{master_branch} && git push && #{capistrano_call}")
   success 'Deployment complete.'
 else
   error 'Deployment cancelled.'
