@@ -17,10 +17,18 @@ class DumpLoader
     File.join(user_dir, 'dumps')
   end
 
+  def db_console_command
+    if File.exists?("script/dbconsole")
+      "script/dbconsole -p"
+    else
+      "rails dbconsole -p"
+    end
+  end
+
   def source_dump(dump)
     require 'pty'
     output_buffer = StringIO.new
-    PTY.spawn("script/dbconsole -p") do |output, input, pid|
+    PTY.spawn(db_console_command) do |output, input, pid|
       input.write("source #{dump};\nexit;\n")
       output_buffer.write output.read
     end

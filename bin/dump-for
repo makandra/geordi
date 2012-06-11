@@ -20,12 +20,7 @@ catching_errors do
     # source dump if option was given
     if ARGV.include?("-s")
       puts "Sourcing dump into development database..."
-      if File.exists?("script/dbconsole")
-        `script/dbconsole -p < #{destination_path}`
-      else
-        `rails dbconsole -p < #{destination_path}`
-      end
-
+      puts `load-dump #{destination_path}`
       if $?.to_i == 0
         puts "Your database is now sourced with a fresh #{env} dump."
       else
