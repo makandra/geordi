@@ -24,7 +24,7 @@ catching_errors do
       if $?.to_i == 0
         puts "Your database is now sourced with a fresh #{env} dump."
       else
-        puts "Could not source the downloaded #{env} dump."
+        $stderr.puts "Could not source the downloaded #{env} dump."
       end
     end
   else
