@@ -93,6 +93,16 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 More information at http://makandracards.com/makandra/1008-dump-your-database-with-dumple
 
 
+load-dump
+---------
+
+Loads a database dump (e.g. created with dump-for or dumple) into you database.
+
+    load-dump [path/to/dump]
+
+More information at https://makandracards.com/makandra/8975-geordi-use-load-dump-script-to-source-a-database-dump-into-your-database
+
+
 
 gitpt
 -----
