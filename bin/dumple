@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+require 'erb'
+
 fail_gently = ARGV.include?("--fail-gently")
 
 if ARGV.include?("-i")
@@ -41,7 +43,7 @@ begin
     current = Dir.pwd
   end
 
-  config = YAML::load(File.open(config_path))
+  config = YAML::load(ERB.new(File.read(config_path)).result)
 
   environment = ARGV.reject{ |arg| arg[0].chr == '-' }.first || 'production'
   config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT"
