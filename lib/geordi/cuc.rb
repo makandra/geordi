@@ -1,8 +1,14 @@
 require "rubygems"
-require 'geordi/setup_firefox_for_selenium'
+require File.join(File.dirname(__FILE__), 'setup_firefox_for_selenium')
+require 'tempfile'
 
 module Geordi
   class Cucumber
+
+    VNC_DISPLAY = ':17'
+    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024"
+    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
+    VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
     def run
       4.times { puts }
@@ -11,6 +17,8 @@ module Geordi
 
       consolidate_rerun_txt_files
       show_features_to_run
+
+      setup_vnc
 
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
 
@@ -23,6 +31,29 @@ module Geordi
       exec command
     end
 
+    def launch_vnc_viewer
+      fork {
+        error = capture_stderr do
+          system(VNC_VIEWER_COMMAND)
+        end
+        unless $?.success?
+          if $?.exitstatus == 127
+            puts "VNC viewer not found. Install it using cuc-setup-vnc."
+          else
+            puts "VNC viewer could not be opened:"
+            puts error
+          end
+        end
+      }
+    end
+
+    def restore_env
+      VNC_ENV_VARIABLES.each do |variable|
+        ENV[variable] = ENV["OUTER_#{variable}"]
+      end
+    end
+
+    private
 
     attr_writer :argv
     def argv
@@ -172,6 +203,56 @@ module Geordi
 
     def use_parallel_tests?
       parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size != 1
+    end
+
+    def setup_vnc
+      if try_and_start_vnc
+        VNC_ENV_VARIABLES.each do |variable|
+          ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
+        end
+        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path(File.join(File.dirname(__FILE__), '../../bin/launchy_browser'))
+        ENV["DISPLAY"] = VNC_DISPLAY
+
+        puts
+        puts "Selenium is running in a VNC window. Use cuc-show to view it."
+      end
+    end
+
+    def try_and_start_vnc
+      # check if vnc is already running
+      #return true if vnc_server_running?
+      error = capture_stderr do
+        system(VNC_SERVER_COMMAND)
+      end
+      case $?.exitstatus
+      when 0,
+        98 # was already running after all
+        true
+      when 127 # not installed
+        puts "Could not launch VNC server. Install it by running cuc-setup-vnc."
+        puts
+        puts
+        false
+      else
+        puts "Starting VNC failed:"
+        puts error
+        puts
+        puts
+        false
+      end
+    end
+
+    def capture_stderr
+      old_stderr = $stderr.dup
+      io = Tempfile.new('cuc')
+      $stderr.reopen(io)
+      yield
+      io.rewind
+      io.read
+    ensure
+      io.close
+      io.unlink
+      $stderr.reopen(old_stderr)
     end
 
   end
