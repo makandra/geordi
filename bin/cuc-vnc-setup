@@ -58,7 +58,7 @@ say <<-TEXT
 TEXT
 pause
 
-if installed?("vncsever")
+if installed?("vncserver")
   say <<-TEXT
     It appears #{"you already have a VNC server installed".green}. Good job.
   TEXT
@@ -94,7 +94,7 @@ else
   pause
 end
 
-if installed?("vncvieer")
+if installed?("vncviewer")
   say <<-TEXT
     It appears #{"you already have a VNC viewer installed".green}. Good job.
   TEXT
