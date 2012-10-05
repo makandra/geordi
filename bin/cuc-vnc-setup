@@ -1,0 +1,116 @@
+#!/usr/bin/env ruby
+
+class String
+  # colorization
+  def colorize(color_code)
+    "\e[#{color_code}m#{self}\e[0m"
+  end
+
+  def red
+    colorize(31)
+  end
+
+  def green
+    colorize(32)
+  end
+
+  def yellow
+    colorize(33)
+  end
+end
+
+def pause
+  puts
+  puts "[ENTER] to continue".yellow
+  gets
+  puts
+end
+
+def say(text)
+  text =~ /^( *)./
+  level = $1 ? $1.size : 0
+  text.gsub!(/^ {#{level}}/, '')
+  puts text
+end
+
+def installed?(app)
+  `which #{app}`
+  $?.success?
+end
+
+
+`clear`
+
+say <<-TEXT
+
+  This script will help you install a VNC server and a VNC viewer. 
+  
+  With those you will be able to use #{"cuc".green} without being disturbed by 
+  focus-stealing selenium windows.
+
+  All windows will insteads open inside a VNC session. You can still inspect 
+  everything by using the #{"cuc-show".green} command.
+TEXT
+pause
+
+say <<-TEXT
+  #{"Please open a second shell to execute any commands.".red}
+TEXT
+pause
+
+if installed?("vncsever")
+  say <<-TEXT
+    It appears #{"you already have a VNC server installed".green}. Good job.
+  TEXT
+  pause
+else
+  say <<-TEXT
+    We are going to install and configure a VNC server. 
+
+    Please run:
+    #{"sudo apt-get install vnc4server".red}
+  TEXT
+  pause
+
+  say <<-TEXT
+    We will now set a password for your VNC server. #{"Please choose a secure password.".red}
+
+    When running the #{"cuc".green} script, you will not actually need this password,
+    and there is no security risk. However if you start a vncserver without
+    #{"cuc".green}, a user with this password can connect to your machine.
+
+    Please run:
+    #{"vncserver :20".red}
+    #{"and enter a password".red}
+  TEXT
+  pause
+
+  say <<-TEXT
+    We will now stop the server again.
+
+    Please run:
+    #{"vncserver -kill :20".red}
+  TEXT
+  pause
+end
+
+if installed?("vncvieer")
+  say <<-TEXT
+    It appears #{"you already have a VNC viewer installed".green}. Good job.
+  TEXT
+  pause
+else
+  say <<-TEXT
+    We are going to install and configure a VNC viewer. 
+
+    Please run:
+    #{"sudo apt-get install xtightvncviewer".red}
+  TEXT
+  pause
+end
+
+say <<-TEXT
+  All done. #{"cuc".green} will automatically use this from now on. 
+
+  #{"Happy cuking!".green}
+TEXT
