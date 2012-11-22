@@ -10,7 +10,9 @@ catching_errors do
   
   if success
     source_path = "~/dumps/dump_for_download.dump"
-    destination_path = "#{root}/tmp/#{stage}.dump"
+    destination_directory = "#{root}/tmp"
+    system "mkdir -p #{destination_directory}" # Ensure the destination directory exists
+    destination_path = "#{destination_directory}/#{stage}.dump"
 
     puts "Downloading dump_for_download..."
     system "scp #{user}@#{server}:#{source_path} #{destination_path}"
