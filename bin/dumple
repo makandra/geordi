@@ -63,7 +63,7 @@ begin
   puts
   puts "Dumping database for \"#{environment}\" environment ..."
 
-  host = config[:host] || 'localhost'
+  host = config['host'] || 'localhost'
 
   system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host}"
   system "chmod 600 #{dump_path}"
