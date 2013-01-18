@@ -2,16 +2,28 @@
 
 require 'fileutils'
 
-Dir["config/deploy/*.rb"].map { |f| File.basename(f, ".rb") }.each do |stage|
 
-  puts "Deploying to #{stage}"
+targets = Dir["config/deploy/*.rb"].map { |f| File.basename(f, ".rb") }
+
+if targets.empty?
+  targets = [nil]
+end
+
+targets.each do |stage|
+
+  puts "Deploying to #{stage ? stage : 'default target'}"
   puts "*" * 80
 
-  exit_code = system("bundle", "exec", "cap", stage, *ARGV)
+  if stage
+    exit_code = system("bundle", "exec", "cap", stage, *ARGV)
+  else
+    exit_code = system("bundle", "exec", "cap", *ARGV)
+  end
   unless exit_code
     puts "*" * 80
     puts "Capistrano failed. Have a look!"
     exit(1)
   end
 
+  puts
 end
