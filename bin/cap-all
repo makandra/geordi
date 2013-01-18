@@ -1,0 +1,17 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+
+Dir["config/deploy/*.rb"].map { |f| File.basename(f, ".rb") }.each do |stage|
+
+  puts "Deploying to #{stage}"
+  puts "*" * 80
+
+  exit_code = system("bundle", "exec", "cap", stage, *ARGV)
+  unless exit_code
+    puts "*" * 80
+    puts "Capistrano failed. Have a look!"
+    exit(1)
+  end
+
+end
