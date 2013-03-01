@@ -1,17 +1,8 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + "/../lib/geordi"
-include Geordi
+require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
+include Geordi::Capistrano
 
 catching_errors do
-  retrieve_data!
-  no_bash         = ARGV.delete('--no-bash')
-  remote_command  = ARGV.join(' ').strip
-  
-  ssh = %(ssh #{user}@#{server})
-
-  commands = [ "cd #{path}" ]
-  commands << remote_command unless remote_command.empty?
-  commands << "bash --login" unless no_bash
-  
-  exec ssh + %( -t "#{commands.join(' && ')}")
+  self.stage = ARGV.shift
+  shell_for(ARGV)
 end

@@ -1,13 +1,12 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + "/../lib/geordi"
-include Geordi
+require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
+include Geordi::Capistrano
 
 catching_errors do
-  retrieve_data!
-
-  if File.exists? "#{root}/script/console" # => Rails 2
-    system "shell-for #{stage} --no-bash script/console #{env}"
+  self.stage = ARGV.shift
+  if File.exists? "#{config.root}/script/console" # => Rails 2
+    shell_for("script/console #{config.env}")
   else
-    system "shell-for #{stage} --no-bash bundle exec rails console #{env}"
+    shell_for("bundle exec rails console #{config.env}")
   end
 end

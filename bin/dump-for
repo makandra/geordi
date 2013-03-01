@@ -1,29 +1,29 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + "/../lib/geordi"
-include Geordi
+require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
+require File.dirname(__FILE__) + "/../lib/geordi/dump_loader"
+include Geordi::Capistrano
 
 catching_errors do
-  retrieve_data!
+  self.stage = ARGV.shift
   
-  command = %(ssh #{user}@#{server} -t "cd #{path} && dumple #{env} --for_download")
-  success = system command
+  success = shell_for("dumple #{config.env} --for_download", :exec => false)
   
   if success
     source_path = "~/dumps/dump_for_download.dump"
-    destination_directory = "#{root}/tmp"
+    destination_directory = "#{config.root}/tmp"
     system "mkdir -p #{destination_directory}" # Ensure the destination directory exists
     destination_path = "#{destination_directory}/#{stage}.dump"
 
     puts "Downloading dump_for_download..."
-    system "scp #{user}@#{server}:#{source_path} #{destination_path}"
+    system "scp #{config.user}@#{config.server}:#{source_path} #{destination_path}"
     puts
-    puts "Dumped the #{stage.upcase} database to: #{File.basename root}/tmp/#{stage}.dump"
+    puts "Dumped the #{stage.upcase} database to: #{File.basename config.root}/tmp/#{stage}.dump"
 
     # source dump if option was given
     if ARGV.include?("-s")
       puts "Sourcing dump into development database..."
-      puts `load-dump #{destination_path}`
-      if $?.to_i == 0
+      success = DumpLoader.new([destination_path]).execute
+      if success
         puts "Your database is now sourced with a fresh #{stage} dump."
       else
         $stderr.puts "Could not source the downloaded #{stage} dump."
