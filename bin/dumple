@@ -65,7 +65,15 @@ begin
 
   host = config['host'] || 'localhost'
 
-  system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host}"
+  case config['adapter']
+  when /mysql/
+    system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host}"
+  when /postgres/
+    system "PGPASSWORD=\"#{config['password']}\" pg_dump -U\"#{config['username']}\" #{config['database']} -Fc -f #{dump_path} -h#{host}"
+  else
+    raise "Adapter \"#{config['adapter']} is not supported"
+  end
+
   system "chmod 600 #{dump_path}"
 
   dump_size_kb = (File.size(dump_path) / 1024).round
