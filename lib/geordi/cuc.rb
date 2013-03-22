@@ -38,7 +38,7 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            puts "VNC viewer not found. Install it using cuc-setup-vnc."
+            puts "VNC viewer not found. Install it using cuc-vnc-setup."
           else
             puts "VNC viewer could not be opened:"
             puts error
