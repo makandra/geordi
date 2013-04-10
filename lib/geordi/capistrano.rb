@@ -41,6 +41,7 @@ module Geordi
 
       def load_capistrano_config
         config = ::Capistrano::Configuration.new
+        config.load('deploy')
         config.load('config/deploy')
         if @stage and @stage != ''
           config.stage = @stage
