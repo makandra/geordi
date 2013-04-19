@@ -1,0 +1,76 @@
+#!/usr/bin/env ruby
+
+# pngcrush -rem allb -reduce -brute original.png optimized.png
+# pngcrush -d target-dir/ *.png
+#
+# -rem allb — remove all extraneous data (Except transparency and gamma; to remove everything except transparency, try -rem alla)
+# -reduce — eliminate unused colors and reduce bit-depth (If possible)
+#
+# -brute — attempt all optimization methods (Requires MUCH MORE processing time and may not improve optimization by much)
+#
+# original.png — the name of the original (unoptimized) PNG file
+# optimized.png — the name of the new, optimized PNG file
+# -d target-dir/  — bulk convert into this directory "target-dir"
+#
+# -rem cHRM -rem sRGB -rem gAMA -rem ICC — remove color profiles by name (shortcut -rem alla)
+#
+# An article explaining why removing gamma correction
+# http://hsivonen.iki.fi/png-gamma/
+
+def indented_puts(str="")
+  puts "  #{str}"
+end
+
+def print_manual
+  script_name = "optimize-png"
+
+  indented_puts
+  indented_puts script_name
+  indented_puts "=" *script_name.size
+  indented_puts "- May reduce PNG file size lossless"
+  indented_puts "- Removes color profiles: cHRM, sRGB, gAMA, ICC, etc."
+  indented_puts "- Eliminates unused colors and reduce bit-depth (If possible)"
+  indented_puts
+  indented_puts "Batch optimize all *.png in current directory:"
+  indented_puts "  #{script_name} output_directory"
+  indented_puts
+  indented_puts "Optimize single file:"
+  indented_puts "  #{script_name} input.png output.png"
+  indented_puts
+end
+
+def optimization_default_args
+  args = ""
+  args << "-rem alla " # remove everything except transparency
+  args << "-rem text " # remove text chunks
+  args << "-reduce " # eliminate unused colors and reduce bit-depth (If possible)
+  args
+end
+
+def batch_optimize(script_args)
+  output_directory = script_args[0]
+  match_pattern = "*.*" # be aware of case sensitivty: *.png wouldn't match IMAGE.PNG # pngcrush does nothing with other files than png
+  exec "pngcrush -d #{output_directory} #{optimization_default_args} #{match_pattern}"
+end
+
+def single_file_optimize(script_args)
+  input_file = script_args[0]
+  output_file = script_args[1]
+  exec "pngcrush #{optimization_default_args} #{input_file} #{output_file}"
+end
+
+def main
+  if ARGV.size == 1
+    batch_optimize(ARGV)
+  elsif ARGV.size == 2
+    single_file_optimize(ARGV)
+  else
+    print_manual
+  end
+end
+
+main
+
+
+
+
