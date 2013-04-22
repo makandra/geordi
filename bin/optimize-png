@@ -1,5 +1,4 @@
 #!/usr/bin/env ruby
-require "ruby-debug"
 require 'fileutils'
 
 # pngcrush -rem allb -reduce -brute original.png optimized.png
@@ -38,8 +37,11 @@ def print_manual
   indented_puts "- Eliminates unused colors and reduce bit-depth (If possible)"
   indented_puts "- May reduce PNG file size lossless"
   indented_puts
-  indented_puts "Batch optimize all *.png in current directory:"
+  indented_puts "Batch-optimize all *.png in a directory:"
   indented_puts "  #{script_name} directory"
+  indented_puts
+  indented_puts "Batch-optimize the current directory:"
+  indented_puts "  #{script_name} ."
   indented_puts
   indented_puts "Optimize single file:"
   indented_puts "  #{script_name} input.png"
@@ -91,16 +93,21 @@ def batch_optimize_inplace(path)
 end
 
 def main
-  if ARGV.size == 1
+  if `which pngcrush`.strip == ""
+    indented_puts
+    indented_puts "You have to install pngcrush first: sudo apt-get install pngcrush"
+    indented_puts
+  elsif ARGV.size == 1
     path = ARGV[0]
     if File.directory?(path)
       batch_optimize_inplace(path)
     elsif File.file?(path)
       optimize_inplace(path)
+    else
+      print_manual
+      indented_puts "*** Error: '#{path}' is neither a directory nor a file ***"
+      indented_puts
     end
-    print_manual
-    indented_puts "*** Error: '#{path}' is neither a directory nor a file ***"
-    indented_puts
   else
     print_manual
   end
