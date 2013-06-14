@@ -24,13 +24,14 @@ class DumpLoader
   end
 
   def source_dump(dump)
-    require 'pty'
+    require 'open3'
     output_buffer = StringIO.new
-    PTY.spawn(db_console_command) do |output, input, pid|
-      input.write("source #{dump};\nexit;\n")
-      output_buffer.write output.read
+    Open3.popen3(db_console_command) do |stdin, stdout, stderr|
+      stdin.puts("source #{dump};")
+      stdin.close
+      output_buffer.write stdout.read
+      output_buffer.write stderr.read
     end
-
     output_and_errors = output_buffer.string.split("\n")
     output = output_and_errors.reject{ |line| line =~ /^ERROR / }
     errors = output_and_errors.select{ |line| line =~ /^ERROR / }
