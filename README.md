@@ -156,16 +156,6 @@ Runs the given rake task in each Rails environment in `development`, `test`, `cu
 More information at http://makandracards.com/makandra/737-run-a-rake-task-in-all-environments
 
 
-remotify-local-branch
----------------------
-
-Pushes the given branch (or current branch if no argument given) to the remote `origin` and tracks it:
-
-    remotify-local-branch <optional-branch-name>
-
-More information at http://makandracards.com/makandra/520-create-a-remote-branch-in-git
-
-
 remove-executable-flags
 -----------------------
 
