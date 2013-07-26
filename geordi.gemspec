@@ -11,6 +11,7 @@ Gem::Specification.new do |s|
   s.homepage    = "http://makandra.com"
   s.summary     = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
   s.description = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
+  s.license     = 'MIT'
 
   s.rubyforge_project = "geordi"
 
