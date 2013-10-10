@@ -1,5 +1,5 @@
 require "rubygems"
-require File.join(File.dirname(__FILE__), 'setup_firefox_for_selenium')
+require File.join(File.dirname(__FILE__), 'firefox_for_selenium')
 require 'tempfile'
 
 module Geordi
@@ -82,7 +82,7 @@ module Geordi
 
 
     def use_firefox_for_selenium
-      "PATH=#{Geordi::SetupFirefoxForSelenium::FIREFOX_FOR_SELENIUM_PATH}:$PATH"
+      "PATH=#{Geordi::FirefoxForSelenium.path_from_config}:$PATH"
     end
 
 
