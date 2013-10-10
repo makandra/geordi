@@ -82,7 +82,10 @@ module Geordi
 
 
     def use_firefox_for_selenium
-      "PATH=#{Geordi::FirefoxForSelenium.path_from_config}:$PATH"
+      path = Geordi::FirefoxForSelenium.path_from_config
+      if path
+        "PATH=#{Geordi::FirefoxForSelenium.path_from_config}:$PATH"
+      end
     end
 
 

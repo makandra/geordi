@@ -28,15 +28,21 @@ module Geordi
     class PathFromConfig
 
       def run
-        get_version
-        validate_install
-        path
+        unless system_firefox
+          get_version
+          validate_install
+          path
+        end
       end
 
       private
 
       def path
         FirefoxForSelenium.path(@version)
+      end
+
+      def system_firefox
+        version_from_cuc_file == "system"
       end
 
       def get_version
@@ -56,8 +62,11 @@ module Geordi
           puts "Install it with"
           puts "  setup-firefox-for-selenium #{@version}"
           puts
-          puts "Press ENTER to continue anyway or press CTRL+C to abort."
-          gets
+          puts "If you want to use your system firefox and not see this message, add"
+          puts "a \".firefox-version\" file with the content \"system\"."
+          puts
+          puts "Press ENTER to continue or press CTRL+C to abort."
+          $stdin.gets
         end
       end
 
