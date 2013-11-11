@@ -24,6 +24,10 @@ module Geordi
       def servers
         @capistrano_config.find_servers(:roles => [:app])
       end
+      
+      def primary_server
+        @capistrano_config.find_servers(:roles => [:app], :only => { :primary => true }).first
+      end
 
       def path
         @capistrano_config.fetch(:deploy_to) + '/current'
@@ -85,29 +89,22 @@ module Geordi
         config.servers.each do |server|
           menu.choice(server) { server }
         end
+
+        # Default to the first listed server (by convention, the first server
+        # in the deploy files is the primary one).
         menu.default = '1'
         menu.prompt = 'Connect to [1]: '
       end
     end
 
-    def shell_for(*args)
-      options = {}
-      if args.last.is_a?(Hash)
-        options = args.pop
-      end
-
-      remote_command  = args.join(' ').strip
+    def shell_for(command, options = {})
+      server = options[:select_server] ? select_server : config.primary_server
       
-      login = %(#{config.user}@#{select_server})
-
-      commands = [ "cd #{config.path}" ]
-      if remote_command == ''
-        commands << config.shell
-      else
-        commands << %{#{config.shell} -c '#{remote_command}'}
-      end
+      remote_commands = [ 'cd', config.path ]
+      remote_commands << '&&' << config.shell
+      remote_commands << "-c '#{command}'" if command
       
-      args = ['ssh', login, '-t', commands.join(' && ')]
+      args = [ 'ssh', %(#{config.user}@#{server}), '-t', remote_commands.join(' ') ]
       if options.fetch(:exec, true)
         exec(*args)
       else

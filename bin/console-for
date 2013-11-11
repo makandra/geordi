@@ -4,9 +4,11 @@ include Geordi::Capistrano
 
 catching_errors do
   self.stage = ARGV.shift
+  options = { :select_server => true }
+
   if File.exists? "#{config.root}/script/console" # => Rails 2
-    shell_for("script/console #{config.env}")
+    shell_for("script/console #{config.env}", options)
   else
-    shell_for("bundle exec rails console #{config.env}")
+    shell_for("bundle exec rails console #{config.env}", options)
   end
 end

@@ -4,5 +4,7 @@ include Geordi::Capistrano
 
 catching_errors do
   self.stage = ARGV.shift
-  shell_for(ARGV)
+  command = ARGV.any? ? ARGV.join(' ') : nil
+
+  shell_for(command, :select_server => true)
 end
