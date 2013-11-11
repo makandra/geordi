@@ -2,6 +2,7 @@ require 'rubygems'
 require 'bundler/setup'
 require 'capistrano'
 require 'singleton'
+require 'highline/import'
 
 module Geordi
   module Capistrano
@@ -20,8 +21,8 @@ module Geordi
         @capistrano_config.fetch(:user)
       end
 
-      def server
-        @capistrano_config.find_servers(:roles => [:app]).first
+      def servers
+        @capistrano_config.find_servers(:roles => [:app])
       end
 
       def path
@@ -78,6 +79,16 @@ module Geordi
         exit 1
       end
     end
+    
+    def select_server
+      choose do |menu|
+        config.servers.each do |server|
+          menu.choice(server) { server }
+        end
+        menu.default = '1'
+        menu.prompt = 'Connect to [1]: '
+      end
+    end
 
     def shell_for(*args)
       options = {}
@@ -87,7 +98,7 @@ module Geordi
 
       remote_command  = args.join(' ').strip
       
-      login = %(#{config.user}@#{config.server})
+      login = %(#{config.user}@#{select_server})
 
       commands = [ "cd #{config.path}" ]
       if remote_command == ''
