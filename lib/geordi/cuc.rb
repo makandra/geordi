@@ -53,7 +53,7 @@ module Geordi
       end
     end
 
-    private
+    #private
 
     attr_writer :argv
     def argv
@@ -61,8 +61,28 @@ module Geordi
     end
 
     def serial_execution_command
-      format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
-      [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(argv)].flatten.compact.join(" ")
+      if argv.include?('--format' || '-f')
+        format_arg = argv.split(' ')[argv.split(' ').index('--format' || '-f') + 1]
+        format_args = ['--format', format_arg]
+      else
+        format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
+      end
+      [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(argv.split(' ').last)].flatten.compact.join(" ")
+    end
+
+
+    def get_execution_options
+      format_args = []
+      unless argv.empty?
+        options = argv.split(' ')
+        options.each do |option|
+          if option.start_with?('--' || '-')
+            format_args << option
+            format_args << value
+          end
+        end
+      end
+      format_args
     end
 
 
@@ -84,7 +104,7 @@ module Geordi
     def use_firefox_for_selenium
       path = Geordi::FirefoxForSelenium.path_from_config
       if path
-        "PATH=#{Geordi::FirefoxForSelenium.path_from_config}:$PATH"
+        "PATH=#{path}:$PATH"
       end
     end
 
