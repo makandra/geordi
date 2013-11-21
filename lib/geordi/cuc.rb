@@ -61,10 +61,12 @@ module Geordi
     end
 
     def serial_execution_command
-      format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
+      format_args = []
+      unless argv.include?('--format') || argv.include?('-f')
+        format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
+      end
       [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(argv)].flatten.compact.join(" ")
     end
-
 
     def parallel_execution_command
       puts "Using parallel_tests ...\n\n"
@@ -84,7 +86,7 @@ module Geordi
     def use_firefox_for_selenium
       path = Geordi::FirefoxForSelenium.path_from_config
       if path
-        "PATH=#{Geordi::FirefoxForSelenium.path_from_config}:$PATH"
+        "PATH=#{path}:$PATH"
       end
     end
 
