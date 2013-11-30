@@ -1,7 +1,0 @@
-#!/usr/bin/env ruby
-
-# Delete any state from previous Cucumber failures
-File.delete 'rerun.txt' if File.exists? 'rerun.txt'
-
-# Run rspec and cucumber
-exec "rs && cuc"
