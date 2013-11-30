@@ -18,11 +18,16 @@ module Geordi
       Rake::Task['geordi:update'].invoke
     end
   
-    desc 'dev_server', 'Start a development server'
-    option :port, :type => :numeric, :default => 3000
-    def dev_server
-      Rake::Task['geordi:dev_server'].invoke
+    desc 'migrate', 'Migrate all databases'
+    def migrate
+      Rake::Task['geordi:migrate'].invoke
     end
+  
+    # desc 'dev_server', 'Start a development server'
+    # option :port, :type => :numeric, :default => 3000
+    # def dev_server
+    #   Rake::Task['geordi:dev_server'].invoke
+    # end
 
   end
 end

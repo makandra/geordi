@@ -71,11 +71,6 @@ namespace :geordi do
       puts 'No Cucumber here (directory features/ does not exist).'
     end
   end
-  
-
-  # ====================
-  # = Supporting tasks =
-  # ====================
 
   desc 'Git pull'
   task :pull do
