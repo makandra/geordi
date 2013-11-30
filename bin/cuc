@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 require File.join(File.dirname(__FILE__), '../lib/geordi/cuc')
 
-Geordi::Cucumber.new.run
+Geordi::Cucumber.new.run(ARGV)

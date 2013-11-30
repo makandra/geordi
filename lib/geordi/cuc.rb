@@ -10,7 +10,9 @@ module Geordi
     VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
-    def run
+    def run(argv)
+      self.argv = argv
+
       4.times { puts }
       puts "Running Cucumber tests..."
       puts "========================="
@@ -55,10 +57,7 @@ module Geordi
 
     private
 
-    attr_writer :argv
-    def argv
-      @argv ||= ARGV
-    end
+    attr_accessor :argv
 
     def serial_execution_command
       format_args = []
