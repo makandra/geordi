@@ -112,7 +112,7 @@ namespace :geordi do
       real = sample.gsub(/password:.*$/, "password: #{db_password}")
       File.open(file_task.name, 'w') { |f| f.write(real) }
       
-      success "Successfully created #{file_task.name}."
+      puts "Created #{file_task.name}."
     end
   end
   
