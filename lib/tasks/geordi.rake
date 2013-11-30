@@ -4,20 +4,57 @@ require 'bundler'
 namespace :geordi do
   
   desc 'Setup a project for the first time'
-  task :setup => [:create_databases, :update] do
+  task :setup => [:create_databases, :migrate] do
     success 'Successfully set up the project.'
   end
   
   desc 'Update a project'
-  task :update do
+  task :update => [:pull, :migrate] do
+    success 'Successfully updated the project.'
+  end
+  
+  desc 'Run all tests'
+  task :tests => [:bundle] do
+    commands = []
+    commands << 'rs' if File.directory?('spec')
+    commands << 'cuc' if File.directory?('features')
+    commands << 'rake' if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
     
+    if commands.any?
+      command = commands.join ' && '
+    
+      announce "Running tests: #{command}"
+      system!(command)
+      success 'Successfully ran tests.'
+    else
+      puts "Nothing to do."
+    end
+  end
+  
+  desc 'Git pull'
+  task :pull do
+    announce 'Updating repository (git pull)'
+    system! 'git pull'
+  end
+  
+  desc 'Migrate'
+  task :migrate => [:bundle] do
+    if File.directory?('db/migrate')
+      announce 'Migrating'
+      
+      if file_containing?('Gemfile', /parallel_tests/)
+        system! 'b rake db:migrate parallel:prepare'
+      else
+        system! 'power-rake db:migrate'
+      end
+    end
   end
   
   desc 'Create databases'
   task :create_databases => ['config/database.yml', :bundle] do  
     if File.exists?('config/database.yml')
       announce 'Creating databases'
-      Bundler.clean_system 'bundle exec rake db:create:all'
+      system! 'bundle exec rake db:create:all'
     end
   end
 
@@ -27,7 +64,7 @@ namespace :geordi do
 
     if File.exists?(sample_yml)
       announce 'Creating ' + file_task.name
-      print 'Please enter your DB password now: '
+      print 'Please enter your DB password: '
       db_password = STDIN.gets.strip
 
       sample = File.read(sample_yml)
@@ -40,30 +77,39 @@ namespace :geordi do
   
   desc 'Bundle install'
   task :bundle do
-    if File.exists?('Gemfile') and !quiet('bundle check')
-      announce 'Bundle install'
-      system 'bundle install'
+    if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
+      announce 'Bundling'
+      system! 'bundle install'
     end
   end
   
   private
   
-  def quiet(command)
-    system("#{command} &>/dev/null")
+  def system!(command)
+    # we cannot run Rake tasks natively (after all, we're inside a Rake
+    # task), because we would probably not be using the version specified in
+    # the Gemfile, and we don't want to add Geordi to a Gemfile either.
+    Bundler.clean_system(command) or fail("An error occurred.")
   end
-  
-  def rvm_installed?
-    quiet('rvm -v')
-  end
-  
+    
   def announce(text)
     message = "\n# #{text}"
-    puts "\e[4;34m#{message}\e[0m"
+    puts "\e[4;34m#{message}\e[0m" # blue underline
+  end
+  
+  def fail(text)
+    message = "\n#{text}"
+    puts "\e[31m#{message}\e[0m" # red
+    exit(1)
   end
   
   def success(text)
     message = "\n#{text}"
-    puts "\e[32m#{message}\e[0m"
+    puts "\e[32m#{message}\e[0m" # green
+  end
+  
+  def file_containing?(file, regex)
+    File.exists?(file) and File.read(file).grep(regex).any?
   end
 
 end
