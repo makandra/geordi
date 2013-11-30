@@ -31,7 +31,7 @@ namespace :geordi do
   end
   
   desc 'Run RSpec'
-  task :spec, :spec_args => [:bundle] do |task, args|
+  task :spec, [:spec_args] => [:bundle] do |task, args|
     if File.directory?('spec')
       announce 'Running specs'
       spec_args = args[:spec_args] || []
