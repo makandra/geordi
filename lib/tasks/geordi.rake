@@ -1,5 +1,6 @@
 require 'rake'
 require 'bundler'
+require File.expand_path('../../geordi/cuc', __FILE__)
 
 namespace :geordi do
   
@@ -13,20 +14,17 @@ namespace :geordi do
     success 'Successfully updated the project.'
   end
   
-  desc 'Run all tests (rs, cuc, rake - only if present in project)'
-  task :tests => [:bundle, :spec] do
-    commands = []
-    commands << 'cuc' if File.directory?('features')
-    commands << 'rake' if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
-    
-    if commands.any?
-      command = commands.join ' && '
-    
-      announce "Running tests: #{command}"
-      system!(command)
+  desc 'Run all tests (rs, cuc, rake)'
+  task :tests => [:bundle, :spec, :features, :rake_test]
+  
+  desc 'Run tests with `rake`'
+  task :rake_test => [:bundle] do
+    if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
+      announce 'Running tests (rake)'
+      system! 'rake'
       success 'Successfully ran tests.'
     else
-      puts "Nothing to do."
+      puts 'No tests to run with `rake` here (default Rake task for tests does not exist).'
     end
   end
   
@@ -64,6 +62,21 @@ namespace :geordi do
     end
   end
   
+  desc 'Run Cucumber features'
+  task :features, [:feature_args] => [:bundle] do |task, args|
+    if File.directory?('features')
+      announce 'Running features'
+      Geordi::Cucumber.new.run(args[:feature_args] || [])
+    else
+      puts 'No Cucumber here (directory features/ does not exist).'
+    end
+  end
+  
+
+  # ====================
+  # = Supporting tasks =
+  # ====================
+
   desc 'Git pull'
   task :pull do
     announce 'Updating repository (git pull)'
@@ -123,26 +136,6 @@ namespace :geordi do
     # task), because we would probably not be using the version specified in
     # the Gemfile, and we don't want to add Geordi to a Gemfile either.
     Bundler.clean_system(*commands) or fail("Something went wrong.")
-  end
-    
-  def announce(text)
-    message = "\n# #{text}"
-    puts "\e[4;34m#{message}\e[0m" # blue underline
-  end
-  
-  def note(text)
-    puts '> ' + text
-  end
-  
-  def fail(text)
-    message = "\n#{text}"
-    puts "\e[31m#{message}\e[0m" # red
-    exit(1)
-  end
-  
-  def success(text)
-    message = "\n#{text}"
-    puts "\e[32m#{message}\e[0m" # green
   end
   
   def file_containing?(file, regex)

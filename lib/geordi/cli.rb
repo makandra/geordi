@@ -1,7 +1,7 @@
 require 'thor'
 require 'rake'
-require 'geordi/cli_test'
 load File.expand_path('../../tasks/geordi.rake', __FILE__)
+require 'geordi/cli_test'
 
 module Geordi
   class CLI < Thor
@@ -21,7 +21,7 @@ module Geordi
     desc 'dev_server', 'Start a development server'
     option :port, :type => :numeric, :default => 3000
     def dev_server
-    
+      Rake::Task['geordi:dev_server'].invoke
     end
 
   end
