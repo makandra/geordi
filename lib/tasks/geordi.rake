@@ -134,7 +134,7 @@ namespace :geordi do
   end
   
   def file_containing?(file, regex)
-    File.exists?(file) and File.read(file).grep(regex).any?
+    File.exists?(file) and File.read(file).scan(regex).any?
   end
 
 end
