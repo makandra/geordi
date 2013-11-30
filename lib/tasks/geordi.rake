@@ -31,14 +31,14 @@ namespace :geordi do
   end
   
   desc 'Run RSpec'
-  task :spec, :spec_args do |task, args|
+  task :spec, :spec_args => [:bundle] do |task, args|
     if File.directory?('spec')
       announce 'Running specs'
       spec_args = args[:spec_args] || []
 
       if file_containing?('Gemfile', /parallel_tests/) and spec_args.empty?
         note 'All specs at once (using parallel_tests)'
-        system! 'b rake parallel:spec'
+        system! 'bundle exec rake parallel:spec'
 
       else
         # tell which specs will be run
@@ -49,7 +49,7 @@ namespace :geordi do
           note 'Only: ' + spec_args.join(', ')
         end
         
-        command = ['b']
+        command = ['bundle exec']
         # differentiate RSpec 1/2
         command << (File.exists?('script/spec') ? 'spec -c' : 'rspec')
         command << '-r rspec_spinner -f RspecSpinner::Bar' if file_containing?('Gemfile', /rspec_spinner/)
@@ -76,7 +76,7 @@ namespace :geordi do
       announce 'Migrating'
       
       if file_containing?('Gemfile', /parallel_tests/)
-        system! 'b rake db:migrate parallel:prepare'
+        system! 'bundle exec rake db:migrate parallel:prepare'
       else
         system! 'power-rake db:migrate'
       end
