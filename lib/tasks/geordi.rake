@@ -13,7 +13,7 @@ namespace :geordi do
     success 'Successfully updated the project.'
   end
   
-  desc 'Run all tests'
+  desc 'Run all tests (rs, cuc, rake - only if present in project)'
   task :tests => [:bundle] do
     commands = []
     commands << 'rs' if File.directory?('spec')
@@ -50,7 +50,7 @@ namespace :geordi do
     end
   end
   
-  desc 'Create databases'
+  desc 'Create databases (only if a database.yml exists)'
   task :create_databases => ['config/database.yml', :bundle] do  
     if File.exists?('config/database.yml')
       announce 'Creating databases'
@@ -58,7 +58,7 @@ namespace :geordi do
     end
   end
 
-  desc 'Create database.yml'
+  desc 'Create database.yml (only if missing and .sample.yml exists)'
   file 'config/database.yml' do |file_task|
     sample_yml = 'config/database.sample.yml'
 
@@ -75,7 +75,7 @@ namespace :geordi do
     end
   end
   
-  desc 'Bundle install'
+  desc 'Bundle install (only if needed)'
   task :bundle do
     if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
       announce 'Bundling'
