@@ -19,6 +19,11 @@ module Geordi
     def tests
       Rake::Task['geordi:tests'].invoke
     end
+    
+    desc 'spec', 'Run (R)Spec'
+    def spec(*args)
+      Rake::Task['geordi:spec'].invoke(args)
+    end
   
     desc 'dev_server', 'Start a development server'
     option :port, :type => :numeric, :default => 3000

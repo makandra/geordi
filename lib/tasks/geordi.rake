@@ -14,9 +14,8 @@ namespace :geordi do
   end
   
   desc 'Run all tests (rs, cuc, rake - only if present in project)'
-  task :tests => [:bundle] do
+  task :tests => [:bundle, :spec] do
     commands = []
-    commands << 'rs' if File.directory?('spec')
     commands << 'cuc' if File.directory?('features')
     commands << 'rake' if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
     
@@ -28,6 +27,40 @@ namespace :geordi do
       success 'Successfully ran tests.'
     else
       puts "Nothing to do."
+    end
+  end
+  
+  desc 'Run RSpec'
+  task :spec, :spec_args do |task, args|
+    if File.directory?('spec')
+      announce 'Running specs'
+      spec_args = args[:spec_args] || []
+
+      if file_containing?('Gemfile', /parallel_tests/) and spec_args.empty?
+        note 'All specs at once (using parallel_tests)'
+        system! 'b rake parallel:spec'
+
+      else
+        # tell which specs will be run
+        if spec_args.empty?
+          spec_args << 'spec/'
+          note 'All specs in spec/'
+        else
+          note 'Only: ' + spec_args.join(', ')
+        end
+        
+        command = ['b']
+        # differentiate RSpec 1/2
+        command << (File.exists?('script/spec') ? 'spec -c' : 'rspec')
+        command << '-r rspec_spinner -f RspecSpinner::Bar' if file_containing?('Gemfile', /rspec_spinner/)
+        command << spec_args.join(' ')
+        
+        puts
+        system! command.join(' ')
+      end
+
+    else
+      puts 'No RSpec here (directory spec/ does not exist).'
     end
   end
   
@@ -85,16 +118,20 @@ namespace :geordi do
   
   private
   
-  def system!(command)
+  def system!(*commands)
     # we cannot run Rake tasks natively (after all, we're inside a Rake
     # task), because we would probably not be using the version specified in
     # the Gemfile, and we don't want to add Geordi to a Gemfile either.
-    Bundler.clean_system(command) or fail("An error occurred.")
+    Bundler.clean_system(*commands) or fail("Something went wrong.")
   end
     
   def announce(text)
     message = "\n# #{text}"
     puts "\e[4;34m#{message}\e[0m" # blue underline
+  end
+  
+  def note(text)
+    puts '> ' + text
   end
   
   def fail(text)
