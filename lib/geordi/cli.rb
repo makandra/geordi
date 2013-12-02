@@ -9,7 +9,7 @@ module Geordi
     register(Geordi::CLITest, :test, 'test', 'Run tests')
 
     desc 'setup', 'Setup a project for the first time'
-    option :test, :type => :boolean, :aliases => '-t'
+    option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
     def setup
       Rake::Task['geordi:create_databases'].invoke
       Rake::Task['geordi:migrate'].invoke
@@ -19,7 +19,7 @@ module Geordi
     end
   
     desc 'update', 'Bring a project up to date'
-    option :test, :type => :boolean, :aliases => '-t'
+    option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
     def update
       Rake::Task['geordi:pull'].invoke
       Rake::Task['geordi:migrate'].invoke
