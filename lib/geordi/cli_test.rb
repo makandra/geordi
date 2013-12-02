@@ -14,6 +14,8 @@ module Geordi
       Rake::Task['geordi:spec'].invoke
       Rake::Task['geordi:features'].invoke
       Rake::Task['geordi:rake_test'].invoke
+      
+      success 'Successfully ran tests.'
     end
     
     desc 'rspec', 'Run (R)Spec'

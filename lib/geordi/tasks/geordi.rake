@@ -6,57 +6,50 @@ namespace :geordi do
   
   desc 'Run tests with `rake`'
   task :rake_test => [:bundle] do
-    if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
-      announce 'Running tests (rake)'
-      system! 'rake'
-      success 'Successfully ran tests.'
-    else
-      puts 'No tests to run with `rake` here (default Rake task for tests does not exist).'
-    end
+    return unless file_containing?('Rakefile', /^task.+default.+(spec|test)/)
+
+    announce 'Running tests (rake)'
+    system! 'rake'
+    success 'Successfully ran tests.'
   end
   
   desc 'Run RSpec'
   task :spec, [:spec_args] => [:bundle] do |task, args|
-    if File.directory?('spec')
-      announce 'Running specs'
-      spec_args = args[:spec_args] || []
+    return unless File.directory?('spec')
 
-      if file_containing?('Gemfile', /parallel_tests/) and spec_args.empty?
-        note 'All specs at once (using parallel_tests)'
-        system! 'bundle exec rake parallel:spec'
+    announce 'Running specs'
+    spec_args = args[:spec_args] || []
 
-      else
-        # tell which specs will be run
-        if spec_args.empty?
-          spec_args << 'spec/'
-          note 'All specs in spec/'
-        else
-          note 'Only: ' + spec_args.join(', ')
-        end
-        
-        command = ['bundle exec']
-        # differentiate RSpec 1/2
-        command << (File.exists?('script/spec') ? 'spec -c' : 'rspec')
-        command << '-r rspec_spinner -f RspecSpinner::Bar' if file_containing?('Gemfile', /rspec_spinner/)
-        command << spec_args.join(' ')
-        
-        puts
-        system! command.join(' ')
-      end
+    if file_containing?('Gemfile', /parallel_tests/) and spec_args.empty?
+      note 'All specs at once (using parallel_tests)'
+      system! 'bundle exec rake parallel:spec'
 
     else
-      puts 'No RSpec here (directory spec/ does not exist).'
+      # tell which specs will be run
+      if spec_args.empty?
+        spec_args << 'spec/'
+        note 'All specs in spec/'
+      else
+        note 'Only: ' + spec_args.join(', ')
+      end
+      
+      command = ['bundle exec']
+      # differentiate RSpec 1/2
+      command << (File.exists?('script/spec') ? 'spec -c' : 'rspec')
+      command << '-r rspec_spinner -f RspecSpinner::Bar' if file_containing?('Gemfile', /rspec_spinner/)
+      command << spec_args.join(' ')
+      
+      puts
+      system! command.join(' ')
     end
   end
   
   desc 'Run Cucumber features'
   task :features, [:feature_args] => [:bundle] do |task, args|
-    if File.directory?('features')
-      announce 'Running features'
-      Geordi::Cucumber.new.run(args[:feature_args] || [])
-    else
-      puts 'No Cucumber here (directory features/ does not exist).'
-    end
+    return unless File.directory?('features')
+    
+    announce 'Running features'
+    Geordi::Cucumber.new.run(args[:feature_args] || [])
   end
 
   desc 'Git pull'
@@ -67,23 +60,23 @@ namespace :geordi do
   
   desc 'Migrate'
   task :migrate => [:bundle] do
-    if File.directory?('db/migrate')
-      announce 'Migrating'
-      
-      if file_containing?('Gemfile', /parallel_tests/)
-        system! 'bundle exec rake db:migrate parallel:prepare'
-      else
-        system! 'power-rake db:migrate'
-      end
+    return unless File.directory?('db/migrate')
+
+    announce 'Migrating'
+    
+    if file_containing?('Gemfile', /parallel_tests/)
+      system! 'bundle exec rake db:migrate parallel:prepare'
+    else
+      system! 'power-rake db:migrate'
     end
   end
   
   desc 'Create databases (only if a database.yml exists)'
   task :create_databases => ['config/database.yml', :bundle] do  
-    if File.exists?('config/database.yml')
-      announce 'Creating databases'
-      system! 'bundle exec rake db:create:all'
-    end
+    return unless File.exists?('config/database.yml')
+
+    announce 'Creating databases'
+    system! 'bundle exec rake db:create:all'
   end
 
   desc 'Create database.yml (only if missing and .sample.yml exists)'
