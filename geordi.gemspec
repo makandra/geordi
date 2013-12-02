@@ -24,4 +24,11 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'rake'
   
   s.add_development_dependency 'debugger'
+  
+  s.post_install_message = <<-ATTENTION
+  geordi 0.18.0 removes the following scripts: cuc, migrate-all, rs, tests
+  
+  Their functionality has moved to the geordi script. Run `geordi` and `geordi test help`
+  for further information.
+  ATTENTION
 end
