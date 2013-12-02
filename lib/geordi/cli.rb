@@ -33,11 +33,10 @@ module Geordi
       Rake::Task['geordi:migrate'].invoke
     end
   
-    # desc 'dev_server', 'Start a development server'
-    # option :port, :type => :numeric, :default => 3000
-    # def dev_server
-    #   Rake::Task['geordi:dev_server'].invoke
-    # end
+    # desc 'server', 'Start a development server'
+    # desc 'console', 'Open a console. Default: development locally, but also does the job of console-for'
+    # desc 'shell', 'shell-for'
+    # desc 'dump [--load]', 'dump locally/remote [and load it]'
 
   end
 end
