@@ -37,13 +37,33 @@ module Geordi
   
     desc 'migrate', 'Migrate all databases'
     def migrate
-      Rake::Task['geordi:migrate'].invoke
+      Rake::Task['geordi:migrate']
     end
   
-    # desc 'server [--port]', 'Start a development server'
-    # desc 'console [ENV]', 'Open a console. Default: development locally, but also does the job of console-for'
-    # desc 'shell ENV', 'shell-for'
-    # desc 'dump [--load]', 'dump locally/remote [and load it]'
+    desc 'server', 'Start a development server'
+    option :port, :aliases => '-p', :default => '3000'
+    def server
+      Rake::Task['geordi:server'].invoke(options.port)
+    end
+    
+    desc 'shell STAGE', 'Open a shell on the STAGE server'
+    option :command, :type => :string, :aliases => '-c', :desc => 'Execute COMMAND on the STAGE server'
+    def shelll(env) # 'shell' is a Thor reserved word
+      fail 'Option --command currently not supported.' if options.command
+      Rake::Task['geordi:shell'].invoke(env)
+    end    
+    
+    desc 'console [STAGE]', 'Open a console, either locally or on the STAGE server'
+    def console(env = nil)
+      Rake::Task['geordi:console'].invoke(env)
+    end
+    
+    desc 'dump [STAGE]', 'Dump the database, either locally or on the STAGE server'
+    option :load, :type => :boolean, :aliases => '-l', :desc => 'After dumping, load the dump'
+    def dump(env = nil)
+      Rake::Task['geordi:dump'].invoke(env)
+      Rake::Task['geordi:load_dump'].invoke if options.load
+    end
 
   end
 end

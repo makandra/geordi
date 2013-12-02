@@ -19,14 +19,12 @@ module Geordi
     end
     
     desc 'rspec', 'Run (R)Spec'
-    argument :command # consume the first arg, fix a Thor bug
-    def rspec(*args)
+    def rspec(command = nil, *args) # ignore the first arg, fix a Thor bug
       Rake::Task['geordi:spec'].invoke(args)
     end
     
     desc 'cucumber', 'Run Cucumber features'
-    argument :command # consume the first arg, fix a Thor bug
-    def cucumber(*args)
+    def cucumber(command = nil, *args) # ignore the first arg, fix a Thor bug
       Rake::Task['geordi:features'].invoke(args)
     end
 

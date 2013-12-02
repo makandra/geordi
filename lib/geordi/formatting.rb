@@ -7,7 +7,7 @@ def note(text)
   puts '> ' + text
 end
 
-def fail(text)
+def fail(text = 'Something went wrong')
   message = "\n#{text}"
   puts "\e[31m#{message}\e[0m" # red
   exit(1)
