@@ -1,17 +1,12 @@
 module Geordi
   class CLITest < Thor
     
-    # default_task :all
+    default_task :all
     
     package_name 'test'
     
     def self.banner(command, namespace = nil, subcommand = false)
       "#{basename} #{@package_name} #{command.usage}"
-    end
-    
-    desc "help [COMMAND]", "Describe available commands or one specific command"
-    def help(command = nil, subcommand = false)
-      "foo help"
     end
 
     desc 'all', 'Run all employed tests'
