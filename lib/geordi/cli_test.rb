@@ -1,12 +1,25 @@
 module Geordi
   class CLITest < Thor
     
-    default_task :all
+    # default_task :all
+    
+    package_name 'test'
+    
+    def self.banner(command, namespace = nil, subcommand = false)
+      "#{basename} #{@package_name} #{command.usage}"
+    end
+    
+    desc "help [COMMAND]", "Describe available commands or one specific command"
+    def help(command = nil, subcommand = false)
+      "foo help"
+    end
 
     desc 'all', 'Run all employed tests'
     def all
       args.shift # remove the 'all' command itself from its args
-      Rake::Task['geordi:tests'].invoke
+      Rake::Task['geordi:spec'].invoke
+      Rake::Task['geordi:features'].invoke
+      Rake::Task['geordi:rake_test'].invoke
     end
 
     desc 'rspec', 'Run (R)Spec'

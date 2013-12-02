@@ -1,21 +1,8 @@
 require 'rake'
 require 'bundler'
-require File.expand_path('../../geordi/cuc', __FILE__)
+require File.expand_path('../../cuc', __FILE__)
 
 namespace :geordi do
-  
-  desc 'Setup a project for the first time'
-  task :setup => [:create_databases, :migrate] do
-    success 'Successfully set up the project.'
-  end
-  
-  desc 'Update a project'
-  task :update => [:pull, :migrate] do
-    success 'Successfully updated the project.'
-  end
-  
-  desc 'Run all tests (rs, cuc, rake)'
-  task :tests => [:bundle, :spec, :features, :rake_test]
   
   desc 'Run tests with `rake`'
   task :rake_test => [:bundle] do
