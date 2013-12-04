@@ -14,7 +14,7 @@ namespace :geordi do
   
   desc 'Run RSpec'
   task :spec, [:spec_args] => [:bundle] do |task, args|
-    return unless File.directory?('spec')
+    next unless File.directory?('spec')
 
     announce 'Running specs'
     spec_args = args[:spec_args] || []
@@ -53,7 +53,7 @@ namespace :geordi do
   
   desc 'Open a shell on the server'
   task :shell, [:stage] => [:bundle] do |task, args|
-    return unless File.directory?('config/environment')
+    next unless File.directory?('config/environment')
     
     announce 'Opening a shell for ' + args[:stage]
 
@@ -67,7 +67,7 @@ namespace :geordi do
   
   desc 'Open a console, either locally or on the server'
   task :console, [:stage] => [:bundle] do |task, args|
-    return unless File.directory?('config/environment')
+    next unless File.directory?('config/environment')
 
     announce 'Opening a console for ' + args[:stage]
 
@@ -91,7 +91,7 @@ namespace :geordi do
   
   desc 'Start a development server'
   task :server, [:port] => [:bundle] do |task, args|
-    return unless File.directory?('public') # there will be no server to start
+    next unless File.directory?('public') # there will be no server to start
 
     command = if File.exists?('script/server')
       'script/server' # Rails 2
@@ -148,7 +148,7 @@ namespace :geordi do
   
   desc 'Migrate'
   task :migrate => [:bundle] do
-    return unless File.directory?('db/migrate')
+    next unless File.directory?('db/migrate')
 
     announce 'Migrating'
     
@@ -161,7 +161,7 @@ namespace :geordi do
   
   desc 'Create databases (only if a database.yml exists)'
   task :create_databases => ['config/database.yml', :bundle] do  
-    return unless File.exists?('config/database.yml')
+    next unless File.exists?('config/database.yml')
 
     announce 'Creating databases'
     system! 'bundle exec rake db:create:all'
