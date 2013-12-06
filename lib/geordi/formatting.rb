@@ -14,6 +14,6 @@ def fail(text = 'Something went wrong')
 end
 
 def success(text)
-  message = "\n#{text}"
+  message = "\n> #{text}"
   puts "\e[32m#{message}\e[0m" # green
 end
