@@ -20,7 +20,7 @@ module Geordi
     def setup
       Rake::Task['geordi:create_databases'].invoke
       Rake::Task['geordi:migrate'].invoke
-      invoke :test if options.test
+      invoke('test', 'all', [], []) if options.test # weird API
       
       success 'Successfully set up the project.'
     end
@@ -30,7 +30,7 @@ module Geordi
     def update
       Rake::Task['geordi:pull'].invoke
       Rake::Task['geordi:migrate'].invoke
-      invoke :test if options.test
+      invoke('test', 'all', [], []) if options.test # weird API
       
       success 'Successfully updated the project.'
     end
