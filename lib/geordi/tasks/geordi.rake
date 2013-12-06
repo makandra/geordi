@@ -67,9 +67,10 @@ namespace :geordi do
   
   desc 'Open a console, either locally or on the server'
   task :console, [:stage] => [:bundle] do |task, args|
-    next unless File.directory?('config/environment')
+    next unless File.directory?('config/environments')
+    stage = args[:stage] || 'development'
 
-    announce 'Opening a console for ' + args[:stage]
+    announce 'Opening a console for ' + stage
 
     command = if File.exists?('script/console')
       'script/console ' # Rails 2
@@ -77,29 +78,32 @@ namespace :geordi do
       'bundle exec rails console ' # Rails 3+
     end
 
-    if args[:stage]
-      require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
+    if stage == 'development'
+      system(command)
+    else # run remotely
+      require File.expand_path('../capistrano.rb', File.dirname(__FILE__))
       include Geordi::Capistrano
       self.stage = args[:stage] # uh, not nice
       command << config.env
     
       shell_for(command, :select_server => true)
-    else # run locally
-      system(command)
     end
   end
   
   desc 'Start a development server'
   task :server, [:port] => [:bundle] do |task, args|
     next unless File.directory?('public') # there will be no server to start
-
+    port = args[:port] || 3000
+    
+    announce 'Booting a development server on Port ' + port
+    
     command = if File.exists?('script/server')
       'script/server' # Rails 2
     else
       'bundle exec rails server' # Rails 3+
     end
     
-    command << " -p #{args[:port]}" if args[:port]
+    command << " -p #{port}"
     system command
   end
   
@@ -123,7 +127,7 @@ namespace :geordi do
       system! "scp #{config.user}@#{config.primary_server}:~/dumps/dump_for_download.dump #{destination_path}"
     else
       destination_path = "#{ENV['HOME']}/dumps"
-      # system! 'dumple'
+      system! 'dumple'
     end
     
     note "Dumped the #{args[:stage] || 'development'} database to #{destination_path}"

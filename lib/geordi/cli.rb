@@ -59,7 +59,7 @@ module Geordi
     end
     
     desc 'dump [STAGE]', 'Dump the database, either locally or on the STAGE server'
-    option :load, :type => :boolean, :aliases => '-l', :desc => 'After dumping, load the dump'
+    option :load, :type => :boolean, :aliases => '-l', :desc => 'After dumping, load the dump into the database'
     def dump(env = nil)
       Rake::Task['geordi:dump'].invoke(env)
       Rake::Task['geordi:load_dump'].invoke if options.load
