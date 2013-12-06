@@ -30,7 +30,7 @@ module Geordi
       end
 
       2.times { puts }
-      exec command
+      system command
     end
 
     def launch_vnc_viewer
