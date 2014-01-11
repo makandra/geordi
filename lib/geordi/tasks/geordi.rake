@@ -51,45 +51,6 @@ namespace :geordi do
     Geordi::Cucumber.new.run(args[:feature_args] || [])
   end
 
-  desc 'Open a shell on the server'
-  task :shell, [:stage] => [:bundle] do |task, args|
-    next unless File.directory?('config/environment')
-
-    announce 'Opening a shell for ' + args[:stage]
-
-    require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
-    include Geordi::Capistrano
-    self.stage = args[:stage] # uh, not nice
-    command = nil #ARGV.any? ? ARGV.join(' ') : nil
-
-    shell_for(command, :select_server => true)
-  end
-
-  desc 'Open a console, either locally or on the server'
-  task :console, [:stage] => [:bundle] do |task, args|
-    next unless File.directory?('config/environments')
-    stage = args[:stage] || 'development'
-
-    announce 'Opening a console for ' + stage
-
-    command = if File.exists?('script/console')
-      'script/console ' # Rails 2
-    else
-      'bundle exec rails console ' # Rails 3+
-    end
-
-    if stage == 'development'
-      system(command)
-    else # run remotely
-      require File.expand_path('../capistrano.rb', File.dirname(__FILE__))
-      include Geordi::Capistrano
-      self.stage = args[:stage] # uh, not nice
-      command << config.env
-
-      shell_for(command, :select_server => true)
-    end
-  end
-
   desc 'Start a development server'
   task :server, [:port] => [:bundle] do |task, args|
     next unless File.directory?('public') # there will be no server to start
@@ -105,43 +66,6 @@ namespace :geordi do
 
     command << " -p #{port}"
     system command
-  end
-
-  directory 'tmp'
-
-  desc 'Dump'
-  task :dump, [:stage] => [:bundle, 'tmp'] do |task, args|
-    announce "Dumping #{args[:stage] || 'development'} database"
-
-    if args[:stage]
-      require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
-      include Geordi::Capistrano
-      self.stage = args[:stage]
-      # destination_directory = "#{config.root}/tmp"
-      destination_path = "tmp/#{stage}.dump"
-
-      note 'Dumping remotely ...'
-      shell_for("dumple #{config.env} --for_download", :exec => false) or fail
-
-      note 'Downloading dump_for_download ...'
-      system! "scp #{config.user}@#{config.primary_server}:~/dumps/dump_for_download.dump #{destination_path}"
-    else
-      destination_path = "#{ENV['HOME']}/dumps"
-      system! 'dumple'
-    end
-
-    note "Dumped the #{args[:stage] || 'development'} database to #{destination_path}"
-  end
-
-  # TODO inform about stage
-  desc 'Load a dump into the database'
-  task :load_dump do
-    require File.dirname(__FILE__) + "../../dump_loader"
-
-    note 'Sourcing dump into development database ...'
-
-    DumpLoader.new([]).execute or fail
-    note 'Successfully sourced dump'
   end
 
   desc 'Git pull'
@@ -188,7 +112,7 @@ namespace :geordi do
     end
   end
 
-  desc 'Bundle install (only if needed)'
+  desc 'Bundle install (only if necessary)'
   task :bundle do
     if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
       announce 'Bundling'
@@ -199,9 +123,9 @@ namespace :geordi do
   private
 
   def system!(*commands)
-    # we cannot run Rake tasks natively (after all, we're inside a Rake
-    # task), because we would probably not be using the version specified in
-    # the Gemfile, and we don't want to add Geordi to a Gemfile either.
+    # We cannot run Rake tasks natively (although we're inside a Rake task),
+    # because we would probably not be using the version specified in the
+    # Gemfile, and we don't want to add Geordi to a Gemfile either.
     Bundler.clean_system(*commands) or fail
   end
 
