@@ -26,6 +26,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'debugger'
 
   s.post_install_message = <<-ATTENTION
+
     ********************************************
     geordi 0.18.0 removes the following scripts:
       cuc, migrate-all, rs, tests
@@ -41,5 +42,7 @@ Gem::Specification.new do |s|
       alias migrate-all="geordi migrate"
       alias rs="geordi test rspec"
       alias tests="geordi test all"
+    ********************************************
+
   ATTENTION
 end
