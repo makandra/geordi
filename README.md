@@ -1,13 +1,48 @@
 Geordi
 ======
 
-Geordi is a collection of command line tools we use in our daily work with Ruby, Rails and Linux at [makandra](http://makandra.com/).
+Geordi is a collection of command line tools we use in our daily work with
+Ruby, Rails and Linux at [makandra](http://makandra.com/).
 
-Installing the *geordi* gem will link all included tools into your `/usr/bin`:
+Installing the *geordi* gem will link several tools into your `/usr/bin` (see
+below):
 
-    sudo gem install geordi
+    gem install geordi
 
 Below you can find a list of all included tools.
+
+
+geordi
+------
+
+The base command line utility offering the following commands:
+
+```
+$> geordi help
+Commands:
+  geordi devserver       # Start a development server
+  geordi help [COMMAND]  # Describe available commands or one specific command
+  geordi migrate         # Migrate all databases
+  geordi setup           # Setup a project for the first time
+  geordi test            # Run tests
+  geordi update          # Bring a project up to date
+
+$> geordi test help
+test commands:
+  geordi test all             # Run all employed tests
+  geordi test cucumber        # Run Cucumber features
+  geordi test help [COMMAND]  # Describe subcommands or one specific subcommand
+  geordi test rspec           # Run (R)Spec
+
+```
+
+See command help for details (e.g. `geordi test help cucumber`).
+
+You may abbreviate commands by typing only the first letter(s), e.g. `geordi
+dev` will boot a development server, `geordi s -t` will setup a project and run
+tests afterwards.
+
+
 
 
 apache-site
@@ -15,7 +50,7 @@ apache-site
 
 Enables the given virtual host in `/etc/apache2/sites-available` and disables all other vhosts:
 
-    site makandra-com
+    apache-site makandra-com
 
 More information at http://makandracards.com/makandra/807-shell-script-to-quickly-switch-apache-sites
 
@@ -38,18 +73,6 @@ Opens a rails console remotely:
     console-for staging
 
 More information at http://makandracards.com/makandra/1338-console-for-opens-a-rails-console-remotely-on-a-capistrano-deployment-target
-
-
-
-cuc
------
-
-Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detection, separate Firefox for Selenium, etc.:
-
-    cuc features/users.feature
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
-
 
 
 cleanup-directory
@@ -127,15 +150,6 @@ Installs all gems in your `Gemfile.lock`, as well as vendored gems, to the given
 More information at http://makandracards.com/makandra/692-install-a-local-gemfile-on-a-remote-server
 
 
-migrate-all
----------------------
-
-Runs `power-rake db:migrate` if parallel_tests does not exist in your `Gemfile`. Otherwise it runs the migration
-in your development environment and executes `b rake parallel:prepare` after that.
-
-    migrate-all
-
-
 power-deploy
 ------------
 
@@ -166,16 +180,6 @@ Recursively removes executable flags from files in the working directory that pr
 More information at http://makandracards.com/makandra/659-recursively-remove-unnecessary-execute-flags
 
 
-rs
------
-
-Runs RSpec with the arguments you want: RSpec 1/2 detection, bundle exec, rspec_spinner detection, etc.:
-
-    rs spec/models/user_spec.rb
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
-
-
 setup-firefox-for-selenium
 --------------------------
 
@@ -198,13 +202,3 @@ Now it can also be called with any command to be remotely executed before loadin
     shell-for staging --no-bash top
 
 More information at http://makandracards.com/makandra/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
-
-
-tests
---------------
-
-Runs both `rs` and `cuc`. Call from any project directory:
-
-    tests
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber

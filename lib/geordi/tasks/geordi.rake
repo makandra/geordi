@@ -52,7 +52,7 @@ namespace :geordi do
   end
 
   desc 'Start a development server'
-  task :server, [:port] => [:bundle] do |task, args|
+  task :devserver, [:port] => [:bundle] do |task, args|
     next unless File.directory?('public') # there will be no server to start
     port = args[:port] || 3000
 
@@ -108,7 +108,7 @@ namespace :geordi do
       real = sample.gsub(/password:.*$/, "password: #{db_password}")
       File.open(file_task.name, 'w') { |f| f.write(real) }
 
-      puts "Created #{file_task.name}."
+      note "Created #{file_task.name}."
     end
   end
 
