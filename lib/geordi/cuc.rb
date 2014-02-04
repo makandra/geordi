@@ -234,7 +234,7 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        puts "Could not launch VNC server. Install it by running cuc-setup-vnc."
+        puts "Could not launch VNC server. Install it by running cuc-vnc-setup."
         puts
         puts
         false
