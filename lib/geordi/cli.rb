@@ -46,7 +46,7 @@ module Geordi
     executes `b rake parallel:prepare` after that.
     LONGDESC
     def migrate
-      Rake::Task['geordi:migrate']
+      Rake::Task['geordi:migrate'].invoke
     end
 
     desc 'devserver', 'Start a development server'
