@@ -1,13 +1,9 @@
 module Geordi
-  class CLITest < Thor
+  class Test < Thor
 
     package_name 'test'
 
     default_command :all
-
-    def self.banner(command, namespace = nil, subcommand = false)
-      "#{basename} #{@package_name} #{command.usage}"
-    end
 
     desc 'all', 'Run all employed tests'
     def all
@@ -23,7 +19,7 @@ module Geordi
     Runs RSpec as you want: RSpec 1/2 detection, bundle exec, rspec_spinner
     detection, etc.
     LONGDESC
-    def rspec(command = nil, *args) # ignore the first arg, fix a Thor bug
+    def rspec(*args)
       Rake::Task['geordi:spec'].invoke(args)
     end
 
@@ -32,7 +28,7 @@ module Geordi
     Runs Cucumber as you want: bundle exec, cucumber_spinner detection,
     separate Firefox for Selenium, etc.
     LONGDESC
-    def cucumber(command = nil, *args) # ignore the first arg, fix a Thor bug
+    def cucumber(*args)
       Rake::Task['geordi:features'].invoke(args)
     end
 

@@ -1,19 +1,12 @@
 require 'thor'
 require 'rake'
 load File.expand_path('../tasks/geordi.rake', __FILE__)
-require 'geordi/cli_test'
+require 'geordi/cli/test'
 
 module Geordi
   class CLI < Thor
 
-    register Geordi::CLITest, :test, 'test', 'Run tests'
-
-    # fix help for subcommand 'test'
-    Geordi::CLITest.class_eval <<-RUBY
-      def help(command = nil, subcommand = false)
-        subcommand ? self.class.command_help(shell, subcommand) : self.class.help(shell, false)
-      end
-    RUBY
+    register Geordi::Test, :test, 'test', 'Run tests'
 
     desc 'setup', 'Setup a project for the first time'
     option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
