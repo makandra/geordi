@@ -6,15 +6,17 @@ namespace :geordi do
 
   desc 'Run tests with `rake`'
   task :rake_test => [:bundle] do
-    next unless file_containing?('Rakefile', /^task.+default.+(spec|test)/)
+    rake_test_present = file_containing?('Rakefile', /^task.+default.+(spec|test)/)
+    rake_test_present |= File.exists?('test/test_helper.rb')
+    next unless rake_test_present
 
     announce 'Running tests (rake)'
-    system! 'rake'
+    system! 'bundle exec rake'
   end
 
   desc 'Run RSpec'
   task :spec, [:spec_args] => [:bundle] do |task, args|
-    next unless File.directory?('spec')
+    next unless File.exists?('spec/spec_helper.rb')
 
     announce 'Running specs'
     spec_args = args[:spec_args] || []

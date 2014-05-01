@@ -7,9 +7,9 @@ module Geordi
 
     desc 'all', 'Run all employed tests'
     def all
+      Rake::Task['geordi:rake_test'].invoke
       Rake::Task['geordi:spec'].invoke
       Rake::Task['geordi:features'].invoke
-      Rake::Task['geordi:rake_test'].invoke
 
       success 'Successfully ran tests.'
     end
