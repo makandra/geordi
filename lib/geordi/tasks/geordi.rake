@@ -94,7 +94,11 @@ namespace :geordi do
     next unless File.exists?('config/database.yml')
 
     announce 'Creating databases'
-    system! 'bundle exec rake db:create:all'
+
+    command = 'bundle exec rake db:create:all'
+    command << ' parallel:create' if file_containing?('Gemfile', /parallel_tests/)
+    
+    system! command
   end
 
   desc 'Create database.yml (only if missing and .sample.yml exists)'
