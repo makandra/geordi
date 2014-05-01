@@ -18,9 +18,10 @@ module Geordi
     def setup
       Rake::Task['geordi:create_databases'].invoke
       Rake::Task['geordi:migrate'].invoke
-      run 'test:all' if options.test
 
       success 'Successfully set up the project.'
+
+      run 'test:all' if options.test
     end
 
     desc 'update', 'Bring a project up to date'
@@ -32,9 +33,10 @@ module Geordi
     def update
       Rake::Task['geordi:pull'].invoke
       Rake::Task['geordi:migrate'].invoke
-      run 'test:all' if options.test
 
       success 'Successfully updated the project.'
+
+      run 'test:all' if options.test
     end
 
     desc 'migrate', 'Migrate all databases'

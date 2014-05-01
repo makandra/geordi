@@ -48,7 +48,7 @@ namespace :geordi do
     next unless File.directory?('features')
 
     announce 'Running features'
-    Geordi::Cucumber.new.run(args[:feature_args] || [])
+    Geordi::Cucumber.new.run(args[:feature_args] || []) or fail
   end
 
   desc 'Start a development server'
@@ -56,7 +56,8 @@ namespace :geordi do
     next unless File.directory?('public') # there will be no server to start
     port = args[:port] || 3000
 
-    announce 'Booting a development server on Port ' + port
+    announce 'Booting a development server'
+    note 'Port: ' + port
 
     command = if File.exists?('script/server')
       'script/server' # Rails 2
@@ -70,7 +71,8 @@ namespace :geordi do
 
   desc 'Git pull'
   task :pull do
-    announce 'Updating repository (git pull)'
+    announce 'Updating repository'
+    note 'git pull'
     system! 'git pull'
   end
 

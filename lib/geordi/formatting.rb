@@ -7,8 +7,13 @@ def note(text)
   puts '> ' + text
 end
 
+def warn(text)
+  message = "> #{text}"
+  puts "\e[33m#{message}\e[0m" # yellow
+end
+
 def fail(text = 'Something went wrong.')
-  message = "\n#{text}"
+  message = "\nx #{text}"
   puts "\e[31m#{message}\e[0m" # red
   exit(1)
 end

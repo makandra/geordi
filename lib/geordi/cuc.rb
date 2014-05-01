@@ -13,23 +13,14 @@ module Geordi
     def run(argv)
       self.argv = argv
 
-      4.times { puts }
-      puts "Running Cucumber tests..."
-      puts "========================="
-
       consolidate_rerun_txt_files
       show_features_to_run
-
       setup_vnc
 
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
+      note 'Command: ' + command if argv.include? '-v'
 
-      if argv.include? "-v"
-        puts command
-        2.times { puts }
-      end
-
-      2.times { puts }
+      puts
       system command
     end
 
@@ -40,10 +31,11 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            puts "VNC viewer not found. Install it using cuc-vnc-setup."
+            note 'VNC viewer not found. Install it using cuc-vnc-setup.'
           else
-            puts "VNC viewer could not be opened:"
+            note 'VNC viewer could not be opened:'
             puts error
+            puts
           end
         end
       }
@@ -68,7 +60,7 @@ module Geordi
     end
 
     def parallel_execution_command
-      puts "Using parallel_tests ...\n\n"
+      note 'Using parallel_tests'
       self.argv = argv - command_line_features
       gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
@@ -96,14 +88,12 @@ module Geordi
       end
     end
 
-    def show_features_to_run
-      unless features_to_run.empty?
+    def show_features_to_run      
+      if features_to_run.empty?
+        note 'All features in features/'
+      else
         passed_by = (features_to_run == rerun_txt_features && features_to_run != command_line_features) ? 'rerun.txt' : 'command line'
-        2.times { puts }
-        puts "features to run (passed by #{passed_by}):"
-        puts "-----------------------------------------"
-        puts features_to_run.join("\n")
-        puts "-----------------------------------------"
+        note 'Only: ' + features_to_run.join(', ') + " (from #{passed_by})"
       end
     end
 
@@ -155,8 +145,7 @@ module Geordi
     def consolidate_rerun_txt_files
       parallel_rerun_files = Dir.glob("parallel_rerun*.txt")
       unless parallel_rerun_files.empty?
-        2.times { puts }
-        puts "consolidating parallel_rerun.txt files ..."
+        note 'Consolidating parallel_rerun.txt files ...'
 
         rerun_content = []
         parallel_rerun_files.each do |filename|
@@ -217,8 +206,7 @@ module Geordi
         ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path(File.join(File.dirname(__FILE__), '../../bin/launchy_browser'))
         ENV["DISPLAY"] = VNC_DISPLAY
 
-        puts
-        puts "Selenium is running in a VNC window. Use cuc-show to view it."
+        note 'Selenium is running in a VNC window. Use cuc-show to view it.'
       end
     end
 
@@ -233,14 +221,11 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        puts "Could not launch VNC server. Install it by running cuc-vnc-setup."
-        puts
-        puts
+        warn 'Could not launch VNC server. Install it by running cuc-vnc-setup.'
         false
       else
-        puts "Starting VNC failed:"
+        warn 'Starting VNC failed:'
         puts error
-        puts
         puts
         false
       end

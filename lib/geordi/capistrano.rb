@@ -93,7 +93,7 @@ module Geordi
         # Default to the first listed server (by convention, the first server
         # in the deploy files is the primary one).
         menu.default = '1'
-        menu.prompt = 'Connect to [1]: '
+        menu.prompt = 'Connect to? [1] '
       end
     end
 
