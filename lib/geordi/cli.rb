@@ -45,9 +45,9 @@ module Geordi
     executes `b rake parallel:prepare` after that.
     LONGDESC
     def migrate
-      invoke :bundle_install
+      if migration_required?
+        invoke :bundle_install
 
-      if File.directory?('db/migrate')
         announce 'Migrating'
 
         if file_containing?('Gemfile', /parallel_tests/)
@@ -61,9 +61,9 @@ module Geordi
     desc 'devserver', 'Start a development server'
     option :port, :aliases => '-p', :default => '3000'
     def devserver
-      invoke :bundle_install
-
       if File.directory?('public')
+        invoke :bundle_install
+
         announce 'Booting a development server'
         note 'Port: ' + options.port
 
@@ -89,9 +89,10 @@ module Geordi
     desc 'create_databases', 'Create all databases', :hide => true
     def create_databases
       create_database_yml
-      invoke :bundle_install
 
       if File.exists?('config/database.yml')
+        invoke :bundle_install
+
         announce 'Creating databases'
 
         command = 'bundle exec rake db:create:all'
@@ -122,10 +123,10 @@ module Geordi
       end
 
       def create_database_yml
-        real_yml = 'config/database.yml'
-        sample_yml = 'config/database.sample.yml'
-
         if File.exists?(sample_yml) and not File.exists?(real_yml)
+          real_yml = 'config/database.yml'
+          sample_yml = 'config/database.sample.yml'
+
           announce 'Creating ' + real_yml
 
           print 'Please enter your DB password: '
@@ -137,6 +138,22 @@ module Geordi
 
           note "Created #{real_yml}."
         end
+      end
+
+      # If there's no db/migrate directory, there are no migrations to run.
+      # If there's no schema.rb, we haven't migrated yet -> we need to.
+      # Else, check if the version from db/schema.rb matches the latest
+      # migration.
+      def migration_required?
+        return false unless File.directory?('db/migrate')
+        return true unless File.exists?('db/schema.rb')
+
+        latest_version = Dir['db/migrate/*'].map do |file|
+          file[/db\/migrate\/(\d+)/, 1].to_i
+        end.max
+        current_version = File.read('db/schema.rb')[/version.*(\d{14})/, 1].to_i
+
+        current_version != latest_version
       end
 
     end
