@@ -1,15 +1,15 @@
 require 'thor'
-require 'bundler'
 require 'geordi/cli/test'
+require 'geordi/cli/util'
 
 module Geordi
   class CLI < Thor
- 
+    include Geordi::Util
+
     register Geordi::Test, :test, 'test', 'Subcommand, see: geordi test help'
 
     desc 'setup', 'Setup a project for the first time'
     option :test, :type => :boolean, :aliases => '-t', :desc => 'After setup, run tests'
-    option :quiet_skip, :type => :boolean, :default => :true
     long_desc <<-LONGDESC
     Check out a repository, `cd <repo>`, then let `setup` do the tiring work for
     you (all if applicable): bundle, create database.yml, create databases,
@@ -23,7 +23,7 @@ module Geordi
 
       invoke 'test:all' if options.test
     end
-    
+
     desc 'update', 'Bring a project up to date'
     option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
     long_desc <<-LONGDESC
@@ -36,7 +36,7 @@ module Geordi
 
       success 'Successfully updated the project.'
 
-      run 'test:all' if options.test
+      invoke 'test:all' if options.test
     end
 
     desc 'migrate', 'Migrate all databases'
@@ -46,7 +46,7 @@ module Geordi
     executes `b rake parallel:prepare` after that.
     LONGDESC
     def migrate
-      invoke :bundle_install
+      invoke 'test:bundle_install'
       announce 'Migrating'
 
       if migration_required?
@@ -56,14 +56,14 @@ module Geordi
           system! 'power-rake db:migrate'
         end
       else
-        note 'No pending migrations.'
+        puts 'No pending migrations.'
       end
     end
 
     desc 'devserver', 'Start a development server'
     option :port, :aliases => '-p', :default => '3000'
     def devserver
-      invoke :bundle_install
+      invoke 'test:bundle_install'
 
       announce 'Booting a development server'
       note 'Port: ' + options.port
@@ -87,7 +87,7 @@ module Geordi
     desc 'create_databases', 'Create all databases', :hide => true
     def create_databases
       create_database_yml
-      invoke :bundle_install
+      invoke 'test:bundle_install'
       announce 'Creating databases'
 
       if File.exists?('config/database.yml')
@@ -96,22 +96,7 @@ module Geordi
 
         system! command
       else
-        note 'config/database.yml does not exist. Nothing to do.'
-      end
-    end
-
-    desc 'bundle', 'Run bundle install if required', :hide => true
-    long_desc <<-LONGDESC
-    Run bundle install if a) a Gemfile exists and b) `bundle check` has a
-    non-zero exit status.
-    LONGDESC
-    def bundle_install
-      announce 'Bundling'
-
-      if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
-        system! 'bundle install'
-      else
-        note 'Bundle is up to date.'
+        puts 'config/database.yml does not exist. Nothing to do.'
       end
     end
 
@@ -157,22 +142,6 @@ module Geordi
         current_version != latest_version
       end
 
-    end
-
-    private
-
-    def run(command)
-      sub, command = command.split(':')
-      invoke(sub, command, [], []) # weird API
-    end
-
-    def system!(*commands)
-      # Remove the gem's Bundler environment when running command.
-      Bundler.clean_system(*commands) or fail
-    end
-
-    def file_containing?(file, regex)
-      File.exists?(file) and File.read(file).scan(regex).any?
     end
 
   end

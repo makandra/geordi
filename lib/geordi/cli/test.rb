@@ -1,10 +1,12 @@
 require 'thor'
 require 'geordi/cuc'
+require 'geordi/cli/util'
 
 module Geordi
   class Test < Thor
-    
-    package_name 'test'
+    include Geordi::Util
+
+    namespace 'test'
     default_command :all
 
     desc 'all', 'Run all employed tests'
@@ -84,7 +86,7 @@ module Geordi
     end
 
     desc 'with_rake', 'Run tests with `rake`'
-    def with_rake      
+    def with_rake
       if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
         invoke :bundle_install
 
@@ -95,29 +97,14 @@ module Geordi
       end
     end
 
-    # CODE DUPLICATION!
-    # Instead, CLI#bundle_install should be called. But how?
-    desc 'bundle', 'Run bundle install if required', :hide => true
+    # This task lives here to prevent code duplication. Actually it should live
+    # in CLI – move it there if you know how to invoke it from this class.
+    desc 'bundle_install', 'Run bundle install if required', :hide => true
     def bundle_install
       if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
         announce 'Bundling'
         system! 'bundle install'
       end
-    end
-    
-    private
-    
-    # CODE DUPLICATION!
-    # Instead, CLI#system! should be called. But how?
-    def system!(*commands)
-      # Remove the gem's Bundler environment when running command.
-      Bundler.clean_system(*commands) or fail
-    end
-    
-    # CODE DUPLICATION!
-    # Instead, CLI#file_containing? should be called. But how?
-    def file_containing?(file, regex)
-      File.exists?(file) and File.read(file).scan(regex).any?
     end
 
   end
