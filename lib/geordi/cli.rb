@@ -4,11 +4,12 @@ require 'geordi/cli/test'
 
 module Geordi
   class CLI < Thor
-
-    register Geordi::Test, :test, 'test', 'Run tests'
+ 
+    register Geordi::Test, :test, 'test', 'Subcommand, see: geordi test help'
 
     desc 'setup', 'Setup a project for the first time'
-    option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
+    option :test, :type => :boolean, :aliases => '-t', :desc => 'After setup, run tests'
+    option :quiet_skip, :type => :boolean, :default => :true
     long_desc <<-LONGDESC
     Check out a repository, `cd <repo>`, then let `setup` do the tiring work for
     you (all if applicable): bundle, create database.yml, create databases,
@@ -20,13 +21,13 @@ module Geordi
 
       success 'Successfully set up the project.'
 
-      run 'test:all' if options.test
+      invoke 'test:all' if options.test
     end
-
+    
     desc 'update', 'Bring a project up to date'
     option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run tests'
     long_desc <<-LONGDESC
-    Brings a project up to date. Bundle (if necessary), perform a `git pull` and
+    Brings a project up to date: Bundle (if necessary), perform a `git pull` and
     migrate (if applicable), optionally run tests.
     LONGDESC
     def update
@@ -45,39 +46,36 @@ module Geordi
     executes `b rake parallel:prepare` after that.
     LONGDESC
     def migrate
+      invoke :bundle_install
+      announce 'Migrating'
+
       if migration_required?
-        invoke :bundle_install
-
-        announce 'Migrating'
-
         if file_containing?('Gemfile', /parallel_tests/)
           system! 'bundle exec rake db:migrate parallel:prepare'
         else
           system! 'power-rake db:migrate'
         end
+      else
+        note 'No pending migrations.'
       end
     end
 
     desc 'devserver', 'Start a development server'
     option :port, :aliases => '-p', :default => '3000'
     def devserver
-      if File.directory?('public')
-        invoke :bundle_install
+      invoke :bundle_install
 
-        announce 'Booting a development server'
-        note 'Port: ' + options.port
+      announce 'Booting a development server'
+      note 'Port: ' + options.port
 
-        command = if File.exists?('script/server')
-          'script/server' # Rails 2
-        else
-          'bundle exec rails server' # Rails 3+
-        end
-
-        command << " -p #{options.port}"
-        system command
+      command = if File.exists?('script/server')
+        'script/server' # Rails 2
       else
-        # We're probably not inside a Rails app, but a Gem.
+        'bundle exec rails server' # Rails 3+
       end
+
+      command << " -p #{options.port}"
+      system command
     end
 
     desc 'version', 'Print the current version of geordi'
@@ -89,16 +87,16 @@ module Geordi
     desc 'create_databases', 'Create all databases', :hide => true
     def create_databases
       create_database_yml
+      invoke :bundle_install
+      announce 'Creating databases'
 
       if File.exists?('config/database.yml')
-        invoke :bundle_install
-
-        announce 'Creating databases'
-
         command = 'bundle exec rake db:create:all'
         command << ' parallel:create' if file_containing?('Gemfile', /parallel_tests/)
 
         system! command
+      else
+        note 'config/database.yml does not exist. Nothing to do.'
       end
     end
 
@@ -108,9 +106,12 @@ module Geordi
     non-zero exit status.
     LONGDESC
     def bundle_install
+      announce 'Bundling'
+
       if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
-        announce 'Bundling'
         system! 'bundle install'
+      else
+        note 'Bundle is up to date.'
       end
     end
 
@@ -123,10 +124,10 @@ module Geordi
       end
 
       def create_database_yml
-        if File.exists?(sample_yml) and not File.exists?(real_yml)
-          real_yml = 'config/database.yml'
-          sample_yml = 'config/database.sample.yml'
+        real_yml = 'config/database.yml'
+        sample_yml = 'config/database.sample.yml'
 
+        if File.exists?(sample_yml) and not File.exists?(real_yml)
           announce 'Creating ' + real_yml
 
           print 'Please enter your DB password: '

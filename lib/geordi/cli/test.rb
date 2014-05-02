@@ -1,14 +1,15 @@
+require 'thor'
 require 'geordi/cuc'
 
 module Geordi
   class Test < Thor
-
+    
     package_name 'test'
-
     default_command :all
 
     desc 'all', 'Run all employed tests'
     def all
+      invoke :with_rake
       invoke :unit
       invoke :rspec
       invoke :cucumber
@@ -22,9 +23,9 @@ module Geordi
     detection.
     LONGDESC
     def rspec(*files)
-      invoke :bundle_install
-
       if File.exists?('spec/spec_helper.rb')
+        invoke :bundle_install
+
         announce 'Running specs'
 
         if file_containing?('Gemfile', /parallel_tests/) and files.empty?
@@ -49,6 +50,8 @@ module Geordi
           puts
           system! command.join(' ')
         end
+      else
+        note 'RSpec not employed.'
       end
     end
 
@@ -63,16 +66,32 @@ module Geordi
       if File.directory?('features')
         announce 'Running features'
         Geordi::Cucumber.new.run(files) or fail
+      else
+        note 'Cucumber not employed.'
       end
     end
 
     desc 'unit', 'Run Test::Unit'
     def unit
-      invoke :bundle_install
-
       if File.exists?('test/test_helper.rb')
+        invoke :bundle_install
+
         announce 'Running Test::Unit'
         system! 'bundle exec rake test'
+      else
+        note 'Test::Unit not employed.'
+      end
+    end
+
+    desc 'with_rake', 'Run tests with `rake`'
+    def with_rake      
+      if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
+        invoke :bundle_install
+
+        announce 'Running tests with `rake`'
+        system! 'rake'
+      else
+        note '`rake` does not run tests.'
       end
     end
 
