@@ -55,6 +55,12 @@ module Geordi
       Rake::Task['geordi:devserver'].invoke(options.port)
     end
     
+    desc 'version', 'Print the current version of geordi'
+    def version
+      require 'geordi/version'
+      puts 'Geordi ' + Geordi::VERSION
+    end
+    
     private
     
     def run(command)
