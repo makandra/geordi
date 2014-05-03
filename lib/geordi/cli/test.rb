@@ -26,7 +26,7 @@ module Geordi
     LONGDESC
     def rspec(*files)
       if File.exists?('spec/spec_helper.rb')
-        invoke :bundle_install
+        invoke :bundle_install, [] # don't pass arguments
 
         announce 'Running specs'
 
@@ -63,7 +63,7 @@ module Geordi
     separate Firefox for Selenium, etc.
     LONGDESC
     def cucumber(*files)
-      invoke :bundle_install
+      invoke :bundle_install, [] # don't pass arguments
 
       if File.directory?('features')
         announce 'Running features'
@@ -76,7 +76,7 @@ module Geordi
     desc 'unit', 'Run Test::Unit'
     def unit
       if File.exists?('test/test_helper.rb')
-        invoke :bundle_install
+        invoke :bundle_install, [] # don't pass arguments
 
         announce 'Running Test::Unit'
         system! 'bundle exec rake test'
@@ -88,7 +88,7 @@ module Geordi
     desc 'with_rake', 'Run tests with `rake`'
     def with_rake
       if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
-        invoke :bundle_install
+        invoke :bundle_install, [] # don't pass arguments
 
         announce 'Running tests with `rake`'
         system! 'rake'
