@@ -24,8 +24,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'highline'
   s.add_runtime_dependency 'pivotal-tracker'
   s.add_runtime_dependency 'bundler'
-  s.add_runtime_dependency 'erb'
-  s.add_runtime_dependency 'yaml'
   s.add_runtime_dependency 'launchy'
   s.add_runtime_dependency 'capistrano'
 
