@@ -1,22 +1,11 @@
 # This method has a triple 'l' because :shell is a Thor reserved word. However,
-# it can still be called with `geordi shell`.
+# it can still be called with `geordi shell` :)
+
 desc 'shell TARGET', 'Open a shell on a Capistrano deploy target'
 def shelll(target, *args)
-  GeordiShell.run(target, args)
-end
+  require 'geordi/remote'
+  ENV['BUNDLE_BIN_PATH'] = 'Trick capistrano safeguard in deploy.rb into believing bundler is present by setting this variable.'
 
-class GeordiShell
-
-  def self.run(target, args)
-    require 'geordi/capistrano'
-    extend Geordi::Capistrano
-
-    catching_errors do
-      self.stage = target
-      command = args.any? ? args.join(' ') : nil
-
-      shell_for(command, :select_server => true)
-    end
-  end
-
+  remote = Geordi::Remote.new(target)
+  remote.shell :command => command #, :select_server => true # << DEFAULT!
 end
