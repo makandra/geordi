@@ -1,4 +1,3 @@
-# require 'bundler/setup'
 require 'capistrano'
 require 'singleton'
 require 'highline/import'

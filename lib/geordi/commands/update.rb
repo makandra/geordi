@@ -6,7 +6,10 @@ migrate (if applicable), optionally run tests.
 LONGDESC
 
 def update
-  git_pull
+  announce 'Updating repository'
+  note_cmd 'git pull'
+  system! 'git pull'
+
   invoke 'migrate'
 
   success 'Successfully updated the project.'

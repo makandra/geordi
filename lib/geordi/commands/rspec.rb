@@ -1,4 +1,4 @@
-desc 'rspec', 'Run RSpec'
+desc 'rspec [FILES]', 'Run RSpec'
 long_desc <<-LONGDESC
 Runs RSpec as you want: RSpec 1&2 detection, bundle exec, rspec_spinner
 detection.
