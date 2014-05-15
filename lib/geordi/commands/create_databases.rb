@@ -2,6 +2,7 @@ desc 'create_databases', 'Create all databases', :hide => true
 def create_databases
   invoke 'create_database_yml'
   invoke 'bundle_install'
+
   announce 'Creating databases'
 
   if File.exists?('config/database.yml')

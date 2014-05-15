@@ -43,12 +43,6 @@ class Gitpt
     highline.say "Welcome to #{bold 'gitpt'}.\n\n"
   end
 
-  def left(string)
-    leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
-    string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
-    string
-  end
-
   def loading(message, &block)
     print message
     STDOUT.flush

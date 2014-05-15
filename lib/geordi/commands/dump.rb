@@ -1,6 +1,6 @@
 desc 'dump', 'Handle dumps'
 
-option :load, :aliases => ['-l'], :type => :boolean
+option :load, :aliases => ['-l'], :type => :boolean, :desc => 'Load a dump'
 
 def dump(*args)
   require 'geordi/dump_loader'

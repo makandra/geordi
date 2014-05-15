@@ -1,4 +1,4 @@
-desc 'cucumber', 'Run Cucumber features'
+desc 'cucumber [FILES]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Runs Cucumber as you want: bundle exec, cucumber_spinner detection,
 separate Firefox for Selenium, etc.

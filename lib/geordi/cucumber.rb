@@ -31,7 +31,7 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            note 'VNC viewer not found. Install it using cuc-vnc-setup.'
+            fail 'VNC viewer not found. Install it using cuc-vnc-setup.'
           else
             note 'VNC viewer could not be opened:'
             puts error
@@ -203,7 +203,7 @@ module Geordi
         VNC_ENV_VARIABLES.each do |variable|
           ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
         end
-        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)) # FIXME
+        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__) # FIXME
         ENV["DISPLAY"] = VNC_DISPLAY
 
         note 'Selenium is running in a VNC window. Use cuc-show to view it.'
