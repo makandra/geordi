@@ -20,13 +20,6 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
-  s.add_runtime_dependency 'thor', '>= 0.19'
-  # s.add_runtime_dependency 'highline'
-  # s.add_runtime_dependency 'pivotal-tracker'
-  # s.add_runtime_dependency 'bundler'
-  # s.add_runtime_dependency 'launchy'
-  # s.add_runtime_dependency 'capistrano'
-
   # s.add_development_dependency 'debugger'
 
   s.post_install_message = <<-ATTENTION

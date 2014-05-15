@@ -1,2 +1,2 @@
-require 'geordi/formatting'
+require 'geordi/ui'
 require 'geordi/cli'

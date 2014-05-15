@@ -27,3 +27,9 @@ def success(text)
   message = "\n> #{text}"
   puts "\e[32m#{message}\e[0m" # green
 end
+
+def wait(text)
+  message = "#{text}"
+  puts "\e[36m#{message}\e[0m" # cyan
+  $stdin.gets
+end
