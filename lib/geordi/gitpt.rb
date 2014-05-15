@@ -1,6 +1,3 @@
-require 'rubygems'
-require 'highline'
-require 'pivotal-tracker'
 require 'yaml'
 
 module Geordi

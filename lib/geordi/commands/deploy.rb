@@ -1,6 +1,5 @@
 desc 'deploy_to_production', 'Deploy to production'
 def deploy_to_production
-
   ENV['PAGER'] = 'cat'
 
   master_branch = prompt('master branch', 'master')

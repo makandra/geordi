@@ -7,8 +7,9 @@ module Geordi
 
     def system!(*commands)
       options = commands.last.is_a?(Hash) ? commands.pop : {}
-      # Remove the gem's Bundler environment when running command.
-      Bundler.clean_system(*commands) or fail(options[:fail_message])
+
+      # Remove the gem's Bundler environment when running commands.
+      Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
     end
 
     def file_containing?(file, regex)

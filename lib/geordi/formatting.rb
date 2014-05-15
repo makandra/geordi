@@ -12,7 +12,12 @@ def warn(text)
   puts "\e[33m#{message}\e[0m" # yellow
 end
 
-def fail(text = 'Something went wrong.')
+def note_cmd(text)
+  message = "> `#{text}`"
+  puts "\e[35m#{message}\e[0m" # pink
+end
+
+def fail(text)
   message = "\nx #{text}"
   puts "\e[31m#{message}\e[0m" # red
   exit(1)
