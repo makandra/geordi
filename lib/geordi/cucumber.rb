@@ -88,7 +88,7 @@ module Geordi
       end
     end
 
-    def show_features_to_run      
+    def show_features_to_run
       if features_to_run.empty?
         note 'All features in features/'
       else

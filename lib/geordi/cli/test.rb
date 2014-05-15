@@ -1,5 +1,5 @@
 require 'thor'
-require 'geordi/cuc'
+require 'geordi/cucumber'
 require 'geordi/cli/util'
 
 module Geordi

@@ -10,6 +10,7 @@ end
 
 desc 'setup_vnc', '?'
 def setup_vnc
+  `clear`
 
   instruct <<-TEXT
     This script will help you install a VNC server and a VNC viewer.
@@ -34,9 +35,9 @@ def setup_vnc
     instruct <<-TEXT
       We will now set a password for your VNC server.
 
-      When running the our cucumber script, you will not actually need this
-      password, and there is no security risk. However if you start a vncserver
-      without our cucumber script, a user with this password can connect to
+      When running our cucumber script, you will not actually need this
+      password, and there is no security risk. However, if you start a vncserver
+      without our cucumber script, a user with your password can connect to
       your machine.
 
       Please run #{'vncserver :20'.pink} and #{'enter a secure password'.red}.

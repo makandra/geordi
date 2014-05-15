@@ -33,3 +33,9 @@ def wait(text)
   puts "\e[36m#{message}\e[0m" # cyan
   $stdin.gets
 end
+
+def left(string)
+  leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
+  string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
+  string
+end

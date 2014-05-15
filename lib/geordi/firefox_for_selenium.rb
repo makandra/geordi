@@ -1,4 +1,5 @@
 require 'pathname'
+require 'tempfile'
 
 module Geordi
   module FirefoxForSelenium
@@ -8,8 +9,8 @@ module Geordi
     DEFAULT_FIREFOX_VERSION = "5.0.1"
     VERSION_SPECIFICATION_FILE = Pathname.new(".firefox-version")
 
-    def self.install
-      Installer.new.run
+    def self.install(version)
+      Installer.new(version).run
     end
 
     def self.path_from_config
@@ -65,8 +66,7 @@ module Geordi
           puts "If you want to use your system firefox and not see this message, add"
           puts "a \".firefox-version\" file with the content \"system\"."
           puts
-          puts "Press ENTER to continue or press CTRL+C to abort."
-          $stdin.gets
+          wait "Press ENTER to continue or press CTRL+C to abort."
         end
       end
 
@@ -79,8 +79,11 @@ module Geordi
 
     class Installer
 
+      def initialize(version)
+        @version = version
+      end
+
       def run
-        parse_version
         say_hello
         check_if_run_before
         download_firefox
@@ -123,51 +126,60 @@ module Geordi
         FirefoxForSelenium.binary(@version, "firefox-original")
       end
 
-      def parse_version
-        @version = ARGV.pop
-        @version or die("Usage: setup_firefox_for_selenium VERSION")
-      end
-
       def say_hello
         execute_command('clear')
-        puts "Whenever Firefox updates, Selenium breaks. This is annoying."
-        puts "This script will help you create an unchanging version of Firefox for your Selenium tests."
-        puts
-        puts "In particular, this new copy of Firefox will have the following properties:"
-        puts
-        puts "- It won't update itself with a newer version"
-        puts "- It can co-exist with your regular Firefox installation (which you can update at will)"
-        puts "- It will use a profile separate from the one you use for regular Firefox browsing"
-        puts "- It will not try to re-use existing Firefox windows"
-        puts "- It will automatically be used for your Selenium scenarios if you run your Cucumber using the cuc binary from the geordi gem."
-        puts "- It will live in #{path}"
-        puts
-        puts "Press ENTER when you're ready to begin."
-        gets
+
+        puts left(<<-HELLO)
+        Whenever Firefox updates, Selenium breaks. This is annoying. This
+        script will help you create an unchanging version of Firefox for your
+        Selenium tests.
+
+        In particular, this new copy of Firefox will have the following
+        properties:
+
+        - It won't update itself with a newer version
+        - It can co-exist with your regular Firefox installation (which you can
+          update at will)
+        - It will use a profile separate from the one you use for regular
+          Firefox browsing
+        - It will not try to re-use existing Firefox windows
+        - It will automatically be used for your Selenium scenarios if you run
+          your Cucumber using the cuc binary from the geordi gem.
+        - It will live in #{path}
+
+        HELLO
+
+        wait "Press ENTER when you're ready to begin."
       end
 
       def check_if_run_before
         if original_binary.exist?
-          puts "This version seems to be already installed."
+          puts 'This version seems to be already installed.'
           puts
-          puts "Press ENTER to continue anyway or press CTRL+C to abort."
-          gets
+          wait 'Press ENTER to continue anyway or press CTRL+C to abort.'
         end
       end
 
       def download_firefox
         path.mkpath
-        puts "Please download an old version of Firefox from #{download_url} and unpack it to #{path}."
-        puts "Don't create an extra #{path.join("firefox")} directory."
-        puts
-        puts "Press ENTER when you're done."
-        gets
+
+        puts left(<<-INSTRUCTION)
+        Please download an old version of Firefox from:
+          #{download_url}
+        and unpack it to:
+          #{path}
+        Don't create an extra #{path.join('firefox')} directory.
+
+        INSTRUCTION
+        wait "Press ENTER when you're done."
+
         File.file?(binary) or raise "Could not find #{binary}"
       end
 
       def create_separate_profile
         puts "Creating a separate profile named '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}' so your own profile will be safe..."
-        # don't use the patched firefox binary for this, we don't want to give a -p parameter here
+        # don't use the patched firefox binary for this, we don't want to give
+        # a -p option here
         execute_command("PATH=#{path}:$PATH firefox -no-remote -CreateProfile #{FIREFOX_FOR_SELENIUM_PROFILE_NAME}")
         puts
       end
@@ -177,10 +189,10 @@ module Geordi
         execute_command("mv #{binary} #{original_binary}")
         execute_command("mv #{binary}-bin #{original_binary}-bin")
         patched_binary = Tempfile.new('firefox')
-        patched_binary.write <<eos
-#!/usr/bin/env ruby
-exec('#{original_binary}', '-no-remote', '-P', '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}', *ARGV)
-eos
+        patched_binary.write left(<<-PATCH)
+          #!/usr/bin/env ruby
+          exec('#{original_binary}', '-no-remote', '-P', '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}', *ARGV)
+          PATCH
         patched_binary.close
         execute_command("mv #{patched_binary.path} #{binary}")
         execute_command("chmod +x #{binary}")
@@ -188,30 +200,36 @@ eos
       end
 
       def configure_old_firefox
-        puts "This script will now open the patched copy of Firefox."
-        puts
-        puts "Please perform the following steps manually:"
-        puts
-        puts "- Disable the default browser check when Firefox launches"
-        puts "- Check that the version number is correct (#{@version})"
-        puts "- Disable all automatic updates under Edit / Preferences / Advanced / Update (do this quickly or Firefox will already have updated)"
-        puts "- You should not see your bookmarks, addons, plugins from your regular Firefox profile"
-        puts
-        puts "Press ENTER when you're ready to open Firefox and perform these steps."
-        gets
+        puts left(<<-INSTRUCTION)
+        This script will now open the patched copy of Firefox.
+
+        Please perform the following steps manually:
+
+        - Disable all automatic updates under Edit / Preferences / Advanced /
+          Update (do this quickly or Firefox will already have updated)
+        - Disable the default browser check when Firefox launches
+        - Check that the version number is correct (#{@version})
+        - You should not see your bookmarks, addons, plugins from your regular
+          Firefox profile
+
+        INSTRUCTION
+        wait "Press ENTER when you're ready to open Firefox and perform these steps."
+
         run_firefox_for_selenium
       end
 
       def kkthxbb
-        puts "Congratulations, you're done!"
-        puts
-        puts "Your patched copy of Firefox will be used when you run Cucumber using the cuc binary that comes with the geordi gem."
-        puts "If you prefer to run Cucumber on your own, you must call it like this:"
-        puts
-        puts "    PATH=#{path}:$PATH cucumber"
-        puts
-        puts "Enjoy!"
-        puts
+        puts left(<<-INSTRUCTION)
+        Congratulations, you're done!
+
+        Your patched copy of Firefox will be used when you run Cucumber using
+        the cucumber script that comes with the geordi gem. If you prefer to run
+        Cucumber on your own, you must call it like this:
+
+          PATH=#{path}:$PATH cucumber
+
+        Enjoy!
+        INSTRUCTION
       end
 
     end
