@@ -1,6 +1,6 @@
-desc '', ''
+desc 'launchy_browser', '?'
 def launchy_browser(*args)
-  require File.expand_path('../../cucumber', __FILE__)
+  require 'geordi/cucumber'
   require 'launchy'
 
   Geordi::Cucumber.new.restore_env

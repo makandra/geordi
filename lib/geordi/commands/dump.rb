@@ -1,7 +1,9 @@
 desc 'dump', 'Handle dumps'
+
 option :load, :aliases => ['-l'], :type => :boolean
+
 def dump(*args)
-  require File.expand_path('../../dump_loader', __FILE__)
+  require 'geordi/dump_loader'
 
   if options.load
     DumpLoader.new(args).execute!

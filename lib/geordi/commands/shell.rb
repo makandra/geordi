@@ -8,7 +8,7 @@ end
 class GeordiShell
 
   def self.run(target, args)
-    require File.expand_path('../../capistrano', __FILE__)
+    require 'geordi/capistrano'
     extend Geordi::Capistrano
 
     catching_errors do
