@@ -6,12 +6,18 @@ module Geordi
     private
 
     def system!(*commands)
+      options = commands.last.is_a?(Hash) ? commands.pop : {}
       # Remove the gem's Bundler environment when running command.
-      Bundler.clean_system(*commands) or fail
+      Bundler.clean_system(*commands) or fail(options[:fail_message])
     end
 
     def file_containing?(file, regex)
       File.exists?(file) and File.read(file).scan(regex).any?
+    end
+
+    # fix weird implementation of #invoke
+    def invoke(name, task=nil, args = [], opts = {}, config=nil)
+      super(name, task, args, opts, config)
     end
 
   end

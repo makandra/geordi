@@ -97,12 +97,5 @@ module Geordi
       end
     end
 
-    private
-
-    def invoke(name, task=nil, args = [], opts = {}, config=nil)
-
-      super(name, task, args, opts, config)
-    end
-
   end
 end

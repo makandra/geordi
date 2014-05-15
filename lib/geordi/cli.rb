@@ -8,6 +8,10 @@ module Geordi
 
     register Geordi::Test, :test, 'test', 'Subcommand, see: geordi test help'
 
+    Dir[File.expand_path '../commands/*.rb', __FILE__].each do |file|
+      class_eval File.read(file), file
+    end
+
     desc 'setup', 'Setup a project for the first time'
     option :test, :type => :boolean, :aliases => '-t', :desc => 'After setup, run tests'
     long_desc <<-LONGDESC
@@ -152,13 +156,6 @@ module Geordi
         current_version != latest_version
       end
 
-    end
-
-    private
-
-    def invoke(name, task=nil, args = [], opts = {}, config=nil)
-
-      super(name, task, args, opts, config)
     end
 
   end
