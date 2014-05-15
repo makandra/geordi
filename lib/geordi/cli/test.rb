@@ -26,7 +26,7 @@ module Geordi
     LONGDESC
     def rspec(*files)
       if File.exists?('spec/spec_helper.rb')
-        invoke :bundle_install
+        invoke Geordi::CLI, :bundle_install
 
         announce 'Running specs'
 
@@ -63,7 +63,7 @@ module Geordi
     separate Firefox for Selenium, etc.
     LONGDESC
     def cucumber(*files)
-      invoke :bundle_install
+      invoke Geordi::CLI, :bundle_install
 
       if File.directory?('features')
         announce 'Running features'
@@ -76,7 +76,7 @@ module Geordi
     desc 'unit', 'Run Test::Unit'
     def unit
       if File.exists?('test/test_helper.rb')
-        invoke :bundle_install
+        invoke Geordi::CLI, :bundle_install
 
         announce 'Running Test::Unit'
         system! 'bundle exec rake test'
@@ -88,7 +88,7 @@ module Geordi
     desc 'with_rake', 'Run tests with `rake`'
     def with_rake
       if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
-        invoke :bundle_install
+        invoke Geordi::CLI, :bundle_install
 
         announce 'Running tests with `rake`'
         system! 'rake'
@@ -97,14 +97,11 @@ module Geordi
       end
     end
 
-    # This task lives here to prevent code duplication. Actually it should live
-    # in CLI – move it there if you know how to invoke it from this class.
-    desc 'bundle_install', 'Run bundle install if required', :hide => true
-    def bundle_install
-      if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
-        announce 'Bundling'
-        system! 'bundle install'
-      end
+    private
+
+    def invoke(name, task=nil, args = [], opts = {}, config=nil)
+
+      super(name, task, args, opts, config)
     end
 
   end

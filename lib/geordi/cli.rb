@@ -46,7 +46,7 @@ module Geordi
     executes `b rake parallel:prepare` after that.
     LONGDESC
     def migrate
-      invoke 'test:bundle_install'
+      invoke 'bundle_install'
       announce 'Migrating'
 
       if migration_required?
@@ -63,7 +63,7 @@ module Geordi
     desc 'devserver', 'Start a development server'
     option :port, :aliases => '-p', :default => '3000'
     def devserver
-      invoke 'test:bundle_install'
+      invoke 'bundle_install'
 
       announce 'Booting a development server'
       note 'Port: ' + options.port
@@ -87,7 +87,7 @@ module Geordi
     desc 'create_databases', 'Create all databases', :hide => true
     def create_databases
       create_database_yml
-      invoke 'test:bundle_install'
+      invoke 'bundle_install'
       announce 'Creating databases'
 
       if File.exists?('config/database.yml')
@@ -97,6 +97,16 @@ module Geordi
         system! command
       else
         puts 'config/database.yml does not exist. Nothing to do.'
+      end
+    end
+
+    # This task lives here to prevent code duplication. Actually it should live
+    # in CLI – move it there if you know how to invoke it from this class.
+    desc 'bundle_install', 'Run bundle install if required', :hide => true
+    def bundle_install
+      if File.exists?('Gemfile') and !system('bundle check &>/dev/null')
+        announce 'Bundling'
+        system! 'bundle install'
       end
     end
 
