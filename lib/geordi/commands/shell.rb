@@ -4,8 +4,8 @@
 desc 'shell TARGET', 'Open a shell on a Capistrano deploy target'
 def shelll(target, *args)
   require 'geordi/remote'
-  ENV['BUNDLE_BIN_PATH'] = 'Trick capistrano safeguard in deploy.rb into believing bundler is present by setting this variable.'
 
+  ENV['BUNDLE_BIN_PATH'] = 'Trick capistrano safeguard in deploy.rb into believing bundler is present by setting this variable.'
   remote = Geordi::Remote.new(target)
-  remote.shell :command => command #, :select_server => true # << DEFAULT!
+  remote.shell
 end
