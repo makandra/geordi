@@ -1,8 +1,10 @@
 require 'thor'
 require 'bundler'
+require 'geordi/interaction'
 
 module Geordi
   class CLI < Thor
+    include Geordi::Interaction
 
     # load all tasks defined in lib/geordi/commands
     Dir[File.expand_path '../commands/*.rb', __FILE__].each do |file|
