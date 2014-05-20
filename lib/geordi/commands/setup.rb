@@ -8,10 +8,10 @@ LONGDESC
 option :test, :type => :boolean, :aliases => '-t', :desc => 'After setup, run tests'
 
 def setup
-  invoke 'create_databases'
-  invoke 'migrate'
+  invoke_cmd 'create_databases'
+  invoke_cmd 'migrate'
 
   success 'Successfully set up the project.'
 
-  invoke 'test' if options.test
+  invoke_cmd 'test' if options.test
 end

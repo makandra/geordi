@@ -25,20 +25,15 @@ Gem::Specification.new do |s|
   s.post_install_message = <<-ATTENTION
 
     ********************************************
-    geordi 0.18.0 removes the following scripts:
-      cuc, migrate-all, rs, tests
+    geordi 0.18.0 moves most of the scripts to
+    the `geordi` binary. Run `geordi` and
+    `geordi help <cmd>` for further information.
 
-    Their functionality has moved to the geordi
-    script. Run `geordi` and `geordi test help`
-    for further information.
+    Create aliases for geordi for quick access:
+    (Add to your ~/.bashrc)
 
-    To get them back, add the following aliases
-    to your ~/.bashrc:
-
-      alias cuc="geordi test cucumber"
-      alias migrate-all="geordi migrate"
-      alias rs="geordi test rspec"
-      alias tests="geordi test all"
+      alias g="geordi"
+      alias rs="geordi rspec"
     ********************************************
 
   ATTENTION

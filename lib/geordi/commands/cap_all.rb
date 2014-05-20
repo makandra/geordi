@@ -16,7 +16,7 @@ def all_targets(*args)
     command = "bundle exec cap #{stage} " + args.join(' ')
     note_cmd command
 
-    system!(command, :fail_message => 'Capistrano failed. Have a look!')
+    Util.system!(command, :fail_message => 'Capistrano failed. Have a look!')
   end
 
 end

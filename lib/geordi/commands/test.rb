@@ -2,10 +2,10 @@ desc 'test', 'Run all employed tests'
 def test
   puts
 
-  invoke 'with_rake'
-  invoke 'test_unit'
-  invoke 'rspec'
-  invoke 'cucumber'
+  invoke_cmd 'with_rake'
+  invoke_cmd 'test_unit'
+  invoke_cmd 'rspec'
+  invoke_cmd 'cucumber'
 
   success 'Successfully ran tests.'
 end

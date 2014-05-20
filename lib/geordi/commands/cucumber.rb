@@ -7,7 +7,7 @@ LONGDESC
 def cucumber(*files)
   require 'geordi/cucumber'
 
-  invoke 'bundle_install'
+  invoke_cmd 'bundle_install'
 
   if File.directory?('features')
     announce 'Running features'

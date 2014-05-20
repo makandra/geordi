@@ -60,8 +60,7 @@ begin
     dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
   end
 
-  puts
-  puts "Dumping database for \"#{environment}\" environment ..."
+  puts "> Dumping database for \"#{environment}\" environment ..."
 
   host = config['host'] || 'localhost'
 
@@ -78,8 +77,7 @@ begin
 
   dump_size_kb = (File.size(dump_path) / 1024).round
 
-  puts "Dumped to #{dump_path} (#{dump_size_kb} KB)"
-  puts
+  puts "> Dumped to #{dump_path} (#{dump_size_kb} KB)"
 rescue Exception => e
   $stderr.puts e.message
   exit 1

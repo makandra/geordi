@@ -1,9 +1,13 @@
+require 'capistrano'
+
 module Geordi
   class CapistranoConfig
 
-    attr_accessor :stage, :root
+    attr_accessor :root
 
     def initialize(stage)
+      ENV['BUNDLE_BIN_PATH'] = 'Trick capistrano safeguard in deploy.rb into believing bundler is present by setting this variable.'
+
       @stage = stage
       @root = find_project_root!
       load_capistrano_config
@@ -41,8 +45,8 @@ module Geordi
       config.load('deploy')
       config.load('config/deploy')
       if @stage and @stage != ''
-        config.stage = @stage
-        config.find_and_execute_task(stage)
+        config[:stage] = @stage
+        config.find_and_execute_task(@stage)
       end
 
       @capistrano_config = config

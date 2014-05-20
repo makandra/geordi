@@ -1,6 +1,7 @@
 require 'thor'
 require 'bundler'
 require 'geordi/interaction'
+require 'geordi/util'
 
 module Geordi
   class CLI < Thor
@@ -13,24 +14,14 @@ module Geordi
 
     private
 
-    # Run a command with a clean environment.
-    # Print an error message and exit if the command fails.
-    def system!(*commands)
-      options = commands.last.is_a?(Hash) ? commands.pop : {}
-
-      # Remove the gem's Bundler environment when running commands.
-      Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
-    end
-
     def file_containing?(file, regex)
       File.exists?(file) and File.read(file).scan(regex).any?
     end
 
     # fix weird implementation of #invoke
-    def invoke(name, task=nil, args = [], opts = {}, config=nil)
-      super(name, task, args, opts, config)
+    def invoke_cmd(name, task=nil, args = [], opts = {}, config=nil)
+      invoke(name, task, args, opts, config)
     end
-
 
   end
 end
