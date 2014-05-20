@@ -3,17 +3,12 @@ desc 'devserver', 'Start a development server'
 option :port, :aliases => '-p', :default => '3000'
 
 def devserver
-  invoke 'bundle_install'
+  invoke_cmd 'bundle_install'
+  require 'geordi/util'
 
   announce 'Booting a development server'
-  note 'Port: ' + options.port
+  note "URL: http://#{File.basename(Dir.pwd)}.vcap.me:#{options.port}"
+  puts
 
-  command = if File.exists?('script/server')
-    'script/server' # Rails 2
-  else
-    'bundle exec rails server' # Rails 3+
-  end
-
-  command << " -p #{options.port}"
-  system command
+  Util.system! Util.server_command + " -p #{options.port}"
 end

@@ -8,11 +8,11 @@ LONGDESC
 def update
   announce 'Updating repository'
   note_cmd 'git pull'
-  system! 'git pull'
+  Util.system! 'git pull'
 
-  invoke 'migrate'
+  invoke_cmd 'migrate'
 
   success 'Successfully updated the project.'
 
-  invoke 'test' if options.test
+  invoke_cmd 'test' if options.test
 end

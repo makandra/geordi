@@ -6,13 +6,13 @@ LONGDESC
 
 def rspec(*files)
   if File.exists?('spec/spec_helper.rb')
-    invoke 'bundle_install'
+    invoke_cmd 'bundle_install'
 
     announce 'Running specs'
 
     if file_containing?('Gemfile', /parallel_tests/) and files.empty?
       note 'All specs at once (using parallel_tests)'
-      system! 'bundle exec rake parallel:spec'
+      Util.system! 'bundle exec rake parallel:spec'
 
     else
       # tell which specs will be run
@@ -30,7 +30,7 @@ def rspec(*files)
       command << files.join(' ')
 
       puts
-      system! command.join(' ')
+      Util.system! command.join(' ')
     end
   else
     note 'RSpec not employed.'

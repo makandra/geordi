@@ -92,8 +92,9 @@ module Geordi
       if features_to_run.empty?
         note 'All features in features/'
       else
-        passed_by = (features_to_run == rerun_txt_features && features_to_run != command_line_features) ? 'rerun.txt' : 'command line'
-        note 'Only: ' + features_to_run.join(', ') + " (from #{passed_by})"
+        notification = 'Only: ' + features_to_run.join(', ')
+        notification << + ' (from rerun.txt)' if  (features_to_run == rerun_txt_features) && (features_to_run != command_line_features)
+        note notification
       end
     end
 
