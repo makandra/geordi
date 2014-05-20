@@ -1,6 +1,9 @@
+require 'geordi/interaction'
+
 module Geordi
   class Util
     class << self
+      include Geordi::Interaction
 
       # Run a command with a clean environment.
       # Print an error message and exit if the command fails.

@@ -16,7 +16,7 @@ module Geordi
     end
 
     def note_cmd(text)
-      message = "> `#{text}`"
+      message = "> #{text}"
       puts "\e[35m#{message}\e[0m" # pink
     end
 

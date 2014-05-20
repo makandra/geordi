@@ -43,7 +43,9 @@ module Geordi
       note "Downloading remote dump to #{relative_destination} ..."
       Util.system! "scp #{@config.user}@#{@config.primary_server}:#{REMOTE_DUMP_PATH} #{destination_path}"
 
-      success "Dumped the #{@stage} database to: #{relative_destination}"
+      success "Dumped the #{@stage} database to #{relative_destination}"
+
+      destination_path
     end
 
     def console(options = {})

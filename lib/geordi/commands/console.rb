@@ -1,4 +1,4 @@
-desc 'console TARGET', 'Open a Rails console on a Capistrano deploy target'
+desc 'console TARGET', 'Open a Rails console on a Capistrano deploy target or locally'
 def console(target = 'development', *args)
   require 'geordi/remote'
 
