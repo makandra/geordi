@@ -1,21 +1,17 @@
 require 'capistrano'
 require 'geordi/capistrano_config'
+require 'highline/import'
 
 module Geordi
-  module Remote
+  class Remote
 
     def initialize(stage)
-      @stage = stage
-    end
-
-    def config
-      @config ||= {}
-      @config[stage] ||= CapistranoConfig.new(stage)
+      @config = CapistranoConfig.new(stage)
     end
 
     def select_server
       choose do |menu|
-        config.servers.each do |server|
+        @config.servers.each do |server|
           menu.choice(server) { server }
         end
 
@@ -29,11 +25,11 @@ module Geordi
     def shell(options = {})
       server = select_server # option to skip this
 
-      remote_commands = [ 'cd', config.path ]
-      remote_commands << '&&' << config.shell
+      remote_commands = [ 'cd', @config.path ]
+      remote_commands << '&&' << @config.shell
       remote_commands << "-c '#{options[:command]}'" if options[:command]
 
-      args = [ 'ssh', %(#{config.user}@#{server}), '-t', remote_commands.join(' ') ]
+      args = [ 'ssh', %(#{@config.user}@#{server}), '-t', remote_commands.join(' ') ]
       if options.fetch(:exec, true)
         exec(*args)
       else
