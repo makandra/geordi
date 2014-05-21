@@ -1,9 +1,11 @@
 require "rubygems"
 require 'geordi/firefox_for_selenium'
+require 'geordi/interaction'
 require 'tempfile'
 
 module Geordi
   class Cucumber
+    include Geordi::Interaction
 
     VNC_DISPLAY = ':17'
     VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024"
