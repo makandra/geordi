@@ -11,7 +11,7 @@ def cucumber(*files)
 
   if File.directory?('features')
     announce 'Running features'
-    Geordi::Cucumber.new.run(files) or fail
+    Geordi::Cucumber.new.run(files) or fail 'Cucumber failed.'
   else
     note 'Cucumber not employed.'
   end
