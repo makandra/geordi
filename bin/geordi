@@ -1,6 +1,10 @@
 #!/usr/bin/env ruby
 
-require 'geordi'
-require 'thor'
+require 'geordi/util'
 
-Geordi::CLI.start
+Geordi::Util.installing_missing_gems do
+  require 'geordi'
+  require 'thor'
+
+  Geordi::CLI.start
+end
