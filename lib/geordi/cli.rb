@@ -20,7 +20,7 @@ module Geordi
 
     # fix weird implementation of #invoke
     def invoke_cmd(name, task=nil, args = [], opts = {}, config=nil)
-      invoke(name, task, args, opts, config)
+      invoke(name, args, opts, config)
     end
 
   end

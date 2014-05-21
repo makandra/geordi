@@ -30,6 +30,7 @@ def dump(target = nil, *args)
       loader.load
 
       success "Your #{loader.config['database']} database has now the data of #{options.load}."
+
     else
       announce 'Dumping the development database'
       Util.system! 'dumple development'
