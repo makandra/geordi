@@ -16,7 +16,7 @@ module Geordi
         @root = find_project_root!
         load_capistrano_config
       end
-      
+
       def user
         @capistrano_config.fetch(:user)
       end
@@ -24,7 +24,7 @@ module Geordi
       def servers
         @capistrano_config.find_servers(:roles => [:app])
       end
-      
+
       def primary_server
         @capistrano_config.find_servers(:roles => [:app], :only => { :primary => true }).first
       end
@@ -40,7 +40,7 @@ module Geordi
       def shell
         @capistrano_config.fetch(:default_shell, 'bash --login')
       end
-      
+
 
       private
 
@@ -49,7 +49,9 @@ module Geordi
         config.load('deploy')
         config.load('config/deploy')
         if @stage and @stage != ''
+          puts ::Capistrano::Version.to_s
           config.stage = @stage
+
           config.find_and_execute_task(stage)
         end
 
@@ -83,7 +85,7 @@ module Geordi
         exit 1
       end
     end
-    
+
     def select_server
       choose do |menu|
         config.servers.each do |server|
@@ -99,11 +101,11 @@ module Geordi
 
     def shell_for(command, options = {})
       server = options[:select_server] ? select_server : config.primary_server
-      
+
       remote_commands = [ 'cd', config.path ]
       remote_commands << '&&' << config.shell
       remote_commands << "-c '#{command}'" if command
-      
+
       args = [ 'ssh', %(#{config.user}@#{server}), '-t', remote_commands.join(' ') ]
       if options.fetch(:exec, true)
         exec(*args)
@@ -111,6 +113,6 @@ module Geordi
         system(*args)
       end
     end
-  
+
   end
 end
