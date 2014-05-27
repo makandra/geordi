@@ -13,9 +13,9 @@ def migrate
     if file_containing?('Gemfile', /parallel_tests/)
       Util.system! 'bundle exec rake db:migrate parallel:prepare'
     else
-      Util.system! 'power-rake db:migrate'
+      invoke_cmd 'rake', 'db:migrate'
     end
   else
-    puts 'No migrations found.'
+    puts 'No migrations directory found.'
   end
 end

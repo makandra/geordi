@@ -19,8 +19,9 @@ module Geordi
     end
 
     # fix weird implementation of #invoke
-    def invoke_cmd(name, task=nil, args = [], opts = {}, config=nil)
-      invoke(name, args, opts, config)
+    def invoke_cmd(name, *args)
+      options = args.pop if args.last.is_a?(Hash)
+      invoke(name, args, options)
     end
 
   end
