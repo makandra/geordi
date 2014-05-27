@@ -5,6 +5,10 @@ module Geordi
     class << self
       include Geordi::Interaction
 
+      # Geordi commands sometimes require external gems. However, we don't want
+      # all employed gems as runtime dependencies because that would
+      # unnecessarily slow down all commands.
+      # Thus, we have this handy method here.
       def installing_missing_gems(&block)
         yield
       rescue LoadError => e
@@ -13,12 +17,13 @@ module Geordi
 
         # install missing gem
         warn 'Probably missing gem: ' + gem_name
+        wait 'Auto-install it?'
         system! install_command, :show_cmd => true
 
         # retry
         Gem.clear_paths
-        require gem_name
         note 'Trying again ...'
+        require gem_name
         retry
       end
 
