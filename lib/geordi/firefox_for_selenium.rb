@@ -24,6 +24,13 @@ module Geordi
       path(version).join(name)
     end
 
+    def self.setup_firefox
+      path = path_from_config
+      if path
+        ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+      end
+    end
+
 
     class PathFromConfig
 

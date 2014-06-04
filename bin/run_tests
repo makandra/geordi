@@ -1,0 +1,4 @@
+#!/usr/bin/env ruby
+require File.join(File.dirname(__FILE__), '../lib/geordi/run_tests')
+
+Geordi::RunTests.new.run

@@ -208,3 +208,13 @@ Runs both `rs` and `cuc`. Call from any project directory:
     tests
 
 More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
+
+
+run_tests
+---------
+
+Enables VNC and setups firefox just like "cuc", but simply runs the given command.
+
+Useful if your project does not use "cucumber", so you can for example say
+
+  run_tests rake test:integration
