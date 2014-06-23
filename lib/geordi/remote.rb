@@ -16,7 +16,7 @@ module Geordi
     end
 
     def select_server
-      server = choose do |menu|
+      selected_server = choose do |menu|
         @config.servers.each do |server|
           menu.choice(server) { server }
         end
@@ -28,11 +28,11 @@ module Geordi
       end
 
       puts
-      server
+      selected_server
     end
 
-    def dump
-      shell :server => @config.primary_server, :remote_command => "dumple #{@config.env} --for_download"
+    def dump(options = {})
+      shell(options.merge :remote_command => "dumple #{@config.env} --for_download")
 
       destination_directory = File.join(@config.root, 'tmp')
       FileUtils.mkdir_p destination_directory
@@ -49,11 +49,11 @@ module Geordi
     end
 
     def console(options = {})
-      shell :remote_command => Util.console_command(@config.env)
+      shell(options.merge :remote_command => Util.console_command(@config.env))
     end
 
     def shell(options = {})
-      server = options[:server] || select_server
+      server = options[:select_server] ? select_server : @config.primary_server
 
       remote_command = "cd #{@config.path} && #{@config.shell}"
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
