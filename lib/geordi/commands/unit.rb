@@ -1,5 +1,5 @@
-desc 'test_unit', 'Run Test::Unit'
-def test_unit
+desc 'unit', 'Run Test::Unit'
+def unit
   if File.exists?('test/test_helper.rb')
     invoke_cmd 'bundle_install'
 
