@@ -35,7 +35,7 @@ module Geordi
         options = commands.last.is_a?(Hash) ? commands.pop : {}
         note_cmd commands.join(' ') if options[:show_cmd]
 
-        # Remove the gem's Bundler environment when running commands.
+        # Remove Geordi's Bundler environment when running commands.
         Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
       end
 

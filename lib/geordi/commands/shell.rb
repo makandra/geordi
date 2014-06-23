@@ -2,8 +2,10 @@
 # it can still be called with `geordi shell` :)
 
 desc 'shell TARGET', 'Open a shell on a Capistrano deploy target'
+option :select_server, :default => false, :type => :boolean, :aliases => '-s'
 def shelll(target, *args)
   require 'geordi/remote'
 
-  Geordi::Remote.new(target).shell
+  announce 'Opening a shell on ' + target
+  Geordi::Remote.new(target).shell(options)
 end
