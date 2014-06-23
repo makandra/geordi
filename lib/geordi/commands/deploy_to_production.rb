@@ -56,7 +56,7 @@ def prompt(message, default)
   print "#{message}"
   print " [#{default}]" if default
   print ": "
-  input = gets.strip
+  input = $stdin.gets.strip
   if input.empty? && default
     input = default
   end
