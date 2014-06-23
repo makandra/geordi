@@ -26,6 +26,7 @@ def deploy_to_production
   call_or_fail "git log #{production_branch}..#{master_branch} --oneline"
 
   if prompt("Go ahead with the deployment? (yN)", "n").downcase == 'y'
+    puts
     capistrano_call = "cap #{production_stage} deploy:migrations"
     if file_containing?('Gemfile', /capistrano/)
       capistrano_call = "bundle exec #{capistrano_call}"
@@ -41,7 +42,7 @@ end
 private
 
 def call_or_fail(command, return_output = false)
-  note "`#{command}`"
+  note_cmd command
   if return_output
     result = `#{command}`.to_s.strip
     $?.success? or fail "Error while calling #{command}: #{$?}"
@@ -60,6 +61,5 @@ def prompt(message, default)
   if input.empty? && default
     input = default
   end
-  puts
   input
 end
