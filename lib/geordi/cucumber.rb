@@ -33,7 +33,7 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            fail 'VNC viewer not found. Install it using cuc-vnc-setup.'
+            fail 'VNC viewer not found. Install it with `geordi setup-vnc`.'
           else
             note 'VNC viewer could not be opened:'
             puts error
@@ -224,7 +224,7 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        warn 'Could not launch VNC server. Install it by running cuc-vnc-setup.'
+        warn 'Could not launch VNC server. Install it with `geordi setup-vnc`.'
         false
       else
         warn 'Starting VNC failed:'
