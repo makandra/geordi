@@ -30,7 +30,7 @@ def rspec(*files)
       command << files.join(' ')
 
       puts
-      Util.system! command.join(' ')
+      Util.system! command.join(' '), :fail_message => 'Specs failed.'
     end
   else
     note 'RSpec not employed.'
