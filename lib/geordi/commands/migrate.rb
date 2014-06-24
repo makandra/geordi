@@ -1,8 +1,8 @@
 desc 'migrate', 'Migrate all databases'
 long_desc <<-LONGDESC
-Runs `power-rake db:migrate` if parallel_tests does not exist in your
-`Gemfile`. Otherwise it runs migrations in your development environment and
-executes `b rake parallel:prepare` after that.
+If you are using parallel_tests, this runs migrations in your development
+environment and rake parallel:prepare afterwards. Otherwise, invokes geordi rake
+with db:migrate.
 LONGDESC
 
 def migrate
@@ -12,12 +12,13 @@ def migrate
   if File.directory?('db/migrate')
     if file_containing?('Gemfile', /parallel_tests/)
       note 'Development and parallel test databases'
+      puts
 
       Util.system! 'bundle exec rake db:migrate parallel:prepare'
     else
       invoke_cmd 'rake', 'db:migrate'
     end
   else
-    puts 'No migrations directory found.'
+    note 'No migrations directory found.'
   end
 end
