@@ -11,6 +11,8 @@ def migrate
 
   if File.directory?('db/migrate')
     if file_containing?('Gemfile', /parallel_tests/)
+      note 'Development and parallel test databases'
+
       Util.system! 'bundle exec rake db:migrate parallel:prepare'
     else
       invoke_cmd 'rake', 'db:migrate'
