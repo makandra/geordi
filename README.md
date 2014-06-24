@@ -41,8 +41,8 @@ Commands:
   geordi setup_firefox_for_selenium  # [sic]
   geordi setup_vnc                   # ?
   geordi shell TARGET                # Open a shell on a Capistrano deploy target
-  geordi test                        # Run all employed tests
-  geordi test_unit                   # Run Test::Unit
+  geordi tests                       # Run all employed tests
+  geordi unit                        # Run Test::Unit
   geordi update                      # Bring a project up to date
   geordi version                     # Print the current version of geordi
   geordi vnc_show                    # Show the hidden VNC window
