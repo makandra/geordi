@@ -20,7 +20,7 @@ module Geordi
 
     # fix weird implementation of #invoke
     def invoke_cmd(name, *args)
-      options = args.pop if args.last.is_a?(Hash)
+      options = args.last.is_a?(Hash) ? args.pop : {}
       invoke(name, args, options)
     end
 
