@@ -1,5 +1,6 @@
 desc 'console TARGET', 'Open a Rails console on a Capistrano deploy target or locally'
 option :select_server, :default => false, :type => :boolean, :aliases => '-s'
+
 def console(target = 'development', *args)
   require 'geordi/remote'
 
