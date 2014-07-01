@@ -19,8 +19,6 @@ def dump(target = nil, *args)
   require 'geordi/dump_loader'
   require 'geordi/remote'
 
-  sourcing_announcement = "Sourcing dump into the #{loader.config['database']} db"
-
   if target.nil?
     if options.load
       # validate load option
@@ -29,7 +27,7 @@ def dump(target = nil, *args)
 
       loader = DumpLoader.new(options.load)
 
-      announce sourcing_announcement
+      announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
 
       success "Your #{loader.config['database']} database has now the data of #{options.load}."
@@ -47,7 +45,7 @@ def dump(target = nil, *args)
     if options.load
       loader = DumpLoader.new(dump_path)
 
-      announce sourcing_announcement
+      announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
 
       success "Your #{loader.config['database']} database has now the data of #{target}."
