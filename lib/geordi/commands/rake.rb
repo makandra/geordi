@@ -5,7 +5,7 @@ def rake(*args)
       call = ['bundle exec rake'] + args + ["RAILS_ENV=#{env}"]
       note_cmd call.join(' ')
 
-      system *call
+      Util.system! *call
     end
   end
 end
