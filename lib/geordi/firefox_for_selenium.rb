@@ -3,6 +3,7 @@ require 'tempfile'
 
 module Geordi
   module FirefoxForSelenium
+    include Geordi::Interaction
 
     FIREFOX_FOR_SELENIUM_BASE_PATH = Pathname.new('~/bin/firefoxes').expand_path
     FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'
@@ -27,6 +28,7 @@ module Geordi
 
 
     class PathFromConfig
+      include Geordi::Interaction
 
       def run
         unless system_firefox
