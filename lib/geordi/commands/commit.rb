@@ -4,6 +4,7 @@ def commit
 end
 
 class Gitpt
+  include Geordi::Interaction
   require 'yaml'
   require 'highline'
   require 'pivotal-tracker'
