@@ -25,7 +25,7 @@ def deploy_to_production
 
   call_or_fail "git log #{production_branch}..#{master_branch} --oneline"
 
-  if prompt("Go ahead with the deployment? (yN)", "n").downcase == 'y'
+  if prompt("Go ahead with the deployment? ", "n").downcase == 'y'
     puts
     capistrano_call = "cap #{production_stage} deploy:migrations"
     if file_containing?('Gemfile', /capistrano/)
