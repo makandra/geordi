@@ -43,7 +43,7 @@ module Geordi
         if File.exists?('script/console')
           'script/console ' + environment # Rails 2
         else
-          'bundle exec rails console' + environment
+          'bundle exec rails console ' + environment
         end
       end
 
