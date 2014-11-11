@@ -80,6 +80,7 @@ module Geordi
 
 
     class Installer
+      include Geordi::Interaction
 
       def initialize(version)
         @version = version
@@ -156,7 +157,7 @@ module Geordi
 
       def check_if_run_before
         if original_binary.exist?
-          puts 'This version seems to be already installed.'
+          note 'This version seems to be already installed.'
           puts
           wait 'Press ENTER to continue anyway or press CTRL+C to abort.'
         end
@@ -168,9 +169,9 @@ module Geordi
         puts left(<<-INSTRUCTION)
         Please download an old version of Firefox from:
           #{download_url}
-        and unpack it to:
-          #{path}
-        Don't create an extra #{path.join('firefox')} directory.
+        Unpack it with: tar xvjf firefox-24.0.tar.bz2
+        Move it: mv firefox #{path}/
+        Now #{path.join('firefox')} should be the firefox binary, not a directory.
 
         INSTRUCTION
         wait "Press ENTER when you're done."
@@ -187,7 +188,7 @@ module Geordi
       end
 
       def patch_old_firefox
-        puts "Patching #{binary} so it uses the new profile and never re-uses windows from other Firefoxes..."
+        note "Patching #{binary} so it uses the new profile and never re-uses windows from other Firefoxes..."
         execute_command("mv #{binary} #{original_binary}")
         execute_command("mv #{binary}-bin #{original_binary}-bin")
         patched_binary = Tempfile.new('firefox')
@@ -203,26 +204,28 @@ module Geordi
 
       def configure_old_firefox
         puts left(<<-INSTRUCTION)
-        This script will now open the patched copy of Firefox.
+        You will now have to do some manual configuration.
 
+        This script will open the patched copy of Firefox when you press ENTER.
         Please perform the following steps manually:
 
-        - Disable all automatic updates under Edit / Preferences / Advanced /
-          Update (do this quickly or Firefox will already have updated)
         - Disable the default browser check when Firefox launches
         - Check that the version number is correct (#{@version})
-        - You should not see your bookmarks, addons, plugins from your regular
+        - You should not see your bookmarks, add-ons, plugins from your regular
           Firefox profile
+        - Disable all automatic updates under Edit / Preferences / Advanced /
+          Update (do this quickly or Firefox will already have updated)
 
         INSTRUCTION
-        wait "Press ENTER when you're ready to open Firefox and perform these steps."
 
+        wait 'Open the patched copy of Firefox with ENTER.'
         run_firefox_for_selenium
       end
 
       def kkthxbb
+        success "Congratulations, you're done!"
+
         puts left(<<-INSTRUCTION)
-        Congratulations, you're done!
 
         Your patched copy of Firefox will be used when you run Cucumber using
         the cucumber script that comes with the geordi gem. If you prefer to run
