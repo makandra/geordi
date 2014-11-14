@@ -1,4 +1,4 @@
-desc 'console TARGET', 'Open a Rails console on a Capistrano deploy target or locally'
+desc 'console [TARGET]', 'Open a Rails console locally or on a Capistrano deploy target'
 option :select_server, :default => false, :type => :boolean, :aliases => '-s'
 
 def console(target = 'development', *args)
