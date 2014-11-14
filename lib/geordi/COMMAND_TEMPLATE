@@ -1,0 +1,20 @@
+# This file serves as a template for adding new commands.
+# For more inspiration, see already implemented commands.
+
+desc 'command ARG [OPTIONAL]', 'one-line description'
+long_desc <<-LONGDESC
+Detailed description with anything the user needs to know.
+LONGDESC
+
+option :opt, :type => :boolean, :aliases => '-o', :banner => 'VALUE_NAME',
+       :desc => 'If set, VALUE_NAME will be used for something'
+
+def setup
+  # Invoke other commands like this:
+  invoke_cmd 'other_command', 'argument', :an => 'option'
+
+  fail 'Option missing' unless options.opt?
+
+  # For formatted output, see geordi/interaction.rb
+  success 'Done.'
+end
