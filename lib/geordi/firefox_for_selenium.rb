@@ -53,21 +53,25 @@ module Geordi
       end
 
       def default_version
-        puts "No firefox version given, defaulting to #{DEFAULT_FIREFOX_VERSION}."
-        puts "Specify a version by putting it in a file named \"#{VERSION_SPECIFICATION_FILE}\"."
+        note "No firefox version given, defaulting to #{DEFAULT_FIREFOX_VERSION}."
+        note "Specify a version by putting it in a file named \"#{VERSION_SPECIFICATION_FILE}\"."
         puts
         DEFAULT_FIREFOX_VERSION
       end
 
       def validate_install
         unless FirefoxForSelenium.binary(@version).exist?
-          puts "Firefox #{@version} not found."
-          puts "Install it with"
-          puts "  setup-firefox-for-selenium #{@version}"
-          puts
-          puts "If you want to use your system firefox and not see this message, add"
-          puts "a \".firefox-version\" file with the content \"system\"."
-          puts
+          note "Firefox #{@version} not found."
+
+          puts left(<<-INSTRUCTIONS)
+          Install it with
+            geordi setup_firefox_for_selenium #{@version}
+
+          If you want to use your system firefox and not see this message, add
+          a .firefox-version file with the content "system".
+
+          INSTRUCTIONS
+
           wait "Press ENTER to continue or press CTRL+C to abort."
         end
       end
@@ -105,12 +109,6 @@ module Geordi
 
       def run_firefox_for_selenium(args = '')
         execute_command("PATH=#{path}:$PATH firefox #{args}")
-      end
-
-      def die(message)
-        puts message
-        puts
-        exit(1)
       end
 
       def path
@@ -167,10 +165,8 @@ module Geordi
         path.mkpath
 
         puts left(<<-INSTRUCTION)
-        Please download an old version of Firefox from:
-          #{download_url}
-        Unpack it with: tar xvjf firefox-24.0.tar.bz2
-        Move it: mv firefox #{path}/
+        Please download an old version of Firefox from: #{download_url}
+        Unpack it with: tar xvjf firefox-#{@version}.tar.bz2 -C #{path} --strip-components=1
         Now #{path.join('firefox')} should be the firefox binary, not a directory.
 
         INSTRUCTION
@@ -180,7 +176,7 @@ module Geordi
       end
 
       def create_separate_profile
-        puts "Creating a separate profile named '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}' so your own profile will be safe..."
+        note "Creating a separate profile named '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}' so your own profile will be safe..."
         # don't use the patched firefox binary for this, we don't want to give
         # a -p option here
         execute_command("PATH=#{path}:$PATH firefox -no-remote -CreateProfile #{FIREFOX_FOR_SELENIUM_PROFILE_NAME}")
