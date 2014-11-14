@@ -58,7 +58,8 @@ tests afterwards.
 b
 ---
 
-Runs the given command under `bundle exec` if a `Gemfile` is present in your working directory. If no `Gemfile` is present just runs the given command:
+Runs the given command under `bundle exec` if a `Gemfile` is present in your
+working directory. If no `Gemfile` is present just runs the given command:
 
     b spec spec/models
 
@@ -73,3 +74,11 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
     dumple development
 
 More information at http://makandracards.com/makandra/1008-dump-your-database-with-dumple
+
+
+Contributing
+============
+
+Copy `geordi/COMMAND_TEMPLATE` to `geordi/commands/your_command` and edit it to
+do what you need it to do. Usually, it is hard to automatedly test geordi
+commands, so make sure you've tested it sufficiently manually.
