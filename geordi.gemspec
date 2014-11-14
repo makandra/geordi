@@ -25,15 +25,17 @@ Gem::Specification.new do |s|
   s.post_install_message = <<-ATTENTION
 
     ********************************************
+
     geordi 0.18.0 moves most of the scripts to
     the `geordi` binary. Run `geordi` and
     `geordi help <cmd>` for further information.
 
-    Create aliases for geordi for quick access:
-    (Add to your ~/.bashrc)
+    Create aliases for geordi for quick access.
+    Suggestion: Add these to your ~/.bashrc:
 
       alias g="geordi"
       alias rs="geordi rspec"
+
     ********************************************
 
   ATTENTION
