@@ -79,6 +79,6 @@ More information at http://makandracards.com/makandra/1008-dump-your-database-wi
 Contributing
 ============
 
-Copy `geordi/COMMAND_TEMPLATE` to `geordi/commands/your_command` and edit it to
+Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and edit it to
 do what you need it to do. Usually, it is hard to automatedly test geordi
 commands, so make sure you've tested it sufficiently manually.
