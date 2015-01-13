@@ -1,7 +1,10 @@
-require "rubygems"
-require 'geordi/firefox_for_selenium'
-require 'geordi/interaction'
+require 'rubygems'
 require 'tempfile'
+
+# This require-style is to prevent Ruby from loading files of a different
+# version of Geordi.
+require File.expand_path('../interaction', __FILE__)
+require File.expand_path('../firefox_for_selenium', __FILE__)
 
 module Geordi
   class Cucumber
@@ -206,10 +209,10 @@ module Geordi
         VNC_ENV_VARIABLES.each do |variable|
           ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
         end
-        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__) # FIXME
+        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
         ENV["DISPLAY"] = VNC_DISPLAY
 
-        note 'Selenium is running in a VNC window. Use `geordi show_vnc` to view it.'
+        note 'Selenium is running in a VNC window. Use `geordi vnc-show` to view it.'
       end
     end
 
