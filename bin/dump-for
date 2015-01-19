@@ -1,0 +1,7 @@
+#!/usr/bin/env ruby
+
+if (i = ARGV.index '-s')
+  ARGV[i] = '-l'
+end
+
+exec 'geordi', 'dump', *ARGV
