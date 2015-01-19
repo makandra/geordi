@@ -3,3 +3,5 @@ def version
   require 'geordi/version'
   puts 'Geordi ' + Geordi::VERSION
 end
+map '-v' => :version
+map '--version' => :version
