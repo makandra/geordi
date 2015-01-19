@@ -26,6 +26,12 @@ module Geordi
       path(version).join(name)
     end
 
+    def self.setup_firefox
+      path = path_from_config
+      if path
+        ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+      end
+    end
 
     class PathFromConfig
       include Geordi::Interaction
@@ -53,7 +59,7 @@ module Geordi
       end
 
       def default_version
-        note "No firefox version given, defaulting to #{DEFAULT_FIREFOX_VERSION}."
+        warn "No firefox version given, defaulting to #{DEFAULT_FIREFOX_VERSION}."
         note "Specify a version by putting it in a file named \"#{VERSION_SPECIFICATION_FILE}\"."
         puts
         DEFAULT_FIREFOX_VERSION
