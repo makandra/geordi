@@ -1,4 +1,4 @@
-desc 'apache_site', '?'
+desc 'apache-site', '?'
 def apache_site(*args)
   site = args.shift
   old_cwd = Dir.pwd
