@@ -52,6 +52,18 @@ module Geordi
       end
     end
 
+    def setup_vnc
+      if try_and_start_vnc
+        VNC_ENV_VARIABLES.each do |variable|
+          ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
+        end
+        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
+        ENV["DISPLAY"] = VNC_DISPLAY
+
+        note 'Selenium is running in a VNC window. Use `geordi vnc-show` to view it.'
+      end
+    end
+
     private
 
     attr_accessor :argv
@@ -202,18 +214,6 @@ module Geordi
 
     def use_parallel_tests?
       parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size != 1
-    end
-
-    def setup_vnc
-      if try_and_start_vnc
-        VNC_ENV_VARIABLES.each do |variable|
-          ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
-        end
-        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
-        ENV["DISPLAY"] = VNC_DISPLAY
-
-        note 'Selenium is running in a VNC window. Use `geordi vnc-show` to view it.'
-      end
     end
 
     def try_and_start_vnc
