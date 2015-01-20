@@ -12,7 +12,7 @@ def rspec(*files)
 
     if file_containing?('Gemfile', /parallel_tests/) and files.empty?
       note 'All specs at once (using parallel_tests)'
-      Util.system! 'bundle exec rake parallel:spec'
+      Util.system! 'bundle exec rake parallel:spec', :fail_message => 'Specs failed.'
 
     else
       # tell which specs will be run

@@ -9,8 +9,7 @@ option :test, :type => :boolean, :aliases => '-t', :desc => 'After updating, run
 
 def update
   announce 'Updating repository'
-  note_cmd 'git pull'
-  Util.system! 'git pull'
+  Util.system! 'git pull', :show_cmd => true
 
   invoke_cmd 'migrate'
 
