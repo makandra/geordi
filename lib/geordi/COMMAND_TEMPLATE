@@ -2,7 +2,9 @@
 # For more inspiration, see already implemented commands.
 
 desc 'command ARG [OPTIONAL]', 'one-line description'
-long_desc <<-LONGDESC
+long_desc <<-LONGDESC # optional
+Start with an example: `command bla bla`
+
 Detailed description with anything the user needs to know.
 LONGDESC
 

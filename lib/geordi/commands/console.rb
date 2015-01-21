@@ -1,4 +1,11 @@
 desc 'console [TARGET]', 'Open a Rails console locally or on a Capistrano deploy target'
+long_desc <<-LONGDESC
+Open a Rails console on `staging`: `geordi console staging`
+
+Open a local Rails console: `geordi console`
+LONGDESC
+
+
 option :select_server, :default => false, :type => :boolean, :aliases => '-s'
 
 def console(target = 'development', *args)

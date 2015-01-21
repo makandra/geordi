@@ -1,4 +1,4 @@
-desc 'with_rake', 'Run tests with `rake`'
+desc 'with-rake', 'Run tests with `rake`'
 def with_rake
   if file_containing?('Rakefile', /^task.+default.+(spec|test)/)
     invoke_cmd 'bundle_install'

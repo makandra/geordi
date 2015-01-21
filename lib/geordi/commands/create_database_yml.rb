@@ -1,4 +1,4 @@
-desc 'create_database_yml', '[sic]', :hide => true
+desc 'create-database-yml', '[sic]', :hide => true
 def create_database_yml
   real_yml = 'config/database.yml'
   sample_yml = 'config/database.sample.yml'

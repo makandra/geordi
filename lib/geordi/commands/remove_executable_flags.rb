@@ -1,4 +1,4 @@
-desc 'remove_executable_flags', 'Remove executable-flags from files that should not be executable'
+desc 'remove-executable-flags', 'Remove executable-flags from files that should not be executable'
 def remove_executable_flags
   announce 'Removing executable-flags'
 

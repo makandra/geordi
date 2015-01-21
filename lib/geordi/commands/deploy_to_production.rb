@@ -1,4 +1,4 @@
-desc 'deploy_to_production', 'Deploy to production'
+desc 'deploy-to-production', '[sic]'
 def deploy_to_production
   ENV['PAGER'] = 'cat'
 

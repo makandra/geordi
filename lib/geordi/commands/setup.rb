@@ -1,6 +1,8 @@
 desc 'setup', 'Setup a project for the first time'
 long_desc <<-LONGDESC
-YOU check out a repository, cd into its directory and then let `setup` do the
+Example: `geordi setup`
+
+You check out a repository, cd into its directory and then let `setup` do the
 tiring work: bundle install, create database.yml, create databases,
 migrate (all if applicable). See options for more.
 LONGDESC

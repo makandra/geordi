@@ -1,9 +1,8 @@
 desc 'security-update [step]', 'Support for performing security updates'
 long_desc <<-LONGDESC
-Will prepare a project for a security update when called without arguments, or
-with 'prepare'.
+Preparation for security update: `geordi security-update`
 
-Will finish a security update when called with 'finish'.
+After performing the update: `geordi security-update finish`
 LONGDESC
 
 def security_update(step='prepare')

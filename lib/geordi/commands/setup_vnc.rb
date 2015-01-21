@@ -8,7 +8,7 @@ class ::String
   def green() colorize(32) end
 end
 
-desc 'setup_vnc', '?'
+desc 'setup-vnc', 'Setup VNC for running Selenium tests there'
 def setup_vnc
   `clear`
 
