@@ -1,4 +1,4 @@
-desc 'cleanup_directory', 'Remove unneeded files'
+desc 'cleanup-directory', 'Remove unneeded files'
 def cleanup_directory
 
   announce 'Removing tempfiles'

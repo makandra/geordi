@@ -1,4 +1,4 @@
-desc 'create_databases', 'Create all databases', :hide => true
+desc 'create-databases', 'Create all databases', :hide => true
 def create_databases
   invoke_cmd 'create_database_yml'
   invoke_cmd 'bundle_install'

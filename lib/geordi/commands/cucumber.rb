@@ -1,5 +1,7 @@
 desc 'cucumber [FILES]', 'Run Cucumber features'
 long_desc <<-LONGDESC
+Example: `geordi cucumber features/authentication_feature:3`
+
 Runs Cucumber as you want: bundle exec, cucumber_spinner detection,
 separate Firefox for Selenium, etc.
 LONGDESC

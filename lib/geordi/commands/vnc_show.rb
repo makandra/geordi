@@ -1,4 +1,4 @@
-desc 'vnc_show', 'Show the hidden VNC window'
+desc 'vnc-show', 'Show the hidden VNC window'
 def vnc_show
   require 'geordi/cucumber'
 

@@ -1,7 +1,7 @@
-require 'fileutils'
-
-desc 'optimize_png', 'Optimize .png files'
+desc 'optimize-png', 'Optimize .png files'
 long_desc <<-LONGDESC
+Example: `geordi optimize-png`
+
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
 - Eliminates unused colors and reduce bit-depth (if possible)
 - May reduce PNG file size lossless
@@ -16,7 +16,7 @@ Optimize single file:
   optimize_png input.png
 
 
-# More info about pngcrush #
+#### More info about pngcrush
 
 pngcrush -rem allb -reduce -brute original.png optimized.png
 pngcrush -d target-dir/ *.png
@@ -36,6 +36,8 @@ An article explaining why removing gamma correction
 http://hsivonen.iki.fi/png-gamma/
 LONGDESC
 def optimize_png(*args)
+  require 'fileutils'
+
   announce 'Optimizing .png files'
 
   if `which pngcrush`.strip.empty?

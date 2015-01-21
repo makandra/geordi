@@ -1,6 +1,9 @@
 desc 'update', 'Bring a project up to date'
 long_desc <<-LONGDESC
-Brings a project up to date: git pull, bundle install (if necessary) and migrate (if applicable). See options for more.
+Example: `geordi update`
+
+Performs: git pull, bundle install (if necessary) and migrate (if applicable).
+See options for more.
 LONGDESC
 
 option :dump, :type => :string, :aliases => '-d', :banner => 'TARGET',
