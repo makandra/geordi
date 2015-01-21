@@ -1,41 +1,23 @@
-desc 'optimize-png', 'Optimize .png files'
+desc 'png-optimize', 'Optimize .png files'
 long_desc <<-LONGDESC
-Example: `geordi optimize-png`
-
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
-- Eliminates unused colors and reduce bit-depth (if possible)
+- Eliminates unused colors and reduces bit-depth (if possible)
 - May reduce PNG file size lossless
 
-Batch-optimize all *.png in a directory:
-  optimize_png directory
+Batch-optimize all `*.png` files in a directory:
+
+    geordi png-optimize directory
 
 Batch-optimize the current directory:
-  optimize_png .
 
-Optimize single file:
-  optimize_png input.png
+    geordi png-optimize .
 
+Optimize a single file:
 
-#### More info about pngcrush
-
-pngcrush -rem allb -reduce -brute original.png optimized.png
-pngcrush -d target-dir/ *.png
-
--rem allb — remove all extraneous data (Except transparency and gamma; to remove everything except transparency, try -rem alla)
--reduce — eliminate unused colors and reduce bit-depth (If possible)
-
--brute — attempt all optimization methods (Requires MUCH MORE processing time and may not improve optimization by much)
-
-original.png — the name of the original (unoptimized) PNG file
-optimized.png — the name of the new, optimized PNG file
--d target-dir/  — bulk convert into this directory "target-dir"
-
--rem cHRM -rem sRGB -rem gAMA -rem ICC — remove color profiles by name (shortcut -rem alla)
-
-An article explaining why removing gamma correction
-http://hsivonen.iki.fi/png-gamma/
+    geordi png-optimize input.png
 LONGDESC
-def optimize_png(*args)
+
+def png_optimize(*args)
   require 'fileutils'
 
   announce 'Optimizing .png files'

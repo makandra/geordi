@@ -2,9 +2,20 @@ desc 'setup', 'Setup a project for the first time'
 long_desc <<-LONGDESC
 Example: `geordi setup`
 
-You check out a repository, cd into its directory and then let `setup` do the
-tiring work: bundle install, create database.yml, create databases,
-migrate (all if applicable). See options for more.
+Check out a repository, cd into its directory. Now let `setup` do the tiring
+work: run `bundle install`, create `database.yml`, create databases, migrate
+(all if applicable).
+
+After setting up, loads a dump into the development db when called with the
+`--dump` option:
+
+    geordi setup -d staging
+
+After setting up, runs all tests when called with the `--test` option:
+
+    geordi setup -t
+
+See `geordi help setup` for details.
 LONGDESC
 
 option :dump, :type => :string, :aliases => '-d', :banner => 'TARGET',

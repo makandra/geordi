@@ -1,8 +1,8 @@
 desc 'console [TARGET]', 'Open a Rails console locally or on a Capistrano deploy target'
 long_desc <<-LONGDESC
-Open a Rails console on `staging`: `geordi console staging`
-
 Open a local Rails console: `geordi console`
+
+Open a Rails console on `staging`: `geordi console staging`
 LONGDESC
 
 

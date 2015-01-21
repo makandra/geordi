@@ -1,4 +1,4 @@
-desc 'commit', 'Commit using a story titel from Pivotal Tracker'
+desc 'commit', 'Commit using a story title from Pivotal Tracker'
 def commit
   Gitpt.new.run
 end

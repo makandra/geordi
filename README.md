@@ -12,84 +12,84 @@ Installing the `geordi` gem will install some binaries (see below):
 geordi
 ------
 
-The base command line utility offering the commands below.
+The base command line utility offering most of the commands.
 
 You may abbreviate commands by typing only the first letter(s), e.g. `geordi
 dev` will boot a development server, `geordi s -t` will setup a project and run
-tests afterwards.
+tests afterwards. Underscores and dashes are equivalent.
 
-Underscores and dashes are equivalent.
+For details on commands, e.g. supported options, run `geordi help <command>`.
 
-### geordi all-targets
+### geordi all-targets COMMAND
 
-Run a capistrano command on all deploy targets
+Run a capistrano command on all deploy targets.
 
 Example: `geordi all-targets deploy`
 
 
 ### geordi apache-site VIRTUAL_HOST
 
-Enable the given virtual host, disabling all others
+Enable the given virtual host, disabling all others.
 
 
 ### geordi cleanup-directory
 
-Remove unneeded files
+Remove unneeded files.
 
 
 ### geordi commit
 
-Commit using a story titel from Pivotal Tracker
+Commit using a story title from Pivotal Tracker.
 
 
 ### geordi console [TARGET]
 
-Open a Rails console locally or on a Capistrano deploy target
-
-Open a Rails console on `staging`: `geordi console staging`
+Open a Rails console locally or on a Capistrano deploy target.
 
 Open a local Rails console: `geordi console`
+
+Open a Rails console on `staging`: `geordi console staging`
 
 
 ### geordi cucumber [FILES]
 
-Run Cucumber features
+Run Cucumber features.
 
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber as you want: bundle exec, cucumber_spinner detection,
+Runs Cucumber as you want: with `bundle exec`, `cucumber_spinner` detection,
 separate Firefox for Selenium, etc.
 
 
-### geordi deploy-to-production
+### geordi deploy
 
-[sic]
+Guided deployment.
 
 
 ### geordi devserver
 
-Start a development server
+Start a development server.
 
 
 ### geordi dump [TARGET]
 
-Handle dumps
+Handle dumps.
 
 When called without arguments, dumps the development database with `dumple`.
 
     geordi dump
 
-When called with the --load option, sources the specified dump into the
+When called with the `--load` option, sources the specified dump into the
 development database.
 
     geordi dump -l tmp/staging.dump
 
-When called with a capistrano deploy target (e.g. staging), remotely dumps
-the specified target's database and downloads it.
+When called with a capistrano deploy target (e.g. `staging`), remotely dumps
+the specified target's database and downloads it to `tmp/`.
 
     geordi dump staging
 
-When called with a capistrano deploy target and the --load option, sources the
+When called with a capistrano deploy target and the `--load` option, sources the
 dump into the development database after downloading it.
 
     geordi dump staging -l
@@ -97,155 +97,177 @@ dump into the development database after downloading it.
 
 ### geordi help [COMMAND]
 
-Describe available commands or one specific command
+Describe available commands or one specific command.
 
 
 ### geordi migrate
 
-Migrate all databases
+Migrate all databases.
 
 Example: `geordi migrate`
 
-If you are using parallel_tests, this runs migrations in your development
-environment and rake parallel:prepare afterwards. Otherwise, invokes `geordi rake`
-with db:migrate.
+If you are using `parallel_tests`, this runs migrations in your development
+environment and `rake parallel:prepare` afterwards. Otherwise, invokes `geordi rake`
+with `db:migrate`.
 
 
-### geordi optimize-png
+### geordi png-optimize
 
-Optimize .png files
-
-Example: `geordi optimize-png`
+Optimize .png files.
 
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
-- Eliminates unused colors and reduce bit-depth (if possible)
+- Eliminates unused colors and reduces bit-depth (if possible)
 - May reduce PNG file size lossless
 
-Batch-optimize all *.png in a directory:
-  optimize_png directory
+Batch-optimize all `*.png` files in a directory:
+
+    geordi png-optimize directory
 
 Batch-optimize the current directory:
-  optimize_png .
 
-Optimize single file:
-  optimize_png input.png
+    geordi png-optimize .
 
+Optimize a single file:
 
-#### More info about pngcrush
-
-pngcrush -rem allb -reduce -brute original.png optimized.png
-pngcrush -d target-dir/ *.png
-
--rem allb — remove all extraneous data (Except transparency and gamma; to remove everything except transparency, try -rem alla)
--reduce — eliminate unused colors and reduce bit-depth (If possible)
-
--brute — attempt all optimization methods (Requires MUCH MORE processing time and may not improve optimization by much)
-
-original.png — the name of the original (unoptimized) PNG file
-optimized.png — the name of the new, optimized PNG file
--d target-dir/  — bulk convert into this directory "target-dir"
-
--rem cHRM -rem sRGB -rem gAMA -rem ICC — remove color profiles by name (shortcut -rem alla)
-
-An article explaining why removing gamma correction
-http://hsivonen.iki.fi/png-gamma/
+    geordi png-optimize input.png
 
 
 ### geordi rake TASK
 
-Run a rake task in all Rails environments
+Run a rake task in several Rails environments.
+
+Example: `geordi rake db:migrate`
+
+TASK is run in the following Rails environments (if present):
+
+- development
+- test
+- cucumber
 
 
 ### geordi remove-executable-flags
 
-Remove executable-flags from files that should not be executable
+Remove executable-flags from files that should not be executable.
 
 
 ### geordi rspec [FILES]
 
-Run RSpec
+Run RSpec.
 
 Example: `geordi rspec spec/models/user_spec.rb:13`
 
-Runs RSpec as you want: RSpec 1&2 detection, bundle exec, rspec_spinner
-detection.
+Runs RSpec as you want: with RSpec 1/2 detection, `bundle exec`, rspec_spinner
+detection, etc.
 
 
 ### geordi security-update [step]
 
-Support for performing security updates
+Support for performing security updates.
 
 Preparation for security update: `geordi security-update`
 
 After performing the update: `geordi security-update finish`
 
+Switches branches, pulls, pushes and deploys as required by our workflow. Tells
+what it will do before it does it.
+
 
 ### geordi setup
 
-Setup a project for the first time
+Setup a project for the first time.
 
 Example: `geordi setup`
 
-You check out a repository, cd into its directory and then let `setup` do the
-tiring work: bundle install, create database.yml, create databases,
-migrate (all if applicable). See options for more.
+Check out a repository, cd into its directory. Now let `setup` do the tiring
+work: run `bundle install`, create `database.yml`, create databases, migrate
+(all if applicable).
+
+After setting up, loads a dump into the development db when called with the
+`--dump` option:
+
+    geordi setup -d staging
+
+After setting up, runs all tests when called with the `--test` option:
+
+    geordi setup -t
+
+See `geordi help setup` for details.
 
 
 ### geordi setup-firefox-for-selenium VERSION
 
-Install a special firefox for running Selenium tests
+Install a special firefox for running Selenium tests.
 
 
 ### geordi setup-vnc
 
-Setup VNC for running Selenium tests there
+Setup VNC for running Selenium tests there.
 
 
 ### geordi shell TARGET
 
-Open a shell on a Capistrano deploy target
+Open a shell on a Capistrano deploy target.
+
+Example: `geordi shell production`
+
+Lets you select the server to connect to when called with `--select-server`:
+
+    geordi shell production -s
 
 
 ### geordi tests
 
-Run all employed tests
+Run all employed tests.
 
 
 ### geordi unit
 
-Run Test::Unit
+Run Test::Unit.
 
 
 ### geordi update
 
-Bring a project up to date
+Bring a project up to date.
 
 Example: `geordi update`
 
-Performs: git pull, bundle install (if necessary) and migrate (if applicable).
-See options for more.
+Performs: `git pull`, `bundle install` (if necessary) and migrates (if applicable).
+
+After updating, loads a dump into the development db when called with the
+`--dump` option:
+
+    geordi update -d staging
+
+After updating, runs all tests when called with the `--test` option:
+
+    geordi update -t
+
+See `geordi help update` for details.
 
 
 ### geordi version
 
-Print the current version of geordi
+Print the current version of geordi.
 
 
 ### geordi vnc-show
 
-Show the hidden VNC window
+Show the hidden VNC window.
 
 
 ### geordi with-firefox-for-selenium COMMAND
 
-Run a command with firefox for selenium set up
+Run a command with firefox for selenium set up.
+
+Example: `geordi with-firefox-for-selenium b cucumber`
+
+Useful when you need Firefox for Selenium, but can't use the `geordi cucumber`
+command.
 
 
 ### geordi with-rake
 
-Run tests with `rake`
-
-
+Run tests with `rake`.
 
 
 b
@@ -283,5 +305,5 @@ Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and
 edit it to do what you need it to do. Usually, it is hard to automatedly test
 Geordi commands, so make sure you've manually tested it.
 
-Don't forget to update this README. The `geordi` section is automatically updated
-by running `rake update_readme`.
+Don't forget to update this README. The whole `geordi` section is auto-generated
+by `rake update_readme`.
