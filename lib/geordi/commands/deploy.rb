@@ -1,5 +1,5 @@
-desc 'deploy-to-production', '[sic]'
-def deploy_to_production
+desc 'deploy', 'Guided deployment'
+def deploy
   ENV['PAGER'] = 'cat'
 
   master_branch = prompt('master branch', 'master')

@@ -2,9 +2,9 @@ desc 'migrate', 'Migrate all databases'
 long_desc <<-LONGDESC
 Example: `geordi migrate`
 
-If you are using parallel_tests, this runs migrations in your development
-environment and rake parallel:prepare afterwards. Otherwise, invokes `geordi rake`
-with db:migrate.
+If you are using `parallel_tests`, this runs migrations in your development
+environment and `rake parallel:prepare` afterwards. Otherwise, invokes `geordi rake`
+with `db:migrate`.
 LONGDESC
 
 def migrate

@@ -3,6 +3,9 @@ long_desc <<-LONGDESC
 Preparation for security update: `geordi security-update`
 
 After performing the update: `geordi security-update finish`
+
+Switches branches, pulls, pushes and deploys as required by our workflow. Tells
+what it will do before it does it.
 LONGDESC
 
 def security_update(step='prepare')

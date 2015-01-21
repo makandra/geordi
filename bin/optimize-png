@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
 
-exec 'geordi', 'optimize-png', *ARGV
+exec 'geordi', 'png-optimize', *ARGV

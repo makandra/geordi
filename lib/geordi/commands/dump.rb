@@ -4,17 +4,17 @@ When called without arguments, dumps the development database with `dumple`.
 
     geordi dump
 
-When called with the --load option, sources the specified dump into the
+When called with the `--load` option, sources the specified dump into the
 development database.
 
     geordi dump -l tmp/staging.dump
 
-When called with a capistrano deploy target (e.g. staging), remotely dumps
-the specified target's database and downloads it.
+When called with a capistrano deploy target (e.g. `staging`), remotely dumps
+the specified target's database and downloads it to `tmp/`.
 
     geordi dump staging
 
-When called with a capistrano deploy target and the --load option, sources the
+When called with a capistrano deploy target and the `--load` option, sources the
 dump into the development database after downloading it.
 
     geordi dump staging -l

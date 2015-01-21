@@ -1,4 +1,4 @@
-desc 'all-targets', 'Run a capistrano command on all deploy targets'
+desc 'all-targets COMMAND', 'Run a capistrano command on all deploy targets'
 long_desc <<-LONGDESC
 Example: `geordi all-targets deploy`
 LONGDESC
