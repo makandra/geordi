@@ -26,15 +26,14 @@ Gem::Specification.new do |s|
 
     ********************************************
 
-    geordi 0.18.0 moves most of the scripts to
+    geordi 1.0.0 moves most of the scripts to
     the `geordi` binary. Run `geordi` and
     `geordi help <cmd>` for further information.
 
-    Create aliases for geordi for quick access.
-    Suggestion: Add these to your ~/.bashrc:
+    Tip: Create an alias for geordi for quick 
+    access. Add this to your ~/.bashrc:
 
       alias g="geordi"
-      alias rs="geordi rspec"
 
     ********************************************
 
