@@ -1,4 +1,3 @@
 #!/usr/bin/env ruby
-require File.join(File.dirname(__FILE__), '../lib/geordi/gitpt')
 
-Geordi::Gitpt.new.run
+exec 'geordi', 'commit'

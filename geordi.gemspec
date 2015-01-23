@@ -19,4 +19,23 @@ Gem::Specification.new do |s|
   s.test_files    = `git ls-files -- {test,spec,features}/*`.split("\n")
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
+
+  # s.add_development_dependency 'debugger'
+
+  s.post_install_message = <<-ATTENTION
+
+    ********************************************
+
+    geordi 1.0.0 moves most of the scripts to
+    the `geordi` binary. Run `geordi` and
+    `geordi help <cmd>` for further information.
+
+    Tip: Create an alias for geordi for quick 
+    access. Add this to your ~/.bashrc:
+
+      alias g="geordi"
+
+    ********************************************
+
+  ATTENTION
 end

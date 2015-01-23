@@ -1,87 +1,285 @@
 Geordi
 ======
 
-Geordi is a collection of command line tools we use in our daily work with Ruby, Rails and Linux at [makandra](http://makandra.com/).
+Geordi is a collection of command line tools we use in our daily work with
+Ruby, Rails and Linux at [makandra](http://makandra.com/).
 
-Installing the *geordi* gem will link all included tools into your `/usr/bin`:
+Installing the `geordi` gem will install some binaries (see below):
 
-    sudo gem install geordi
-
-Below you can find a list of all included tools.
+    gem install geordi
 
 
-apache-site
------------
+geordi
+------
 
-Enables the given virtual host in `/etc/apache2/sites-available` and disables all other vhosts:
+The base command line utility offering most of the commands.
 
-    site makandra-com
+You may abbreviate commands by typing only the first letter(s), e.g. `geordi
+dev` will boot a development server, `geordi s -t` will setup a project and run
+tests afterwards. Underscores and dashes are equivalent.
 
-More information at http://makandracards.com/makandra/807-shell-script-to-quickly-switch-apache-sites
+For details on commands, e.g. supported options, run `geordi help <command>`.
+
+### geordi all-targets COMMAND
+
+Run a capistrano command on all deploy targets.
+
+Example: `geordi all-targets deploy`
+
+
+### geordi apache-site VIRTUAL_HOST
+
+Enable the given virtual host, disabling all others.
+
+
+### geordi cleanup-directory
+
+Remove unneeded files.
+
+
+### geordi commit
+
+Commit using a story title from Pivotal Tracker.
+
+
+### geordi console [TARGET]
+
+Open a Rails console locally or on a Capistrano deploy target.
+
+Open a local Rails console: `geordi console`
+
+Open a Rails console on `staging`: `geordi console staging`
+
+
+### geordi cucumber [FILES]
+
+Run Cucumber features.
+
+Example: `geordi cucumber features/authentication_feature:3`
+
+Runs Cucumber as you want: with `bundle exec`, `cucumber_spinner` detection,
+separate Firefox for Selenium, etc.
+
+
+### geordi deploy
+
+Guided deployment.
+
+
+### geordi devserver
+
+Start a development server.
+
+
+### geordi dump [TARGET]
+
+Handle dumps.
+
+When called without arguments, dumps the development database with `dumple`.
+
+    geordi dump
+
+When called with the `--load` option, sources the specified dump into the
+development database.
+
+    geordi dump -l tmp/staging.dump
+
+When called with a capistrano deploy target (e.g. `staging`), remotely dumps
+the specified target's database and downloads it to `tmp/`.
+
+    geordi dump staging
+
+When called with a capistrano deploy target and the `--load` option, sources the
+dump into the development database after downloading it.
+
+    geordi dump staging -l
+
+
+### geordi help [COMMAND]
+
+Describe available commands or one specific command.
+
+
+### geordi migrate
+
+Migrate all databases.
+
+Example: `geordi migrate`
+
+If you are using `parallel_tests`, this runs migrations in your development
+environment and `rake parallel:prepare` afterwards. Otherwise, invokes `geordi rake`
+with `db:migrate`.
+
+
+### geordi png-optimize
+
+Optimize .png files.
+
+- Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
+- Eliminates unused colors and reduces bit-depth (if possible)
+- May reduce PNG file size lossless
+
+Batch-optimize all `*.png` files in a directory:
+
+    geordi png-optimize directory
+
+Batch-optimize the current directory:
+
+    geordi png-optimize .
+
+Optimize a single file:
+
+    geordi png-optimize input.png
+
+
+### geordi rake TASK
+
+Run a rake task in several Rails environments.
+
+Example: `geordi rake db:migrate`
+
+TASK is run in the following Rails environments (if present):
+
+- development
+- test
+- cucumber
+
+
+### geordi remove-executable-flags
+
+Remove executable-flags from files that should not be executable.
+
+
+### geordi rspec [FILES]
+
+Run RSpec.
+
+Example: `geordi rspec spec/models/user_spec.rb:13`
+
+Runs RSpec as you want: with RSpec 1/2 detection, `bundle exec`, rspec_spinner
+detection, etc.
+
+
+### geordi security-update [step]
+
+Support for performing security updates.
+
+Preparation for security update: `geordi security-update`
+
+After performing the update: `geordi security-update finish`
+
+Switches branches, pulls, pushes and deploys as required by our workflow. Tells
+what it will do before it does it.
+
+
+### geordi setup
+
+Setup a project for the first time.
+
+Example: `geordi setup`
+
+Check out a repository, cd into its directory. Now let `setup` do the tiring
+work: run `bundle install`, create `database.yml`, create databases, migrate
+(all if applicable).
+
+After setting up, loads a dump into the development db when called with the
+`--dump` option:
+
+    geordi setup -d staging
+
+After setting up, runs all tests when called with the `--test` option:
+
+    geordi setup -t
+
+See `geordi help setup` for details.
+
+
+### geordi setup-firefox-for-selenium VERSION
+
+Install a special firefox for running Selenium tests.
+
+
+### geordi setup-vnc
+
+Setup VNC for running Selenium tests there.
+
+
+### geordi shell TARGET
+
+Open a shell on a Capistrano deploy target.
+
+Example: `geordi shell production`
+
+Lets you select the server to connect to when called with `--select-server`:
+
+    geordi shell production -s
+
+
+### geordi tests
+
+Run all employed tests.
+
+
+### geordi unit
+
+Run Test::Unit.
+
+
+### geordi update
+
+Bring a project up to date.
+
+Example: `geordi update`
+
+Performs: `git pull`, `bundle install` (if necessary) and migrates (if applicable).
+
+After updating, loads a dump into the development db when called with the
+`--dump` option:
+
+    geordi update -d staging
+
+After updating, runs all tests when called with the `--test` option:
+
+    geordi update -t
+
+See `geordi help update` for details.
+
+
+### geordi version
+
+Print the current version of geordi.
+
+
+### geordi vnc-show
+
+Show the hidden VNC window.
+
+
+### geordi with-firefox-for-selenium COMMAND
+
+Run a command with firefox for selenium set up.
+
+Example: `geordi with-firefox-for-selenium b cucumber`
+
+Useful when you need Firefox for Selenium, but can't use the `geordi cucumber`
+command.
+
+
+### geordi with-rake
+
+Run tests with `rake`.
 
 
 b
--
+---
 
-Runs the given command under `bundle exec` if a `Gemfile` is present in your working directory. If no `Gemfile` is present just runs the given command:
+Runs the given command under `bundle exec` if a `Gemfile` is present in your
+working directory. If no `Gemfile` is present just runs the given command:
 
     b spec spec/models
 
 More information at http://makandracards.com/makandra/684-automatically-run-bundle-exec-if-required
 
-
-console-for
------------
-
-Opens a rails console remotely:
-
-    console-for staging
-
-More information at http://makandracards.com/makandra/1338-console-for-opens-a-rails-console-remotely-on-a-capistrano-deployment-target
-
-
-
-cuc
------
-
-Runs Cucumber with the arguments you want: bundle exec, cucumber_spinner detection, separate Firefox for Selenium, etc.:
-
-    cuc features/users.feature
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
-
-
-
-cleanup-directory
------------------
-
-Removes unnecessary files from your project directory:
-
-    cleanup-directory
-
-More information at http://makandracards.com/makandra/951-shell-script-to-clean-up-a-project-directory
-
-
-deploy-to-production
--------------------
-
-Shows the commits between your `master` and `production` branch, then merges the changes and deploys to the production Capistrano stage:
-
-    deploy-to-production
-
-More information at https://makandracards.com/makandra/7971-shell-script-to-deploy-changes-to-production-and-not-shoot-yourself-in-the-foot
-
-
-dump-for
---------
-
-Dumps the database on your server for a given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target. Passing the -s option automatically sources the dump ito your development database.
-
-    dump-for production [-s]
-
-More information at http://makandracards.com/makandra/1237-script-to-create-and-copy-a-production-dump-to-your-project-root
-
-     
 
 dumple
 ------
@@ -93,128 +291,19 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 More information at http://makandracards.com/makandra/1008-dump-your-database-with-dumple
 
 
-load-dump
----------
+launchy_browser
+---------------
 
-Loads a database dump (e.g. created with dump-for or dumple) into you database.
-
-    load-dump [path/to/dump]
-
-More information at https://makandracards.com/makandra/8975-geordi-use-load-dump-script-to-source-a-database-dump-into-your-database
+Used by the `geordi cucumber` command. Makes launchy open pages in the user's
+browser, as opposed to opening it within the VNC window.
 
 
+Contributing
+============
 
-gitpt
------
+Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and
+edit it to do what you need it to do. Usually, it is hard to automatedly test
+Geordi commands, so make sure you've manually tested it.
 
-Shell script to generate a git commit with Pivotal Tracker story ID and title. Run it from your project directory:
-
-    gitpt
-
-This lets you choose from all started, finished and rejected stories in Pivotal Tracker and commit staged changes.
-Requires the project's Pivotal Tracker ID(s) to be defined in a `.pt_project_id` file in the project's directory.
-
-More information at https://makandracards.com/makandra/1372-shell-script-to-generate-a-git-commit-with-pivotal-tracker-story-id-and-title
-
-
-install-gems-remotely
----------------------
-
-Installs all gems in your `Gemfile.lock`, as well as vendored gems, to the given host:
-
-    install-gems-remotely my.server.com
-
-More information at http://makandracards.com/makandra/692-install-a-local-gemfile-on-a-remote-server
-
-
-migrate-all
----------------------
-
-Runs `power-rake db:migrate` if parallel_tests does not exist in your `Gemfile`. Otherwise it runs the migration
-in your development environment and executes `b rake parallel:prepare` after that.
-
-    migrate-all
-
-
-power-deploy
-------------
-
-Calls the Capistrano tasks `deploy`, `deploy:migrate` and `deploy:restart` on the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
-
-    power-deploy staging
-
-This script is considered legacy and will be removed eventually. You should [fix your deploy scripts](http://makandracards.com/makandra/1176-which-capistrano-hooks-to-use-for-events-to-happen-on-both-cap-deploy-and-cap-deploy-migrations) and then use [cap deploy:migrations](http://makandracards.com/makandra/1000-deploy-and-migrate-with-a-single-capistrano-command).
-
-
-power-rake
-----------
-
-Runs the given rake task in each Rails environment in `development`, `test`, `cucumber`, `performance`, if existing:
-
-    power-rake db:migrate
-
-More information at http://makandracards.com/makandra/737-run-a-rake-task-in-all-environments
-
-
-remove-executable-flags
------------------------
-
-Recursively removes executable flags from files in the working directory that probably shouldn't have them (like Ruby, HTML, CSS, image, Rake and similar files).
-
-    remove-executable-flags
-    
-More information at http://makandracards.com/makandra/659-recursively-remove-unnecessary-execute-flags
-
-
-rs
------
-
-Runs RSpec with the arguments you want: RSpec 1/2 detection, bundle exec, rspec_spinner detection, etc.:
-
-    rs spec/models/user_spec.rb
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
-
-
-setup-firefox-for-selenium
---------------------------
-
-Helps you create an frozen version of Firefox, so your Selenium tests will no longer break whenever Firefox updates:
-
-    setup-firefox-for-selenium
-
-More information at http://makandracards.com/makandra/1575-how-to-install-a-frozen-version-of-firefox-for-your-selenium-tests
-
-
-shell-for
----------
-
-Opens an SSH shell on the given [Capistrano multistage](https://github.com/capistrano/capistrano/wiki/2.x-Multistage-Extension) deployment target:
-
-    shell-for production
-
-Now it can also be called with any command to be remotely executed before loading the bash. `--no-bash` skips the bash.
-
-    shell-for staging --no-bash top
-
-More information at http://makandracards.com/makandra/1209-script-to-open-an-ssh-shell-to-a-capistrano-deployment-target
-
-
-tests
---------------
-
-Runs both `rs` and `cuc`. Call from any project directory:
-
-    tests
-
-More information at http://makandracards.com/makandra/1277-a-nicer-way-to-run-rspec-and-or-cucumber
-
-
-run_tests
----------
-
-Enables VNC and setups firefox just like "cuc", but simply runs the given command.
-
-Useful if your project does not use "cucumber", so you can for example say
-
-  run_tests rake test:integration
+Don't forget to update this README. The whole `geordi` section is auto-generated
+by `rake update_readme`.

@@ -1,34 +1,32 @@
-require "rubygems"
-require File.join(File.dirname(__FILE__), 'firefox_for_selenium')
+require 'rubygems'
 require 'tempfile'
+
+# This require-style is to prevent Ruby from loading files of a different
+# version of Geordi.
+require File.expand_path('../interaction', __FILE__)
+require File.expand_path('../firefox_for_selenium', __FILE__)
 
 module Geordi
   class Cucumber
+    include Geordi::Interaction
 
     VNC_DISPLAY = ':17'
     VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024"
     VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
-    def run
-      4.times { puts }
-      puts "Running Cucumber tests..."
-      puts "========================="
+    def run(argv)
+      self.argv = argv
 
       consolidate_rerun_txt_files
       show_features_to_run
-
       setup_vnc
 
       command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
+      note 'Command: ' + command if argv.include? '-v'
 
-      if argv.include? "-v"
-        puts command
-        2.times { puts }
-      end
-
-      2.times { puts }
-      exec command
+      puts
+      system command
     end
 
     def launch_vnc_viewer
@@ -38,10 +36,11 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            puts "VNC viewer not found. Install it using cuc-vnc-setup."
+            fail 'VNC viewer not found. Install it with `geordi setup-vnc`.'
           else
-            puts "VNC viewer could not be opened:"
+            note 'VNC viewer could not be opened:'
             puts error
+            puts
           end
         end
       }
@@ -58,21 +57,16 @@ module Geordi
         VNC_ENV_VARIABLES.each do |variable|
           ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
         end
-        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path(File.join(File.dirname(__FILE__), '../../bin/launchy_browser'))
+        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
         ENV["DISPLAY"] = VNC_DISPLAY
 
-        puts
-        puts "Selenium is running in a VNC window. Use cuc-show to view it."
+        note 'Selenium is running in a VNC window. Use `geordi vnc-show` to view it.'
       end
     end
 
-
     private
 
-    attr_writer :argv
-    def argv
-      @argv ||= ARGV
-    end
+    attr_accessor :argv
 
     def serial_execution_command
       format_args = []
@@ -83,7 +77,7 @@ module Geordi
     end
 
     def parallel_execution_command
-      puts "Using parallel_tests ...\n\n"
+      note 'Using parallel_tests'
       self.argv = argv - command_line_features
       gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
@@ -112,13 +106,12 @@ module Geordi
     end
 
     def show_features_to_run
-      unless features_to_run.empty?
-        passed_by = (features_to_run == rerun_txt_features && features_to_run != command_line_features) ? 'rerun.txt' : 'command line'
-        2.times { puts }
-        puts "features to run (passed by #{passed_by}):"
-        puts "-----------------------------------------"
-        puts features_to_run.join("\n")
-        puts "-----------------------------------------"
+      if features_to_run.empty?
+        note 'All features in features/'
+      else
+        notification = 'Only: ' + features_to_run.join(', ')
+        notification << + ' (from rerun.txt)' if  (features_to_run == rerun_txt_features) && (features_to_run != command_line_features)
+        note notification
       end
     end
 
@@ -170,8 +163,7 @@ module Geordi
     def consolidate_rerun_txt_files
       parallel_rerun_files = Dir.glob("parallel_rerun*.txt")
       unless parallel_rerun_files.empty?
-        2.times { puts }
-        puts "consolidating parallel_rerun.txt files ..."
+        note 'Consolidating parallel_rerun.txt files ...'
 
         rerun_content = []
         parallel_rerun_files.each do |filename|
@@ -235,14 +227,11 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        puts "Could not launch VNC server. Install it by running cuc-vnc-setup."
-        puts
-        puts
+        warn 'Could not launch VNC server. Install it with `geordi setup-vnc`.'
         false
       else
-        puts "Starting VNC failed:"
+        warn 'Starting VNC failed:'
         puts error
-        puts
         puts
         false
       end

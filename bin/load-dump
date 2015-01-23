@@ -1,6 +1,3 @@
 #!/usr/bin/env ruby
 
-require File.dirname(__FILE__) + "/../lib/geordi/dump_loader"
-
-
-DumpLoader.new(ARGV).execute!
+exec 'geordi', 'dump', '-l', *ARGV

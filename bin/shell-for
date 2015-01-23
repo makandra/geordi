@@ -1,10 +1,3 @@
 #!/usr/bin/env ruby
-require File.dirname(__FILE__) + "/../lib/geordi/capistrano"
-include Geordi::Capistrano
 
-catching_errors do
-  self.stage = ARGV.shift
-  command = ARGV.any? ? ARGV.join(' ') : nil
-
-  shell_for(command, :select_server => true)
-end
+exec 'geordi', 'shell', *ARGV

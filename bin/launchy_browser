@@ -1,9 +1,15 @@
 #!/usr/bin/env ruby
-require File.join(File.dirname(__FILE__), '../lib/geordi/cuc')
+
+# This script is a part of Geordi. It is used by the cucumber command to have
+# launchy open error pages from tests in the users browser, as apposed to
+# opening it within VNC.
+
+# For unknown reasons, #require cannot find 'geordi/cucumber', so we need to
+# require it this way. Hours have been spent trying to require 'geordi/cucumber'.
+require File.expand_path('../../lib/geordi/cucumber', __FILE__)
+Geordi::Cucumber.new.restore_env
 
 require 'rubygems'
 require 'launchy'
-
-Geordi::Cucumber.new.restore_env
 
 Launchy.open(ARGV.first)

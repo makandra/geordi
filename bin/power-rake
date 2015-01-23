@@ -1,9 +1,3 @@
 #!/usr/bin/env ruby
 
-for env in %w[development test cucumber performance]
-  if File.exists? "config/environments/#{env}.rb"
-    call = ['b', 'rake'] + ARGV + ["RAILS_ENV=#{env}"]
-    puts call.join(' ')
-    system *call
-  end
-end
+exec 'geordi', 'rake', *ARGV
