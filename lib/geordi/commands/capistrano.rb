@@ -1,9 +1,9 @@
-desc 'all-targets COMMAND', 'Run a capistrano command on all deploy targets'
+desc 'capistrano COMMAND', 'Run a capistrano command on all deploy targets'
 long_desc <<-LONGDESC
-Example: `geordi all-targets deploy`
+Example: `geordi capistrano deploy`
 LONGDESC
 
-def all_targets(*args)
+def capistrano(*args)
   targets = Dir['config/deploy/*.rb'].map { |file| File.basename(file, '.rb') }.sort
 
   note 'Found the following deploy targets:'

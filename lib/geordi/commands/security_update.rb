@@ -1,4 +1,4 @@
-desc 'security-update [step]', 'Support for performing security updates'
+desc 'security-update [STEP]', 'Support for performing security updates'
 long_desc <<-LONGDESC
 Preparation for security update: `geordi security-update`
 
@@ -46,7 +46,7 @@ def security_update(step='prepare')
     Util.system! 'git merge production', :show_cmd => true
     Util.system! 'git push', :show_cmd => true
 
-    invoke_cmd 'all_targets', 'deploy:migrations'
+    invoke_cmd 'capistrano', 'deploy:migrations'
 
     success 'Successfully pushed and deployed security update'
     puts

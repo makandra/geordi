@@ -20,16 +20,16 @@ tests afterwards. Underscores and dashes are equivalent.
 
 For details on commands, e.g. supported options, run `geordi help <command>`.
 
-### geordi all-targets COMMAND
-
-Run a capistrano command on all deploy targets.
-
-Example: `geordi all-targets deploy`
-
-
 ### geordi apache-site VIRTUAL_HOST
 
 Enable the given virtual host, disabling all others.
+
+
+### geordi capistrano COMMAND
+
+Run a capistrano command on all deploy targets.
+
+Example: `geordi capistrano deploy`
 
 
 ### geordi cleanup-directory
@@ -138,7 +138,7 @@ Run a rake task in several Rails environments.
 
 Example: `geordi rake db:migrate`
 
-TASK is run in the following Rails environments (if present):
+`TASK` is run in the following Rails environments (if present):
 
 - development
 - test
@@ -160,7 +160,7 @@ Runs RSpec as you want: with RSpec 1/2 detection, `bundle exec`, rspec_spinner
 detection, etc.
 
 
-### geordi security-update [step]
+### geordi security-update [STEP]
 
 Support for performing security updates.
 
@@ -263,11 +263,6 @@ Example: `geordi with-firefox-for-selenium b cucumber`
 
 Useful when you need Firefox for Selenium, but can't use the `geordi cucumber`
 command.
-
-
-### geordi with-rake
-
-Run tests with `rake`.
 
 
 b

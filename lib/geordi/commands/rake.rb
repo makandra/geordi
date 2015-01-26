@@ -2,7 +2,7 @@ desc 'rake TASK', 'Run a rake task in several Rails environments'
 long_desc <<-LONGDESC
 Example: `geordi rake db:migrate`
 
-TASK is run in the following Rails environments (if present):
+`TASK` is run in the following Rails environments (if present):
 
 - development
 - test
