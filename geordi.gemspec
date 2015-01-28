@@ -20,13 +20,14 @@ Gem::Specification.new do |s|
   s.executables   = `git ls-files -- bin/*`.split("\n").map{ |f| File.basename(f) }
   s.require_paths = ["lib"]
 
+  s.add_runtime_dependency 'thor', '>= 0.18.0'
   # s.add_development_dependency 'debugger'
 
   s.post_install_message = <<-ATTENTION
 
     ********************************************
 
-    geordi 1.0.0 moves most of the scripts to
+    geordi 1.0 moves most of the scripts to
     the `geordi` binary. Run `geordi` and
     `geordi help <cmd>` for further information.
 
