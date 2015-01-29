@@ -13,11 +13,9 @@ def security_update(step='prepare')
   when 'prepare'
     announce 'Preparing for security update'
     warn 'Please read https://makandracards.com/makandra/1587 before applying security updates!'
-    note 'About to: pull master and production branches, checkout production'
-    wait 'Continue?'
+    note 'About to checkout production and pull'
+    prompt('Continue?', 'y', /y|yes/) or fail 'Cancelled.'
 
-    Util.system! 'git checkout master', :show_cmd => true
-    Util.system! 'git pull', :show_cmd => true
     Util.system! 'git checkout production', :show_cmd => true
     Util.system! 'git pull', :show_cmd => true
 
@@ -34,11 +32,10 @@ def security_update(step='prepare')
     `git status --porcelain`.empty? or fail('There are uncommitted changes.')
     note 'Working directory clean.'
 
-    print 'Have you successfully run all tests? [yN] '
-    exit unless $stdin.gets =~ /[yes]+/
+    prompt('Have you successfully run all tests?', 'n', /y|yes/) or fail 'Please run tests first.'
 
     note 'About to: push production, checkout & pull master, merge production, push master, deploy all stages'
-    wait 'Continue?'
+    prompt('Continue?', 'n', /y|yes/) or fail 'Cancelled.'
 
     Util.system! 'git push', :show_cmd => true
     Util.system! 'git checkout master', :show_cmd => true

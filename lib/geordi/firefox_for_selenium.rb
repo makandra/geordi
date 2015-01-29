@@ -70,7 +70,7 @@ module Geordi
         unless FirefoxForSelenium.binary(@version).exist?
           note "Firefox #{@version} not found."
 
-          puts left(<<-INSTRUCTIONS)
+          puts strip_heredoc(<<-INSTRUCTIONS)
           Install it with
             geordi setup_firefox_for_selenium #{@version}
 
@@ -137,7 +137,7 @@ module Geordi
       def say_hello
         execute_command('clear')
 
-        puts left(<<-HELLO)
+        puts strip_heredoc(<<-HELLO)
         Whenever Firefox updates, Selenium breaks. This is annoying. This
         script will help you create an unchanging version of Firefox for your
         Selenium tests.
@@ -154,30 +154,27 @@ module Geordi
         - It will automatically be used for your Selenium scenarios if you run
           your Cucumber using the cuc binary from the geordi gem.
         - It will live in #{path}
-
         HELLO
 
-        wait "Press ENTER when you're ready to begin."
+        prompt "Press ENTER when you're ready to begin."
       end
 
       def check_if_run_before
         if original_binary.exist?
           note 'This version seems to be already installed.'
-          puts
-          wait 'Press ENTER to continue anyway or press CTRL+C to abort.'
+          prompt 'Press ENTER to continue anyway or press CTRL+C to abort.'
         end
       end
 
       def download_firefox
         path.mkpath
 
-        puts left(<<-INSTRUCTION)
+        puts strip_heredoc(<<-INSTRUCTION)
         Please download an old version of Firefox from: #{download_url}
         Unpack it with: tar xvjf firefox-#{@version}.tar.bz2 -C #{path} --strip-components=1
         Now #{path.join('firefox')} should be the firefox binary, not a directory.
-
         INSTRUCTION
-        wait "Press ENTER when you're done."
+        prompt "Press ENTER when you're done."
 
         File.file?(binary) or raise "Could not find #{binary}"
       end
@@ -195,7 +192,7 @@ module Geordi
         execute_command("mv #{binary} #{original_binary}")
         execute_command("mv #{binary}-bin #{original_binary}-bin")
         patched_binary = Tempfile.new('firefox')
-        patched_binary.write left(<<-PATCH)
+        patched_binary.write strip_heredoc(<<-PATCH)
           #!/usr/bin/env ruby
           exec('#{original_binary}', '-no-remote', '-P', '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}', *ARGV)
           PATCH
@@ -206,7 +203,7 @@ module Geordi
       end
 
       def configure_old_firefox
-        puts left(<<-INSTRUCTION)
+        puts strip_heredoc(<<-INSTRUCTION)
         You will now have to do some manual configuration.
 
         This script will open the patched copy of Firefox when you press ENTER.
@@ -218,18 +215,17 @@ module Geordi
           Firefox profile
         - Disable all automatic updates under Edit / Preferences / Advanced /
           Update (do this quickly or Firefox will already have updated)
-
         INSTRUCTION
 
-        wait 'Open the patched copy of Firefox with ENTER.'
+        prompt 'Open the patched copy of Firefox with ENTER.'
         run_firefox_for_selenium
       end
 
       def kkthxbb
         success "Congratulations, you're done!"
 
-        puts left(<<-INSTRUCTION)
-
+        puts
+        puts strip_heredoc(<<-INSTRUCTION)
         Your patched copy of Firefox will be used when you run Cucumber using
         the cucumber script that comes with the geordi gem. If you prefer to run
         Cucumber on your own, you must call it like this:
