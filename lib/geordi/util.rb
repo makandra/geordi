@@ -11,18 +11,21 @@ module Geordi
       # Thus, we have this handy method here.
       def installing_missing_gems(&block)
         yield
-      rescue LoadError => e
-        gem_name = e.message.split('--').last.strip
+      rescue LoadError => error
+        error.message =~ /-- (\S+)\Z/
+        $1 or raise # could not extract a gem name from the error message, re-raise the error
+
+        gem_name = $1.strip
         install_command = 'gem install ' + gem_name
 
         # install missing gem
         warn 'Probably missing gem: ' + gem_name
-        wait 'Auto-install it?'
+        prompt('Install it now?', 'y', /y|yes/) or fail 'Missing Gems.'
         system! install_command, :show_cmd => true
 
         # retry
         Gem.clear_paths
-        note 'Trying again ...'
+        note 'Retrying ...'
         require gem_name
         retry
       end
