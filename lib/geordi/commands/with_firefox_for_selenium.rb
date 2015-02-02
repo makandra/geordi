@@ -14,5 +14,5 @@ def with_firefox_for_selenium(*command)
   puts
 
   note_cmd command.join(' ')
-  exec *command
+  system *command # Util.system! would reset the Firefox PATH
 end

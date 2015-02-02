@@ -26,7 +26,7 @@ module Geordi
       note 'Command: ' + command if argv.include? '-v'
 
       puts
-      system command
+      system command # Util.system! would reset the Firefox PATH
     end
 
     def launch_vnc_viewer
