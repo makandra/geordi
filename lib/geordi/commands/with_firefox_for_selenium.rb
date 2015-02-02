@@ -13,6 +13,6 @@ def with_firefox_for_selenium(*command)
   FirefoxForSelenium.setup_firefox
   puts
 
-  note_cmd command.join
-  Util.system! *command
+  note_cmd command.join(' ')
+  exec *command
 end
