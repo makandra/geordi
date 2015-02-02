@@ -95,6 +95,11 @@ dump into the development database after downloading it.
     geordi dump staging -l
 
 
+### geordi eurest
+
+Open the current Eurest cantina menu.
+
+
 ### geordi help [COMMAND]
 
 Describe available commands or one specific command.
