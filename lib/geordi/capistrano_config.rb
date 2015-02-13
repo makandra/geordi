@@ -56,7 +56,13 @@ module Geordi
       current = Dir.pwd
       until (File.exists? 'Capfile')
         Dir.chdir '..'
-        raise 'Call me from inside a Rails project!' if current == Dir.pwd
+        raise <<-ERROR if current == Dir.pwd
+Could not locate Capfile.
+
+Are you calling me from within a Rails project?
+Maybe Capistrano is not installed in this project.
+        ERROR
+
         current = Dir.pwd
       end
       current
