@@ -6,6 +6,8 @@ Runs Cucumber as you want: with `bundle exec`, `cucumber_spinner` detection,
 separate Firefox for Selenium, etc.
 LONGDESC
 
+option :verbose, :aliases => '-v', :type => :boolean, :desc => 'Print the testing command'
+
 def cucumber(*files)
   require 'geordi/cucumber'
 
@@ -13,7 +15,7 @@ def cucumber(*files)
 
   if File.directory?('features')
     announce 'Running features'
-    Geordi::Cucumber.new.run(files) or fail 'Features failed.'
+    Geordi::Cucumber.new.run(files, :verbose => options.verbose) or fail 'Features failed.'
   else
     note 'Cucumber not employed.'
   end
