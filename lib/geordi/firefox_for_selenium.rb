@@ -79,7 +79,7 @@ module Geordi
 
           INSTRUCTIONS
 
-          wait "Press ENTER to continue or press CTRL+C to abort."
+          prompt "Press ENTER to continue or press CTRL+C to abort."
         end
       end
 
