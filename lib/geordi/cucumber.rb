@@ -110,7 +110,7 @@ module Geordi
         note 'All features in features/'
       else
         notification = 'Only: ' + features_to_run.join(', ')
-        notification << + ' (from rerun.txt)' if  (features_to_run == rerun_txt_features) && (features_to_run != command_line_features)
+        notification << ' (from rerun.txt)' if (features_to_run == rerun_txt_features) && (features_to_run != command_line_features)
         note notification
       end
     end
