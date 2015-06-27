@@ -1,5 +1,3 @@
-require 'capistrano'
-
 module Geordi
   class CapistranoConfig
 
@@ -10,46 +8,69 @@ module Geordi
 
       @stage = stage
       @root = find_project_root!
+      @config = {}
       load_capistrano_config
     end
 
     def user
-      @capistrano_config.fetch(:user)
+      @config.fetch(:user, find_primary_server[:user])
     end
 
     def servers
-      @capistrano_config.find_servers(:roles => [:app])
+      @config[:servers].select{|server| server[:roles].include?('app') }.map {|s| s[:host] }
     end
 
     def primary_server
-      @capistrano_config.find_servers(:roles => [:app], :only => { :primary => true }).first
+      find_primary_server[:host]
     end
 
     def path
-      @capistrano_config.fetch(:deploy_to) + '/current'
+      @config.fetch(:deploy_to) + '/current'
     end
 
     def env
-      @capistrano_config.fetch(:rails_env, 'production')
+      @config.fetch(:rails_env, 'production')
     end
 
     def shell
-      @capistrano_config.fetch(:default_shell, 'bash --login')
+      @config.fetch(:default_shell, 'bash --login')
     end
 
+    def set(key, value)
+      @config[key] = value
+    end
+
+    def server(key, value)
+      @config[:servers] ||= []
+      value[:host] = key
+      value[:primary] = true if @config[:servers].empty?
+      @config[:servers] << value
+    end
+
+    def lock(*args)
+    end
+
+    def namespace(*args)
+    end
+
+    def before(*args)
+    end
+
+    def after(*args)
+    end
 
     private
 
-    def load_capistrano_config
-      config = ::Capistrano::Configuration.new
-      config.load('deploy')
-      config.load('config/deploy')
-      if @stage and @stage != ''
-        config[:stage] = @stage
-        config.find_and_execute_task(@stage)
-      end
+    def find_primary_server
+      @config[:servers].select{|s| s[:roles].include?("app") && s[:primary] }.first
+    end
 
-      @capistrano_config = config
+    def load_capistrano_config
+      binding.eval(File.open(@root + '/config/deploy.rb').read, "deploy.rb")
+      if @stage and @stage != ''
+        @config[:stage] = @stage
+        binding.eval(File.open(@root + "/config/deploy/#{@stage}.rb").read, "deploy/#{@stage}.rb")
+      end
     end
 
     def find_project_root!
