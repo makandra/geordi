@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 
+echo 'DEPRECATED: Use `geordi sh[ell]` instead'
 exec 'geordi', 'shell', *ARGV

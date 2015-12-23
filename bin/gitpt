@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 
+echo 'DEPRECATED: Use `geordi com[mit]` instead'
 exec 'geordi', 'commit'

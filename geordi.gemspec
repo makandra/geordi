@@ -24,19 +24,6 @@ Gem::Specification.new do |s|
   # s.add_development_dependency 'debugger'
 
   s.post_install_message = <<-ATTENTION
-
-    ********************************************
-
-    geordi 1.0 moves most of the scripts to
-    the `geordi` binary. Run `geordi` and
-    `geordi help <cmd>` for further information.
-
-    Tip: Create an alias for geordi for quick 
-    access. Add this to your ~/.bashrc:
-
-      alias g="geordi"
-
-    ********************************************
-
+    Binary `geordi` installed
   ATTENTION
 end

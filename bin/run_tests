@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 
+echo 'DEPRECATED: Use `geordi f[irefox]` instead'
 exec 'geordi', 'with-firefox-for-selenium', *ARGV

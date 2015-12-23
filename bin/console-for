@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 
+echo 'DEPRECATED: Use `geordi con[sole]` instead'
 exec 'geordi', 'console', *ARGV

@@ -1,3 +1,4 @@
 #!/usr/bin/env ruby
 
+echo 'DEPRECATED: Use `geordi t[est]` instead'
 exec 'geordi', 'test'
