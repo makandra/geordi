@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-echo 'DEPRECATED: Use `geordi m[igrate]` instead'
+puts 'DEPRECATED: Use `geordi m[igrate]` instead'
 exec 'geordi', 'migrate'

@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-echo 'DEPRECATED: Use `geordi ca[pistrano]` instead'
+puts 'DEPRECATED: Use `geordi ca[pistrano]` instead'
 exec 'geordi', 'capistrano', *ARGV

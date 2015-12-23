@@ -4,5 +4,5 @@ if (i = ARGV.index '-s')
   ARGV[i] = '-l'
 end
 
-echo 'DEPRECATED: Use `geordi du[mp]` instead'
+puts 'DEPRECATED: Use `geordi du[mp]` instead'
 exec 'geordi', 'dump', *ARGV

@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-echo 'DEPRECATED: Use `geordi vn[c]` instead'
+puts 'DEPRECATED: Use `geordi vn[c]` instead'
 exec 'geordi', 'vnc'

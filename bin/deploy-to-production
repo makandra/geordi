@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
-echo 'DEPRECATED: Use `geordi dep[loy]` instead'
+puts 'DEPRECATED: Use `geordi dep[loy]` instead'
 exec 'geordi', 'deploy'
