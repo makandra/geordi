@@ -86,10 +86,10 @@ module Geordi
       features_to_run = find_all_features_recursively('features') if features_to_run.empty?
       features_to_run = features_to_run.join(" ")
       parallel_tests_args = "-t #{type_arg}"
-      cucumber_args = command_line_args.empty? ? '' : "-o '#{escape_shell_args(command_line_args).join(" ")}'"
+      cucumber_args = command_line_args.join(' ')
+
       [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args, "-- #{features_to_run}"].flatten.compact.join(" ")
     end
-
 
     def use_firefox_for_selenium
       path = Geordi::FirefoxForSelenium.path_from_config
@@ -97,7 +97,6 @@ module Geordi
         "PATH=#{path}:$PATH"
       end
     end
-
 
     def escape_shell_args(*args)
       args.flatten.collect do |arg|
@@ -134,29 +133,27 @@ module Geordi
     end
 
     def command_line_features
-      @command_line_features ||= begin
-        index = argv.find_index("--")
-        if index.nil? && argv.first && argv.first[0,1] != "-"
-          find_all_features_recursively(argv)
-        elsif index
-          files_or_dirs = argv[index + 1 .. -1]
-          find_all_features_recursively(files_or_dirs)
-        else
-          []
-        end
-      end
+      @command_line_features ||= argv - command_line_args
     end
 
     def command_line_args
-      @command_line_args ||= begin
-        index = argv.find_index("--")
-        if index.nil? && argv.first && argv.first[0,1] == "-"
-          argv
-        elsif index
-          argv[0 .. index-1]
-        else
-          []
+      @command_line_args ||= Array.new.tap do |args|
+        # Sorry for this mess. Option parsing doesn't get much prettier.
+        argv.each_cons(2) do |a, b|
+          break if a == '--' # This is the common no-options-beyond marker
+
+          case a
+          when '-f', '--format', '-p', '--profile'
+            args << a << b # b is the value of the option
+          else
+            args << a if a.start_with? '-'
+          end
         end
+
+        # Since we're using each_cons(2), the loop above will never process the
+        # last arg. Do it manually here.
+        last_arg = argv.last
+        args << last_arg if (last_arg && last_arg.start_with?('-'))
       end
     end
 
