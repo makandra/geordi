@@ -21,8 +21,8 @@ module Geordi
   
     def mysql_command
       command = 'mysql --silent'
-      command << ' -p' << config['password']
-      command << ' -u' << config['username']
+      command << ' -p' << config['password'] if config['password']
+      command << ' -u' << config['username'] if config['username']
       command << ' --default-character-set=utf8'
       command << ' ' << config['database']
       command << ' < ' << dump_file
@@ -32,8 +32,8 @@ module Geordi
     def postgresql_command
       ENV['PGPASSWORD'] = config['password']
       command = 'pg_restore --no-owner --clean'
-      command << ' --username=' << config['username']
-      command << ' --host=' << config['host']
+      command << ' --username=' << config['username'] if config['username']
+      command << ' --host=' << config['host'] if config['host']
       command << ' --dbname=' << config['database']
       command << ' ' << dump_file
     end
