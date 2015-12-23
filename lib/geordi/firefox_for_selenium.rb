@@ -227,10 +227,10 @@ module Geordi
         puts
         puts strip_heredoc(<<-INSTRUCTION)
         Your patched copy of Firefox will be used when you run Cucumber using
-        the cucumber script that comes with the geordi gem. If you prefer to run
-        Cucumber on your own, you must call it like this:
+        the cucumber script that comes with the geordi gem. If you cannot use
+        `geordi cucumber`, but still need the test browser set up, you can use:
 
-          PATH=#{path}:$PATH cucumber
+            geordi firefox <any command>
 
         Enjoy!
         INSTRUCTION
