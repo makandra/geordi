@@ -1,5 +1,5 @@
-desc 'setup-vnc', 'Setup VNC for running Selenium tests there'
-def setup_vnc
+desc '-setup-vnc', 'Setup VNC for running Selenium tests there', :hide => true
+def _setup_vnc
   `clear`
 
   note 'This script will help you install a VNC server and a VNC viewer.'
@@ -11,7 +11,7 @@ def setup_vnc
 
     You can still inspect everything with:
   TEXT
-  note_cmd 'geordi vnc-show'
+  note_cmd 'geordi vnc'
   puts
   note 'Please open a second shell to execute instructions.'
   prompt 'Continue ...'
