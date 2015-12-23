@@ -303,7 +303,11 @@ Contributing
 
 Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and
 edit it to do what you need it to do. Usually, it is hard to automatedly test
-Geordi commands, so make sure you've manually tested it.
+Geordi commands, so make sure you've manually tested it. You can do so by
+calling your local geordi like so (adjust paths to your needs):
+
+    # @option -I: add directory to load path
+    ruby -I ../geordi/lib ../geordi/bin/geordi <command>
 
 Don't forget to update this README. The whole `geordi` section is auto-generated
 by `rake update_readme`.
