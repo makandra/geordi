@@ -1,5 +1,5 @@
-desc 'cleanup-directory', 'Remove unneeded files'
-def cleanup_directory
+desc 'clean', 'Remove unneeded files from the current directory'
+def clean
 
   announce 'Removing tempfiles'
   for pattern in %w[ webrat-* capybara-* tmp/webrat-* tmp/capybara-* tmp/rtex/* log/*.log ]
