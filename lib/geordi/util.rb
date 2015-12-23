@@ -58,6 +58,10 @@ module Geordi
         end
       end
 
+      def current_branch
+        `git rev-parse --abbrev-ref HEAD`.strip
+      end
+
     end
   end
 end
