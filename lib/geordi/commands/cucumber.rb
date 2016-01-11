@@ -25,13 +25,19 @@ def cucumber(*files)
     invoke_cmd 'bundle_install'
 
     announce 'Running features'
-    files << '--format' << 'pretty' << '-b' if options.debug
-    (1 + options.rerun).times do |i|
-      return true if Geordi::Cucumber.new.run(files, :verbose => options.verbose)
+    files << '--format' << 'pretty' << '--backtrace' if options.debug
 
-      announce "Rerun ##{ i + 1 } of #{ options.rerun }"
+    # Normal run
+    unless Geordi::Cucumber.new.run(files, :verbose => options.verbose)
+
+      # Reruns
+      (1 + options.rerun).times do |i|
+        fail 'Features failed.' if (i == options.rerun) # All reruns done?
+
+        announce "Rerun ##{ i + 1 } of #{ options.rerun }"
+        break if Geordi::Cucumber.new.run(%w[--profile rerun], :verbose => options.verbose)
+      end
     end
-    fail 'Features failed.' # Give up
 
   else
     note 'Cucumber not employed.'

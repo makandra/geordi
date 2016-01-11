@@ -184,9 +184,8 @@ module Geordi
     end
 
     def features_can_run_with_parallel_tests?(features)
-      not features.any?{ |feature| feature.include? ":" }
+      features.none? { |f| f.include? ':' }
     end
-
 
     # Check if cucumber_spinner is available
     def spinner_available?
@@ -210,7 +209,9 @@ module Geordi
     end
 
     def use_parallel_tests?
-      parallel_tests_available? && features_can_run_with_parallel_tests?(features_to_run) && features_to_run.size != 1
+      not(argv.include?('rerun') or features_to_run.size == 1) &&
+        parallel_tests_available? &&
+        features_can_run_with_parallel_tests?(features_to_run)
     end
 
     def try_and_start_vnc
