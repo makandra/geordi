@@ -39,7 +39,7 @@ def deploy(target_stage = nil)
   diff_size = `git fetch && git diff #{source_branch} origin/#{source_branch} | wc -l`.strip
   changes_size = `git status -s | wc -l`.strip
 
-  if merge_needed and diff_size != '0'
+  if diff_size != '0'
     fail "Your #{source_branch} branch is not the same as on origin. Fix that first."
   elsif changes_size != '0'
     fail "Your #{source_branch} branch holds uncommitted changes. Fix that first."
@@ -66,8 +66,7 @@ def deploy(target_stage = nil)
     puts
     command = "git push && #{capistrano_call}"
     command = "git merge #{source_branch} && " << command if merge_needed
-    puts 'Pretending to execute:', command
-    # Util.system! command, :show_cmd => true
+    Util.system! command, :show_cmd => true
 
     success 'Deployment complete.'
   else
