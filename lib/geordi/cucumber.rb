@@ -22,7 +22,7 @@ module Geordi
       show_features_to_run
       setup_vnc
 
-      command = use_parallel_tests? ? parallel_execution_command : serial_execution_command
+      command = use_parallel_tests?(options) ? parallel_execution_command : serial_execution_command
       note_cmd(command) if options[:verbose]
 
       puts
@@ -81,14 +81,17 @@ module Geordi
       self.argv = argv - command_line_features
       gem 'parallel_tests', parallel_tests_version
       require 'parallel_tests'
-      type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
-      features_to_run = command_line_features
-      features_to_run = find_all_features_recursively('features') if features_to_run.empty?
-      features_to_run = features_to_run.join(" ")
-      parallel_tests_args = "-t #{type_arg}"
-      cucumber_args = command_line_args.join(' ') + '--tags ~@solo'
 
-      [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args, "-- #{features_to_run}"].flatten.compact.join(" ")
+      type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
+      features = features_to_run
+      features = find_all_features_recursively('features') if features.empty?
+
+      [
+        use_firefox_for_selenium,
+        'b parallel_test -t ' + type_arg,
+        "-o '#{ command_line_options.join(' ') } --tags ~@solo'",
+        "-- #{ features.join(' ') }"
+      ].compact.join(' ')
     end
 
     def use_firefox_for_selenium
@@ -118,7 +121,7 @@ module Geordi
 
     def features_to_run
       @features_to_run ||= begin
-        features = command_line_features
+        features = find_all_features_recursively(command_line_features)
         features = rerun_txt_features if features.empty?
         features
       end
@@ -135,18 +138,18 @@ module Geordi
     end
 
     def command_line_features
-      @command_line_features ||= argv - command_line_args
+      @command_line_features ||= argv - command_line_options
     end
 
-    def command_line_args
-      @command_line_args ||= Array.new.tap do |args|
+    def command_line_options
+      @command_line_options ||= Array.new.tap do |args|
         # Sorry for this mess. Option parsing doesn't get much prettier.
         argv.each_cons(2) do |a, b|
           break if a == '--' # This is the common no-options-beyond marker
 
           case a
           when '-f', '--format', '-p', '--profile', '-t', '--tags'
-            args << a << b # b is the value of the option
+            args << a << b # b is the value for the option
           else
             args << a if a.start_with? '-'
           end
@@ -185,17 +188,10 @@ module Geordi
       end.flatten.uniq.compact
     end
 
-    def features_can_run_with_parallel_tests?(features)
-      features.none? { |f| f.include? ':' }
-    end
-
-    # Check if cucumber_spinner is available
     def spinner_available?
       @spinner_available ||= File.exists?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
     end
 
-
-    # Check if parallel_tests is available
     def parallel_tests_available?
       not parallel_tests_version.nil?
     end
@@ -210,10 +206,11 @@ module Geordi
       end
     end
 
-    def use_parallel_tests?
-      not(argv.include?('rerun') or features_to_run.size == 1) &&
+    def use_parallel_tests?(options)
+      options.fetch(:parallel, true) &&
+        features_to_run.size != 1 &&
         parallel_tests_available? &&
-        features_can_run_with_parallel_tests?(features_to_run)
+        features_to_run.none? { |f| f.include? ':' }
     end
 
     def try_and_start_vnc

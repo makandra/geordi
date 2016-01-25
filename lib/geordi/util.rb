@@ -38,7 +38,7 @@ module Geordi
         options = commands.last.is_a?(Hash) ? commands.pop : {}
         note_cmd commands.join(' ') if options[:show_cmd]
 
-        if ENV['GEORDI_NOOP']
+        if ENV['GEORDI_TESTING']
           puts "Util.system! #{ commands.join(' ') }"
         else
           # Remove Geordi's Bundler environment when running commands.

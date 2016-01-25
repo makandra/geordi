@@ -40,15 +40,15 @@ def cucumber(*files)
         fail 'Features failed.' if (i == options.rerun) # All reruns done?
 
         announce "Rerun ##{ i + 1 } of #{ options.rerun }"
-        break if Geordi::Cucumber.new.run(%w[--profile rerun], :verbose => options.verbose)
+        break if Geordi::Cucumber.new.run(%w[--profile rerun], :verbose => options.verbose, :parallel => false)
       end
     end
 
+    # Serial run of @solo scenarios
     solo_tag_usages = `grep -r '@solo' features`.split("\n")
-
     if solo_tag_usages.any?
       announce 'Running @solo features'
-      Geordi::Cucumber.new.run %w[--tags @solo], :verbose => options.verbose
+      Geordi::Cucumber.new.run %w[--tags @solo], :verbose => options.verbose, :parallel => false
     end
 
   else
