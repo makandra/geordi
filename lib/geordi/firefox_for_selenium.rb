@@ -7,15 +7,29 @@ module Geordi
 
     FIREFOX_FOR_SELENIUM_BASE_PATH = Pathname.new('~/bin/firefoxes').expand_path
     FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'
-    DEFAULT_FIREFOX_VERSION = "5.0.1"
-    VERSION_SPECIFICATION_FILE = Pathname.new(".firefox-version")
+    FIREFOX_VERSION_FILE = Pathname.new('.firefox-version')
 
     def self.install(version)
       Installer.new(version).run
     end
 
     def self.path_from_config
-      PathFromConfig.new.run
+      if FIREFOX_VERSION_FILE.exist?
+        version = File.read(FIREFOX_VERSION_FILE).strip
+
+        unless FirefoxForSelenium.binary(version).exist?
+          note "Firefox #{ version } not found."
+
+          puts strip_heredoc(<<-INSTRUCTIONS)
+          Install it with
+            geordi firefox --setup #{ version }
+          INSTRUCTIONS
+
+          prompt 'Continue?', 'n', /y|yes/
+        end
+
+        path(version)
+      end
     end
 
     def self.path(version)
@@ -28,65 +42,11 @@ module Geordi
 
     def self.setup_firefox
       path = path_from_config
+
       if path
+        note 'Setting up Firefox for Selenium ...'
         ENV['PATH'] = "#{path}:#{ENV['PATH']}"
       end
-    end
-
-
-    class PathFromConfig
-      include Geordi::Interaction
-
-      def run
-        unless system_firefox
-          get_version
-          validate_install
-          path
-        end
-      end
-
-      private
-
-      def path
-        FirefoxForSelenium.path(@version)
-      end
-
-      def system_firefox
-        version_from_cuc_file == "system"
-      end
-
-      def get_version
-        @version = version_from_cuc_file || default_version
-      end
-
-      def default_version
-        warn "No firefox version given, defaulting to #{DEFAULT_FIREFOX_VERSION}."
-        note "Specify a version by putting it in a file named \"#{VERSION_SPECIFICATION_FILE}\"."
-        puts
-        DEFAULT_FIREFOX_VERSION
-      end
-
-      def validate_install
-        unless FirefoxForSelenium.binary(@version).exist?
-          note "Firefox #{@version} not found."
-
-          puts strip_heredoc(<<-INSTRUCTIONS)
-          Install it with
-            geordi setup_firefox_for_selenium #{@version}
-
-          If you want to use your system firefox and not see this message, add
-          a .firefox-version file with the content "system".
-
-          INSTRUCTIONS
-
-          prompt "Press ENTER to continue or press CTRL+C to abort."
-        end
-      end
-
-      def version_from_cuc_file
-        File.read(VERSION_SPECIFICATION_FILE).strip if VERSION_SPECIFICATION_FILE.exist?
-      end
-
     end
 
 

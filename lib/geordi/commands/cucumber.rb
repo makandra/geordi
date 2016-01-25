@@ -3,7 +3,8 @@ long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
 Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
-Firefox for Selenium set up, and beta support for rerunning failed scenarios.
+a VNC session holding Selenium test browsers, support for using a dedicated
+testing firefox and beta support for rerunning failed scenarios.
 
 - *@solo:* Generally, features will be run in parallel. However, scenarios
 tagged @solo will be run sequentially, _after_ the parallel run.

@@ -112,3 +112,17 @@ Feature: The cucumber command
       And the output should match /^> .*cucumber .*--tags ~@solo/
     But the output should not contain "# Running @solo features"
       And the output should not match /^> .*cucumber .*--tags @solo/
+
+
+  Scenario: Specifying a firefox version to use
+    Given a file named "features/sub/one.feature" with:
+    """
+    Feature: Testfeature
+    """
+    And a file named ".firefox-version" with:
+    """
+    24.0
+    """
+
+    When I run `geordi cucumber --verbose`
+    Then the output should match /^> PATH=.*24.0:\$PATH.* cucumber/
