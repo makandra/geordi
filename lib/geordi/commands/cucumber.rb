@@ -2,13 +2,18 @@ desc 'cucumber [FILES]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber as you want: with `bundle exec`, `cucumber_spinner` detection,
-separate Firefox for Selenium, etc.
+Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
+Firefox for Selenium set up, and beta support for rerunning failed scenarios.
 
-Sometimes, the dot-printing Cucumber formatter does not show errors. In case a
-feature fails without a message, try calling with `--debug` or `-d`.
+- *@solo:* Generally, features will be run in parallel. However, scenarios
+tagged @solo will be run sequentially, _after_ the parallel run.
 
-Any unknown option will be passed through to Cucumber, e.g. `--format pretty`.
+- *Debugging:* Sometimes, the dot-printing Cucumber formatter does not show
+errors. In case a feature fails without a message, try running it with `--debug`
+or `-d`.
+
+- *Options:* Any unknown option will be passed through to Cucumber,
+e.g. `--format pretty`.
 LONGDESC
 
 option :verbose, :aliases => '-v', :type => :boolean,
@@ -37,6 +42,13 @@ def cucumber(*files)
         announce "Rerun ##{ i + 1 } of #{ options.rerun }"
         break if Geordi::Cucumber.new.run(%w[--profile rerun], :verbose => options.verbose)
       end
+    end
+
+    solo_tag_usages = `grep -r '@solo' features`.split("\n")
+
+    if solo_tag_usages.any?
+      announce 'Running @solo features'
+      Geordi::Cucumber.new.run %w[--tags @solo], :verbose => options.verbose
     end
 
   else

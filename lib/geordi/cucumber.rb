@@ -15,7 +15,7 @@ module Geordi
     VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
-    def run(files, options)
+    def run(files, options = {})
       self.argv = files
 
       consolidate_rerun_txt_files
@@ -86,7 +86,7 @@ module Geordi
       features_to_run = find_all_features_recursively('features') if features_to_run.empty?
       features_to_run = features_to_run.join(" ")
       parallel_tests_args = "-t #{type_arg}"
-      cucumber_args = command_line_args.join(' ')
+      cucumber_args = command_line_args.join(' ') + '--tags ~@solo'
 
       [use_firefox_for_selenium, 'b parallel_test', parallel_tests_args, cucumber_args, "-- #{features_to_run}"].flatten.compact.join(" ")
     end
@@ -105,7 +105,9 @@ module Geordi
     end
 
     def show_features_to_run
-      if features_to_run.empty?
+      if command_line_options.include? '@solo'
+        note 'All features tagged with @solo'
+      elsif features_to_run.empty?
         note 'All features in features/'
       else
         notification = 'Only: ' + features_to_run.join(', ')
@@ -143,7 +145,7 @@ module Geordi
           break if a == '--' # This is the common no-options-beyond marker
 
           case a
-          when '-f', '--format', '-p', '--profile'
+          when '-f', '--format', '-p', '--profile', '-t', '--tags'
             args << a << b # b is the value of the option
           else
             args << a if a.start_with? '-'
