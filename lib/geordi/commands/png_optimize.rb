@@ -1,4 +1,4 @@
-desc 'png-optimize', 'Optimize .png files'
+desc 'png-optimize PATH', 'Optimize .png files'
 long_desc <<-LONGDESC
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
 - Eliminates unused colors and reduces bit-depth (if possible)
@@ -17,7 +17,7 @@ Optimize a single file:
     geordi png-optimize input.png
 LONGDESC
 
-def png_optimize(*args)
+def png_optimize(path)
   require 'fileutils'
 
   announce 'Optimizing .png files'
@@ -27,7 +27,6 @@ def png_optimize(*args)
   end
 
   po = PngOptimizer.new
-  path = args[0]
   if File.directory?(path)
     po.batch_optimize_inplace(path)
   elsif File.file?(path)
