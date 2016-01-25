@@ -1,4 +1,4 @@
-desc 'firefox COMMAND', 'Run a command with firefox for selenium set up (alias: chrome)'
+desc 'firefox COMMAND', 'Run a command with firefox for selenium set up (alias: `chrome`)'
 long_desc <<-LONGDESC
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 

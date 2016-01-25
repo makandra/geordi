@@ -5,13 +5,13 @@ Example: `geordi deploy production`
 Merge, push and deploy with a single command! There are several scenarios where
 this command comes in handy:
 
-1) Production deploy. From the master branch, run `geordi deploy production`.
+1) *Production deploy:* From the master branch, run `geordi deploy production`.
    This will merge `master` to `production`, push and deploy to production.
 
-2) Feature branch deploy. From the feature branch, run `geordi deploy staging`.
+2) *Feature branch deploy:* From the feature branch, run `geordi deploy staging`.
    This will merge the feature branch to `master`, push and deploy to staging.
 
-3) Simple deploy. If the source branch matches the target branch, merging will
+3) *Simple deploy:* If the source branch matches the target branch, merging will
    be skipped.
 
 Calling the command without arguments will infer the target stage from the

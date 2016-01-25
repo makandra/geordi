@@ -6,8 +6,8 @@ Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
 a VNC session holding Selenium test browsers, support for using a dedicated
 testing firefox and beta support for rerunning failed scenarios.
 
-- *@solo:* Generally, features will be run in parallel. However, scenarios
-tagged @solo will be run sequentially, _after_ the parallel run.
+- *@solo:* Generally, features are run in parallel. However, scenarios tagged
+with @solo are excluded and will be run sequentially, _after_ the parallel run.
 
 - *Debugging:* Sometimes, the dot-printing Cucumber formatter does not show
 errors. In case a feature fails without a message, try running it with `--debug`

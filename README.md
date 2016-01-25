@@ -12,11 +12,11 @@ Installing the `geordi` gem will install some binaries (see below):
 geordi
 ------
 
-The base command line utility offering most of the commands.
+This base command line utility holds most of the commands.
 
-You may abbreviate commands by typing only the first letter(s), e.g. `geordi
-dev` will boot a development server, `geordi s -t` will setup a project and run
-tests afterwards. Underscores and dashes are equivalent.
+_General hint:_ You may abbreviate commands by typing only the first letter(s),
+e.g. `geordi dev` will boot a development server, `geordi s -t` will setup a
+project and run tests afterwards. Underscores and dashes are almost equivalent.
 
 For details on commands, e.g. supported options, run `geordi help <command>`.
 
@@ -32,9 +32,9 @@ Run a capistrano command on all deploy targets.
 Example: `geordi capistrano deploy`
 
 
-### geordi cleanup-directory
+### geordi clean
 
-Remove unneeded files.
+Remove unneeded files from the current directory.
 
 
 ### geordi commit
@@ -57,13 +57,44 @@ Run Cucumber features.
 
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber as you want: with `bundle exec`, `cucumber_spinner` detection,
-separate Firefox for Selenium, etc.
+Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
+a VNC session holding Selenium test browsers, support for using a dedicated
+testing firefox and beta support for rerunning failed scenarios.
+
+- *@solo:* Generally, features will be run in parallel. However, scenarios
+tagged @solo will be run sequentially, _after_ the parallel run.
+
+- *Debugging:* Sometimes, the dot-printing Cucumber formatter does not show
+errors. In case a feature fails without a message, try running it with `--debug`
+or `-d`.
+
+- *Options:* Any unknown option will be passed through to Cucumber,
+e.g. `--format pretty`.
 
 
-### geordi deploy
+### geordi deploy [STAGE]
 
-Guided deployment.
+Guided deployment across branches.
+
+Example: `geordi deploy production`
+
+Merge, push and deploy with a single command! There are several scenarios where
+this command comes in handy:
+
+1) Production deploy. From the master branch, run `geordi deploy production`.
+   This will merge `master` to `production`, push and deploy to production.
+
+2) Feature branch deploy. From the feature branch, run `geordi deploy staging`.
+   This will merge the feature branch to `master`, push and deploy to staging.
+
+3) Simple deploy. If the source branch matches the target branch, merging will
+   be skipped.
+
+Calling the command without arguments will infer the target stage from the
+current branch and fall back to master/staging.
+
+When your project does not have a `deploy:migrations` task, this command will
+run `cap deploy` instead when called with `-M`: `geordi deploy -M staging`.
 
 
 ### geordi devserver
@@ -98,6 +129,20 @@ dump into the development database after downloading it.
 ### geordi eurest
 
 Open the current Eurest cantina menu.
+
+
+### geordi firefox COMMAND
+
+Run a command with firefox for selenium set up (alias: chrome).
+
+Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
+
+Useful when you need Firefox for Selenium or the VNC set up, but can't use the
+`geordi cucumber` command.
+
+*Install* a special Firefox by calling with `--setup <version>`.
+
+This command is aliased `chrome` for users running Selenium in Chrome.
 
 
 ### geordi help [COMMAND]
@@ -199,16 +244,6 @@ After setting up, runs all tests when called with the `--test` option:
 See `geordi help setup` for details.
 
 
-### geordi setup-firefox-for-selenium VERSION
-
-Install a special firefox for running Selenium tests.
-
-
-### geordi setup-vnc
-
-Setup VNC for running Selenium tests there.
-
-
 ### geordi shell TARGET
 
 Open a shell on a Capistrano deploy target.
@@ -255,19 +290,16 @@ See `geordi help update` for details.
 Print the current version of geordi.
 
 
-### geordi vnc-show
+### geordi vnc
 
 Show the hidden VNC window.
 
+Example: `geordi vnc` or `geordi vnc --setup`
 
-### geordi with-firefox-for-selenium COMMAND
+Launch a VNC session to the hidden screen where `geordi cucumber` runs Selenium
+tests.
 
-Run a command with firefox for selenium set up.
-
-Example: `geordi with-firefox-for-selenium b cucumber`
-
-Useful when you need Firefox for Selenium, but can't use the `geordi cucumber`
-command.
+When called with `--setup`, will guide through the setup of VNC.
 
 
 b
