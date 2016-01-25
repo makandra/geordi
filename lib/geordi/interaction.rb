@@ -43,7 +43,6 @@ module Geordi
       message = "#{text} "
       message << "[#{default}] " if default
 
-      puts
       print "\e[36m#{message}\e[0m" # cyan
       input = $stdin.gets.strip
       input = default if input.empty? && default
