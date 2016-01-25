@@ -21,9 +21,11 @@ Gem::Specification.new do |s|
   s.require_paths = ["lib"]
 
   s.add_runtime_dependency 'thor', '>= 0.18.0'
-  # s.add_development_dependency 'debugger'
+
+  s.add_development_dependency 'aruba'
+  s.add_development_dependency 'pry'
 
   s.post_install_message = <<-ATTENTION
-    Binary `geordi` installed
+Binary `geordi` installed
   ATTENTION
 end
