@@ -343,3 +343,6 @@ calling your local geordi like so (adjust paths to your needs):
 
 Don't forget to update this README. The whole `geordi` section is auto-generated
 by `rake update_readme`.
+
+Geordi is (partially) tested with Cucumber and Aruba. Run all tests with `rake`.
+Of course you're free to use `geordi tests` ;)

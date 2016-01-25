@@ -1,6 +1,13 @@
 require 'bundler'
 Bundler::GemHelper.install_tasks
 
+desc 'Default: Run all tests'
+task :default => :features
+
+task :features do
+  system 'cucumber'
+end
+
 task :update_readme do
   require File.expand_path('../lib/geordi/cli', __FILE__)
 
