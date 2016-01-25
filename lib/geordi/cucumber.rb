@@ -36,7 +36,7 @@ module Geordi
         end
         unless $?.success?
           if $?.exitstatus == 127
-            fail 'VNC viewer not found. Install it with `geordi setup-vnc`.'
+            fail 'VNC viewer not found. Install it with `geordi vnc --setup`.'
           else
             note 'VNC viewer could not be opened:'
             puts error
@@ -60,7 +60,7 @@ module Geordi
         ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
         ENV["DISPLAY"] = VNC_DISPLAY
 
-        note 'Selenium is running in a VNC window. Use `geordi vnc-show` to view it.'
+        note 'Selenium is running in a VNC window. Use `geordi vnc` to view it.'
       end
     end
 
@@ -227,7 +227,7 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        warn 'Could not launch VNC server. Install it with `geordi setup-vnc`.'
+        warn 'Could not launch VNC server. Install it with `geordi vnc --setup`.'
         false
       else
         warn 'Starting VNC failed:'

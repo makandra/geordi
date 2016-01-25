@@ -1,4 +1,4 @@
 #!/usr/bin/env ruby
 
 puts 'DEPRECATED: Use `geordi vn[c] --setup` instead'
-exec 'geordi', 'setup-vnc'
+exec 'geordi', 'vnc', '--setup'
