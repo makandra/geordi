@@ -1,60 +1,58 @@
-require 'capistrano'
-
 module Geordi
   class CapistranoConfig
 
     attr_accessor :root
 
     def initialize(stage)
-      ENV['BUNDLE_BIN_PATH'] = 'Trick capistrano safeguard in deploy.rb into believing bundler is present by setting this variable.'
-
-      @stage = stage
-      @root = find_project_root!
-      load_capistrano_config
+      self.stage = stage
+      self.root = find_project_root!
+      load_deploy_info
     end
 
-    def user
-      @capistrano_config.fetch(:user)
+    def user(server)
+      cap2user = deploy_info[ /^set :user, ['"](.*?)['"]/, 1 ]
+      cap2user || deploy_info[ /^server ['"]#{ server }['"],.*user.{1,4}['"](.*?)['"]/, 1 ]
     end
 
     def servers
-      @capistrano_config.find_servers(:roles => [:app])
+      deploy_info.scan(/^server ['"](.*?)['"]/).flatten
     end
 
     def primary_server
-      @capistrano_config.find_servers(:roles => [:app], :only => { :primary => true }).first
+      # Actually, servers may have a :primary property. From Capistrano 3, the
+      # first listed server is the primary one by default, which is a good-
+      # enough default for us.
+      puts servers
+      servers.first
     end
 
     def path
-      @capistrano_config.fetch(:deploy_to) + '/current'
+      deploy_info[ /^set :deploy_to, ['"](.*?)['"]/, 1 ]
     end
 
     def env
-      @capistrano_config.fetch(:rails_env, 'production')
+      deploy_info[ /^set :rails_env, ['"](.*?)['"]/, 1 ]
     end
 
     def shell
-      @capistrano_config.fetch(:default_shell, 'bash --login')
+      'bash --login'
     end
-
 
     private
 
-    def load_capistrano_config
-      config = ::Capistrano::Configuration.new
-      config.load('deploy')
-      config.load('config/deploy')
-      if @stage and @stage != ''
-        config[:stage] = @stage
-        config.find_and_execute_task(@stage)
-      end
+    attr_accessor :deploy_info, :stage
 
-      @capistrano_config = config
+    def load_deploy_info
+      self.deploy_info = File.read(File.join root, 'config/deploy.rb').tap do |info|
+        if stage
+          info << "\n" << File.read(File.join root, "config/deploy/#{ stage }.rb")
+        end
+      end
     end
 
     def find_project_root!
       current = Dir.pwd
-      until (File.exists? 'Capfile')
+      until File.exists?('Capfile')
         Dir.chdir '..'
         raise <<-ERROR if current == Dir.pwd
 Could not locate Capfile.

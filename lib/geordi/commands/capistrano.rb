@@ -8,10 +8,7 @@ def capistrano(*args)
 
   note 'Found the following deploy targets:'
   puts targets
-  puts
-
-  print 'Continue? [yN] '
-  exit unless $stdin.gets =~ /[yes]+/
+  prompt('Continue?', 'n', /y|yes/) or fail 'Cancelled.'
 
   targets << nil if targets.empty? # default target
   targets.each do |stage|

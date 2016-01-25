@@ -59,8 +59,9 @@ def deploy(target_stage = nil)
   Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
 
   if prompt('Go ahead with the deployment?', 'n', /y|yes/)
+    cap3 = file_containing?('Capfile', 'capistrano/setup')
     capistrano_call = "cap #{target_stage} deploy"
-    capistrano_call << ':migrations' unless options.no_migrations
+    capistrano_call << ':migrations' unless cap3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if file_containing?('Gemfile', /capistrano/)
 
     puts

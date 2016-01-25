@@ -38,8 +38,12 @@ module Geordi
         options = commands.last.is_a?(Hash) ? commands.pop : {}
         note_cmd commands.join(' ') if options[:show_cmd]
 
-        # Remove Geordi's Bundler environment when running commands.
-        Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
+        if ENV['GEORDI_NOOP']
+          puts "Util.system! #{ commands.join(' ') }"
+        else
+          # Remove Geordi's Bundler environment when running commands.
+          Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
+        end
       end
 
       def console_command(environment)

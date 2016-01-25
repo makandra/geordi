@@ -59,7 +59,7 @@ module Geordi
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
 
       note 'Connecting to ' + server.to_s
-      Util.system! 'ssh', "#{@config.user}@#{server}", '-t', remote_command
+      Util.system! 'ssh', "#{ @config.user(server) }@#{ server }", '-t', remote_command
     end
 
   end
