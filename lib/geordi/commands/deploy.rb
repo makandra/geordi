@@ -36,12 +36,7 @@ def deploy(target_stage = nil)
   merge_needed = (source_branch != target_branch)
 
   announce "Checking whether your #{source_branch} branch is ready"
-  diff_size = `git fetch && git diff #{source_branch} origin/#{source_branch} | wc -l`.strip
-  changes_size = `git status -s | wc -l`.strip
-
-  if diff_size != '0'
-    fail "Your #{source_branch} branch is not the same as on origin. Fix that first."
-  elsif changes_size != '0'
+  if `git status -s | wc -l`.strip != '0'
     fail "Your #{source_branch} branch holds uncommitted changes. Fix that first."
   else
     note 'All good.'
