@@ -1,4 +1,4 @@
-desc 'firefox COMMAND', 'Run a command with firefox for selenium set up (alias: `chrome`)'
+desc 'firefox COMMAND', 'Run a command with VNC set up (and the test firefox, if present)'
 long_desc <<-LONGDESC
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 
@@ -11,7 +11,7 @@ This command is aliased `chrome` for users running Selenium in Chrome.
 LONGDESC
 
 option :setup, :type => :string, :banner => 'setup=FIREFOX_VERSION',
-  :desc => 'If set, will install a special Firefox with the given version'
+  :desc => 'Install a special test-runner Firefox with the given version'
 
 def firefox(*command)
   if options.setup

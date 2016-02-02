@@ -1,9 +1,10 @@
 require 'pathname'
 require 'tempfile'
+require 'geordi/interaction'
 
 module Geordi
   module FirefoxForSelenium
-    include Geordi::Interaction
+    extend Geordi::Interaction
 
     FIREFOX_FOR_SELENIUM_BASE_PATH = Pathname.new('~/bin/firefoxes').expand_path
     FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'
@@ -14,18 +15,18 @@ module Geordi
     end
 
     def self.path_from_config
-      if FIREFOX_VERSION_FILE.exist?
-        version = File.read(FIREFOX_VERSION_FILE).strip
+      version = FIREFOX_VERSION_FILE.exist? && File.read(FIREFOX_VERSION_FILE).strip
 
+      if version and version != 'system'
         unless FirefoxForSelenium.binary(version).exist?
-          note "Firefox #{ version } not found."
+          warn "Firefox #{ version } not found"
 
-          puts strip_heredoc(<<-INSTRUCTIONS)
+          note strip_heredoc(<<-INSTRUCTIONS)
           Install it with
             geordi firefox --setup #{ version }
           INSTRUCTIONS
 
-          prompt 'Continue?', 'n', /y|yes/
+          prompt 'Run tests anyway?', 'n', /y|yes/ or fail 'Cancelled.'
         end
 
         path(version)
@@ -44,8 +45,8 @@ module Geordi
       path = path_from_config
 
       if path
-        note 'Setting up Firefox for Selenium ...'
         ENV['PATH'] = "#{path}:#{ENV['PATH']}"
+        note 'Firefox for Selenium set up'
       end
     end
 
