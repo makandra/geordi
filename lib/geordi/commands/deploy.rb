@@ -43,11 +43,11 @@ def deploy(target_stage = nil)
   end
 
   if merge_needed
-    announce "Checking what's in your #{target_branch} branch right now ..."
+    announce "Checking what's in your #{target_branch} branch right now"
     Util.system! "git checkout #{target_branch} && git pull"
   end
 
-  announce "You are about to #{'merge & ' if merge_needed}push & deploy the following commits"
+  announce "You are about to #{'merge & ' if merge_needed}push & deploy"
   note "From branch #{source_branch}"
   note "Merge into branch #{target_branch}" if merge_needed
   note "Deploy to #{target_stage}"

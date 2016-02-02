@@ -39,7 +39,7 @@ Feature: The firefox/chrome command
     When I run `geordi firefox cat testfile` interactively
       And I type "yes"
     Then the output should contain "> Firefox 1337 not found"
-      And the output should contain ">> Run tests anyway?"
+      And the output should contain "Run tests anyway?"
       And the output should contain "testcontent"
 
 
