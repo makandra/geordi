@@ -110,6 +110,8 @@ module Geordi
     def show_features_to_run
       if command_line_options.include? '@solo'
         note 'All features tagged with @solo'
+      elsif command_line_options.include? 'rerun'
+        note 'Rerunning failed scenarios'
       elsif features_to_run.empty?
         note 'All features in features/'
       else

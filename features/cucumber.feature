@@ -56,6 +56,7 @@ Feature: The cucumber command
     Then the output should contain "# Running features"
       And the output should contain "# Rerun #1 of 2"
       And the output should contain "# Rerun #2 of 2"
+      And the output should contain "Rerunning failed scenarios"
       And the output should contain "Using the rerun profile"
       And the exit status should be 1
 
