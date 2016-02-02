@@ -12,11 +12,11 @@ Installing the `geordi` gem will install some binaries (see below):
 geordi
 ------
 
-This base command line utility holds most of the commands.
+The base command line utility offering most of the commands.
 
-_General hint:_ You may abbreviate commands by typing only the first letter(s),
-e.g. `geordi dev` will boot a development server, `geordi s -t` will setup a
-project and run tests afterwards. Underscores and dashes are almost equivalent.
+You may abbreviate commands by typing only the first letter(s), e.g. `geordi
+dev` will boot a development server, `geordi s -t` will setup a project and run
+tests afterwards. Underscores and dashes are equivalent.
 
 For details on commands, e.g. supported options, run `geordi help <command>`.
 
@@ -61,8 +61,8 @@ Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
 a VNC session holding Selenium test browsers, support for using a dedicated
 testing firefox and beta support for rerunning failed scenarios.
 
-- *@solo:* Generally, features will be run in parallel. However, scenarios
-tagged @solo will be run sequentially, _after_ the parallel run.
+- *@solo:* Generally, features are run in parallel. However, scenarios tagged
+with @solo are excluded and will be run sequentially, _after_ the parallel run.
 
 - *Debugging:* Sometimes, the dot-printing Cucumber formatter does not show
 errors. In case a feature fails without a message, try running it with `--debug`
@@ -81,13 +81,13 @@ Example: `geordi deploy production`
 Merge, push and deploy with a single command! There are several scenarios where
 this command comes in handy:
 
-1) Production deploy. From the master branch, run `geordi deploy production`.
+1) *Production deploy:* From the master branch, run `geordi deploy production`.
    This will merge `master` to `production`, push and deploy to production.
 
-2) Feature branch deploy. From the feature branch, run `geordi deploy staging`.
+2) *Feature branch deploy:* From the feature branch, run `geordi deploy staging`.
    This will merge the feature branch to `master`, push and deploy to staging.
 
-3) Simple deploy. If the source branch matches the target branch, merging will
+3) *Simple deploy:* If the source branch matches the target branch, merging will
    be skipped.
 
 Calling the command without arguments will infer the target stage from the
@@ -133,7 +133,7 @@ Open the current Eurest cantina menu.
 
 ### geordi firefox COMMAND
 
-Run a command with firefox for selenium set up (alias: chrome).
+Run a command with VNC set up (and the test firefox, if present).
 
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 
@@ -161,7 +161,7 @@ environment and `rake parallel:prepare` afterwards. Otherwise, invokes `geordi r
 with `db:migrate`.
 
 
-### geordi png-optimize
+### geordi png-optimize PATH
 
 Optimize .png files.
 
@@ -346,3 +346,8 @@ by `rake update_readme`.
 
 Geordi is (partially) tested with Cucumber and Aruba. Run all tests with `rake`.
 Of course you're free to use `geordi tests` ;)
+
+**Note** that Geordi still needs to support Ruby 1.8.7, so make sure you only
+use syntax that was valid back then (e.g. the :old => hash syntax).
+Unfortunately, it is really hard to get Geordi's tests running on 1.8.7, so you
+need to make sure it runs on 1.8.7 manually.

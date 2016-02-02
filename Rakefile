@@ -46,4 +46,5 @@ For details on commands, e.g. supported options, run `geordi help <command>`.
 
   updated_readme = readme.sub(geordi_section_regex, geordi_section)
   File.open('README.md', 'w') { |f| f.puts updated_readme.strip }
+  puts 'README.me updated.'
 end
