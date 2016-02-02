@@ -32,16 +32,20 @@ module Geordi
     end
 
     def dump(options = {})
-      shell(options.merge :remote_command => "dumple #{@config.env} --for_download")
+      # Generate dump on the server
+      shell options.merge({
+        :remote_command => "dumple #{@config.env} --for_download",
+        :select_server => nil # Dump must be generated on the primary server
+      })
 
       destination_directory = File.join(@config.root, 'tmp')
       FileUtils.mkdir_p destination_directory
       destination_path = File.join(destination_directory, "#{@stage}.dump")
       relative_destination = Pathname.new(destination_path).relative_path_from Pathname.new(@config.root)
 
-      puts
       note "Downloading remote dump to #{relative_destination} ..."
-      Util.system! "scp #{@config.user}@#{@config.primary_server}:#{REMOTE_DUMP_PATH} #{destination_path}"
+      server = @config.primary_server
+      Util.system! "scp #{ @config.user(server) }@#{ server }:#{REMOTE_DUMP_PATH} #{destination_path}"
 
       success "Dumped the #{@stage} database to #{relative_destination}."
 
@@ -55,7 +59,7 @@ module Geordi
     def shell(options = {})
       server = options[:select_server] ? select_server : @config.primary_server
 
-      remote_command = "cd #{@config.path} && #{@config.shell}"
+      remote_command = "cd #{@config.remote_root} && #{@config.shell}"
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
 
       note 'Connecting to ' + server.to_s

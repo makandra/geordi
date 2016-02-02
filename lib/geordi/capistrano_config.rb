@@ -22,12 +22,11 @@ module Geordi
       # Actually, servers may have a :primary property. From Capistrano 3, the
       # first listed server is the primary one by default, which is a good-
       # enough default for us.
-      puts servers
       servers.first
     end
 
-    def path
-      deploy_info[ /^set :deploy_to, ['"](.*?)['"]/, 1 ]
+    def remote_root
+      File.join deploy_info[ /^set :deploy_to, ['"](.*?)['"]/, 1 ], 'current'
     end
 
     def env
