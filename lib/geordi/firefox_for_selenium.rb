@@ -1,6 +1,6 @@
 require 'pathname'
 require 'tempfile'
-require 'geordi/interaction'
+require File.expand_path('../interaction', __FILE__)
 
 module Geordi
   module FirefoxForSelenium
