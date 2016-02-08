@@ -3,6 +3,7 @@
 require 'geordi/util'
 
 Geordi::Util.installing_missing_gems do
+  require 'rubygems' unless defined?(Gem)
   require 'geordi'
   require 'thor'
 
