@@ -84,7 +84,7 @@ module Geordi
       end
 
       def download_url
-        "ftp://ftp.mozilla.org/pub/firefox/releases/#{@version}/"
+        "https://ftp.mozilla.org/pub/firefox/releases/#{@version}/"
       end
 
       def binary
