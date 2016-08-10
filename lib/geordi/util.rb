@@ -15,7 +15,7 @@ module Geordi
         error.message =~ /-- (\S+)\Z/
         $1 or raise # could not extract a gem name from the error message, re-raise the error
 
-        gem_name = $1.strip
+        gem_name = $1.strip.split('/').first
         install_command = 'gem install ' + gem_name
 
         # install missing gem
@@ -42,7 +42,8 @@ module Geordi
           puts "Util.system! #{ commands.join(' ') }"
         else
           # Remove Geordi's Bundler environment when running commands.
-          Bundler.clean_system(*commands) or fail(options[:fail_message] || 'Something went wrong.')
+          success = defined?(Bundler) ? Bundler.clean_system(*commands) : system(*commands)
+          success or fail(options[:fail_message] || 'Something went wrong.')
         end
       end
 
