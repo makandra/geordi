@@ -182,6 +182,19 @@ Optimize a single file:
     geordi png-optimize input.png
 
 
+### geordi purge-kernels
+
+Purge linux kernels older than the current one.
+
+Example: `sudo geordi purge-kernels`
+
+/boot quickly gets cluttered with unused old kernels, finally rendering your
+machine unable to install updates.
+
+This script will retrieve and print a list of all current or older kernels. If
+confirmed, it will then purge all kernels older than the current one.
+
+
 ### geordi rake TASK
 
 Run a rake task in several Rails environments.

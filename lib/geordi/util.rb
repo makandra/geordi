@@ -33,10 +33,16 @@ module Geordi
       # Run a command with a clean environment.
       # Print an error message and exit if the command fails.
       #
-      # Options: show_cmd, fail_message
+      # @option show_cmd: Whether to print the command
+      # @option confirm: Whether to ask for confirmation before running it
+      # @option fail_message: The text to print on command failure
       def system!(*commands)
         options = commands.last.is_a?(Hash) ? commands.pop : {}
         note_cmd commands.join(' ') if options[:show_cmd]
+
+        if options[:confirm]
+          prompt('Run this now?', 'n', /y|yes/) or fail('Cancelled.')
+        end
 
         if ENV['GEORDI_TESTING']
           puts "Util.system! #{ commands.join(' ') }"
@@ -65,6 +71,27 @@ module Geordi
 
       def current_branch
         `git rev-parse --abbrev-ref HEAD`.strip
+      end
+
+      def retrieve_kernels
+        current_kernel = `uname -r`.strip
+
+        old_kernels = %x{
+          dpkg --list |          # List installed packages
+            grep linux-image |   # Filter
+            awk '{ print $2 }' | # Print second field (= package name)
+            sort -V |            # Sort ASC (version number mode)
+            sed -n '/'#{ current_kernel }'/q;p' # Cut list at current kernel
+        }.split("\n")
+
+        { :current => current_kernel, :old => old_kernels }
+      end
+
+      def root_required
+        unless ENV['GEORDI_TESTING']
+          user = `whoami`.strip
+          user == 'root' or fail 'Run this as root.'
+        end
       end
 
     end
