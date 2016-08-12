@@ -23,6 +23,6 @@ Gem::Specification.new do |s|
   s.add_runtime_dependency 'thor', '>= 0.18.0'
 
   s.post_install_message = <<-ATTENTION
-Binary `geordi` installed
+* Binary `geordi` installed
   ATTENTION
 end

@@ -72,7 +72,7 @@ Feature: The cucumber command
     """
 
     When I run `geordi cucumber features/sub`
-    Then the output should contain "> Only: features/sub/two.feature, features/sub/one.feature"
+    Then the output should contain "> Only: features/sub/one.feature, features/sub/two.feature"
       And the output should contain "> Using parallel_tests"
 
 
