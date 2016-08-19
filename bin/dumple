@@ -62,13 +62,16 @@ begin
 
   puts "> Dumping database for \"#{environment}\" environment ..."
 
-  host = config['host'] || 'localhost'
+  host = config['host']
 
   case config['adapter']
   when /mysql/
-    system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host}"
+    system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host || 'localhost'}"
   when /postgres/
-    command = "PGPASSWORD=\"#{config['password']}\" pg_dump -U\"#{config['username']}\" #{config['database']} -Fc -f #{dump_path} -h#{host}"
+    command = "PGPASSWORD=\"#{config['password']}\" pg_dump -U\"#{config['username']}\" #{config['database']} -Fc -f #{dump_path}"
+    if host
+      command << " -h#{host}"
+    end
     if port = config['port']
       command << " -p #{port}"
     end
