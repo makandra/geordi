@@ -53,7 +53,7 @@ begin
     Dir.mkdir(dump_dir)
     system("chmod 700 #{dump_dir}")
   end
-  
+
   if ARGV.find{ |arg| arg == '--for_download'}
     dump_path = "#{dump_dir}/dump_for_download.dump"
   else
@@ -66,7 +66,13 @@ begin
 
   case config['adapter']
   when /mysql/
-    system "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path} -h#{host || 'localhost'}"
+    command = "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path}"
+    if port = config['port']
+      command << " -h#{host || '127.0.0.1'} -P#{port}"
+    else
+      command << " -h#{host || 'localhost'}"
+    end
+    system(command)
   when /postgres/
     command = "PGPASSWORD=\"#{config['password']}\" pg_dump -U\"#{config['username']}\" #{config['database']} -Fc -f #{dump_path}"
     if host
