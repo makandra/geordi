@@ -37,9 +37,6 @@ GEM
     method_source (0.8.2)
     multi_json (1.11.2)
     multi_test (0.1.2)
-    parallel (1.9.0)
-    parallel_tests (2.7.1)
-      parallel
     pry (0.10.3)
       coderay (~> 1.1.0)
       method_source (~> 0.8.1)
@@ -61,7 +58,6 @@ DEPENDENCIES
   aruba
   geordi!
   highline
-  parallel_tests
   pry
   rspec-mocks
 
