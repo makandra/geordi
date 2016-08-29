@@ -1,4 +1,4 @@
-desc 'cucumber [FILES]', 'Run Cucumber features'
+desc 'cucumber [FILES and OPTIONS]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
@@ -24,32 +24,38 @@ option :debug, :aliases => '-d', :type => :boolean,
 option :rerun, :aliases => '-r', :type => :numeric, :default => 0,
   :desc => 'Rerun features up to N times while failing'
 
-def cucumber(*files)
+def cucumber(*args)
   if File.directory?('features')
     require 'geordi/cucumber'
 
     invoke_cmd 'bundle_install'
 
+    cmd_opts, files = args.partition { |f| f.start_with? '-' }
+    cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug
+
     announce 'Running features'
-    files << '--format' << 'pretty' << '--backtrace' if options.debug
 
     # Normal run
-    unless Geordi::Cucumber.new.run(files, :verbose => options.verbose)
+    unless Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose)
+      cmd_opts << '--profile' << 'rerun'
 
       # Reruns
       (1 + options.rerun).times do |i|
         fail 'Features failed.' if (i == options.rerun) # All reruns done?
 
         announce "Rerun ##{ i + 1 } of #{ options.rerun }"
-        break if Geordi::Cucumber.new.run(%w[--profile rerun], :verbose => options.verbose, :parallel => false)
+        break if Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose, :parallel => false)
       end
     end
 
     # Serial run of @solo scenarios
-    solo_tag_usages = `grep -r '@solo' features`.split("\n")
+    files << 'features' if files.empty? # Proper grepping
+    solo_tag_usages = `grep -r '@solo' #{ files.join(' ') }`.split("\n")
     if solo_tag_usages.any?
+      cmd_opts << '--tags' << '@solo'
+
       announce 'Running @solo features'
-      Geordi::Cucumber.new.run %w[--tags @solo], :verbose => options.verbose, :parallel => false
+      Geordi::Cucumber.new.run files, cmd_opts, :verbose => options.verbose, :parallel => false
     end
 
   else

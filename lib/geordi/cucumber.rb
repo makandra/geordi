@@ -15,8 +15,8 @@ module Geordi
     VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
-    def run(files, options = {})
-      self.argv = files
+    def run(files, cucumber_options, options = {})
+      self.argv = files + cucumber_options
 
       consolidate_rerun_txt_files
       show_features_to_run
@@ -25,7 +25,7 @@ module Geordi
       command = use_parallel_tests?(options) ? parallel_execution_command : serial_execution_command
       note_cmd(command) if options[:verbose]
 
-      puts
+      puts # Make newline
       system command # Util.system! would reset the Firefox PATH
     end
 
