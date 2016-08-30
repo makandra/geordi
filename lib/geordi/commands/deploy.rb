@@ -1,6 +1,6 @@
 desc 'deploy [STAGE]', 'Guided deployment across branches'
 long_desc <<-LONGDESC
-Example: `geordi deploy production`
+Example: `geordi deploy` or `geordi deploy p[roduction]`
 
 Merge, push and deploy with a single command! There are several scenarios where
 this command comes in handy:
@@ -8,7 +8,7 @@ this command comes in handy:
 1) *Production deploy:* From the master branch, run `geordi deploy production`.
    This will merge `master` to `production`, push and deploy to production.
 
-2) *Feature branch deploy:* From the feature branch, run `geordi deploy staging`.
+2) *Feature branch deploy:* From a feature branch, run `geordi deploy staging`.
    This will merge the feature branch to `master`, push and deploy to staging.
 
 3) *Simple deploy:* If the source branch matches the target branch, merging will
@@ -17,8 +17,13 @@ this command comes in handy:
 Calling the command without arguments will infer the target stage from the
 current branch and fall back to master/staging.
 
-When your project does not have a `deploy:migrations` task, this command will
-run `cap deploy` instead when called with `-M`: `geordi deploy -M staging`.
+Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
+deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
+is a file config/deploy/makandra.rb.
+
+When your project is running Capistrano 3, deployment will use `cap deploy`
+instead of `cap deploy:migrations`. You can force using `deploy` by passing the
+-M option: `geordi deploy -M staging`.
 LONGDESC
 
 option :no_migrations, :aliases => '-M', :type => :boolean,
@@ -27,31 +32,40 @@ option :no_migrations, :aliases => '-M', :type => :boolean,
 def deploy(target_stage = nil)
   # Set/Infer default values
   branch_stage_map = { 'master' => 'staging', 'production' => 'production'}
+  if target_stage and not Util.deploy_targets.include? target_stage
+    # Target stage autocompletion from available stages
+    target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
+  end
   proposed_stage = target_stage || branch_stage_map.fetch(Util.current_branch, 'staging')
 
-  target_stage = prompt 'Deployment capistrano stage:', proposed_stage
+  # Ask for required information
+  target_stage = prompt 'Deployment stage:', proposed_stage
   source_branch = prompt 'Source branch:', Util.current_branch
   target_branch = prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
 
   merge_needed = (source_branch != target_branch)
+  push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
 
   announce "Checking whether your #{source_branch} branch is ready"
   if `git status -s | wc -l`.strip != '0'
-    fail "Your #{source_branch} branch holds uncommitted changes. Fix that first."
+    warn "Your #{source_branch} branch holds uncommitted changes."
+    prompt('Continue anyway?', 'n', /y|yes/) or fail 'Cancelled.'
   else
     note 'All good.'
   end
 
   if merge_needed
-    announce "Checking what's in your #{target_branch} branch right now"
+    announce "Checking what's in your #{target_branch} branch right now" #######
     Util.system! "git checkout #{target_branch} && git pull"
   end
 
-  announce "You are about to #{'merge & ' if merge_needed}push & deploy"
-  note "From branch #{source_branch}"
-  note "Merge into branch #{target_branch}" if merge_needed
+  announce 'You are about to:' #################################################
+  note "Merge branch #{source_branch} into #{target_branch}" if merge_needed
+  if push_needed
+    note 'Push these commits:' if push_needed
+    Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
+  end
   note "Deploy to #{target_stage}"
-  Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
 
   if prompt('Go ahead with the deployment?', 'n', /y|yes/)
     cap3 = file_containing?('Capfile', 'capistrano/setup')
@@ -59,10 +73,14 @@ def deploy(target_stage = nil)
     capistrano_call << ':migrations' unless cap3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if file_containing?('Gemfile', /capistrano/)
 
+    invoke_cmd 'bundle_install'
+
     puts
-    command = "git push && #{capistrano_call}"
-    command = "git merge #{source_branch} && " << command if merge_needed
-    Util.system! command, :show_cmd => true
+    commands = []
+    commands << "git merge #{source_branch}" if merge_needed
+    commands << 'git push' if push_needed
+    commands << capistrano_call
+    Util.system! commands.join(' && '), :show_cmd => true
 
     success 'Deployment complete.'
   else

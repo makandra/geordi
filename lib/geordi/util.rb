@@ -94,6 +94,12 @@ module Geordi
         end
       end
 
+      def deploy_targets
+        Dir['config/deploy/*'].map do |f|
+          File.basename f, '.rb' # Filename without .rb extension
+        end
+      end
+
     end
   end
 end
