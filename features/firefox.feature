@@ -51,3 +51,8 @@ Feature: The firefox/chrome command
     Then the output should contain "> VNC is ready"
       And the output should contain "testcontent"
     But the output should not contain "Firefox for Selenium"
+
+
+  Scenario: Running --setup without a version prints an error
+    When I run `geordi firefox --setup`
+    Then the output should contain "Firefox version required"

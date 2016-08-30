@@ -132,10 +132,10 @@ module Geordi
 
         puts strip_heredoc(<<-INSTRUCTION)
         Please download an old version of Firefox from: #{download_url}
-        Unpack it with: tar xvjf firefox-#{@version}.tar.bz2 -C #{path} --strip-components=1
+        Unpack it with: tar xjf firefox-#{@version}.tar.bz2 -C #{path} --strip-components=1
         Now #{path.join('firefox')} should be the firefox binary, not a directory.
         INSTRUCTION
-        prompt "Press ENTER when you're done."
+        prompt 'Continue?'
 
         File.file?(binary) or raise "Could not find #{binary}"
       end
@@ -170,15 +170,15 @@ module Geordi
         This script will open the patched copy of Firefox when you press ENTER.
         Please perform the following steps manually:
 
+        - IMPORTANT: Quickly disable all automatic updates under Edit /
+          Preferences / Advanced / Update
         - Disable the default browser check when Firefox launches
         - Check that the version number is correct (#{@version})
         - You should not see your bookmarks, add-ons, plugins from your regular
           Firefox profile
-        - Disable all automatic updates under Edit / Preferences / Advanced /
-          Update (do this quickly or Firefox will already have updated)
         INSTRUCTION
 
-        prompt 'Open the patched copy of Firefox with ENTER.'
+        prompt 'Will open the patched copy of Firefox now'
         run_firefox_for_selenium
       end
 
