@@ -97,11 +97,6 @@ When your project does not have a `deploy:migrations` task, this command will
 run `cap deploy` instead when called with `-M`: `geordi deploy -M staging`.
 
 
-### geordi devserver
-
-Start a development server.
-
-
 ### geordi dump [TARGET]
 
 Handle dumps.
@@ -233,6 +228,11 @@ After performing the update: `geordi security-update finish`
 
 Switches branches, pulls, pushes and deploys as required by our workflow. Tells
 what it will do before it does it.
+
+
+### geordi server [PORT]
+
+Start a development server.
 
 
 ### geordi setup

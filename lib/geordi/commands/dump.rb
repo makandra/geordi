@@ -1,4 +1,4 @@
-desc 'dump [TARGET]', 'Handle dumps'
+desc 'dump [TARGET]', 'Handle dumps (see `geordi help dump` for details)'
 long_desc <<-DESC
 When called without arguments, dumps the development database with `dumple`.
 

@@ -1,4 +1,4 @@
-desc 'purge-kernels', 'Purge linux kernels older than the current one'
+desc 'purge-kernels', '[sudo] Purge linux kernels older than the current one'
 long_desc <<-LONGDESC
 Example: `sudo geordi purge-kernels`
 

@@ -1,6 +1,7 @@
 desc 'server [PORT]', 'Start a development server'
 
-option :port, :aliases => '-p', :default => '3000'
+option :port, :aliases => '-p', :default => '3000',
+  :desc => 'Choose a port'
 
 def server(port = nil)
   invoke_cmd 'bundle_install'

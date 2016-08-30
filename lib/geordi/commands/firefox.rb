@@ -1,4 +1,4 @@
-desc 'firefox COMMAND', 'Run a command with VNC set up (and the test firefox, if present)'
+desc 'firefox COMMAND', 'Run a command with VNC and test browser set up (alias: chrome)'
 long_desc <<-LONGDESC
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 
@@ -10,7 +10,7 @@ Useful when you need Firefox for Selenium or the VNC set up, but can't use the
 This command is aliased `chrome` for users running Selenium in Chrome.
 LONGDESC
 
-option :setup, :banner => 'setup=FIREFOX_VERSION',
+option :setup, :banner => 'FIREFOX_VERSION',
   :desc => 'Install a special test runner Firefox with the given version'
 
 def firefox(*command)
