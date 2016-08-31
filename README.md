@@ -4,45 +4,47 @@ Geordi
 Geordi is a collection of command line tools we use in our daily work with
 Ruby, Rails and Linux at [makandra](http://makandra.com/).
 
-Installing the `geordi` gem will install some binaries (see below):
+Installation:
 
     gem install geordi
 
 
-geordi
-------
+`geordi`
+--------
 
-The base command line utility offering most of the commands.
+The `geordi` binary holds most of the utility commands. For the few other
+binaries, see the bottom of this file.
 
-You may abbreviate commands by typing only the first letter(s), e.g. `geordi
-dev` will boot a development server, `geordi s -t` will setup a project and run
-tests afterwards. Underscores and dashes are equivalent.
+You may abbreviate commands by typing only their first letters, e.g. `geordi
+con` will boot a development console, `geordi set -t` will setup a project and
+run tests afterwards.
 
-For details on commands, e.g. supported options, run `geordi help <command>`.
+For details on commands, e.g. supported options, you may always run
+`geordi help <command>`.
 
-### geordi apache-site VIRTUAL_HOST
+### `geordi apache-site VIRTUAL_HOST`
 
 Enable the given virtual host, disabling all others.
 
 
-### geordi capistrano COMMAND
+### `geordi capistrano COMMAND`
 
 Run a capistrano command on all deploy targets.
 
 Example: `geordi capistrano deploy`
 
 
-### geordi clean
+### `geordi clean`
 
 Remove unneeded files from the current directory.
 
 
-### geordi commit
+### `geordi commit`
 
 Commit using a story title from Pivotal Tracker.
 
 
-### geordi console [TARGET]
+### `geordi console [TARGET]`
 
 Open a Rails console locally or on a Capistrano deploy target.
 
@@ -51,7 +53,7 @@ Open a local Rails console: `geordi console`
 Open a Rails console on `staging`: `geordi console staging`
 
 
-### geordi cucumber [FILES]
+### `geordi cucumber [FILES and OPTIONS]`
 
 Run Cucumber features.
 
@@ -72,11 +74,11 @@ or `-d`.
 e.g. `--format pretty`.
 
 
-### geordi deploy [STAGE]
+### `geordi deploy [STAGE]`
 
 Guided deployment across branches.
 
-Example: `geordi deploy production`
+Example: `geordi deploy` or `geordi deploy p[roduction]`
 
 Merge, push and deploy with a single command! There are several scenarios where
 this command comes in handy:
@@ -84,7 +86,7 @@ this command comes in handy:
 1) *Production deploy:* From the master branch, run `geordi deploy production`.
    This will merge `master` to `production`, push and deploy to production.
 
-2) *Feature branch deploy:* From the feature branch, run `geordi deploy staging`.
+2) *Feature branch deploy:* From a feature branch, run `geordi deploy staging`.
    This will merge the feature branch to `master`, push and deploy to staging.
 
 3) *Simple deploy:* If the source branch matches the target branch, merging will
@@ -93,13 +95,18 @@ this command comes in handy:
 Calling the command without arguments will infer the target stage from the
 current branch and fall back to master/staging.
 
-When your project does not have a `deploy:migrations` task, this command will
-run `cap deploy` instead when called with `-M`: `geordi deploy -M staging`.
+Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
+deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
+is a file config/deploy/makandra.rb.
+
+When your project is running Capistrano 3, deployment will use `cap deploy`
+instead of `cap deploy:migrations`. You can force using `deploy` by passing the
+-M option: `geordi deploy -M staging`.
 
 
-### geordi dump [TARGET]
+### `geordi dump [TARGET]`
 
-Handle dumps.
+Handle dumps (see `geordi help dump` for details).
 
 When called without arguments, dumps the development database with `dumple`.
 
@@ -121,14 +128,9 @@ dump into the development database after downloading it.
     geordi dump staging -l
 
 
-### geordi eurest
+### `geordi firefox COMMAND`
 
-Open the current Eurest cantina menu.
-
-
-### geordi firefox COMMAND
-
-Run a command with VNC set up (and the test firefox, if present).
+Run a command with VNC and test browser set up (alias: chrome).
 
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 
@@ -140,12 +142,12 @@ Useful when you need Firefox for Selenium or the VNC set up, but can't use the
 This command is aliased `chrome` for users running Selenium in Chrome.
 
 
-### geordi help [COMMAND]
+### `geordi help [COMMAND]`
 
 Describe available commands or one specific command.
 
 
-### geordi migrate
+### `geordi migrate`
 
 Migrate all databases.
 
@@ -156,30 +158,20 @@ environment and `rake parallel:prepare` afterwards. Otherwise, invokes `geordi r
 with `db:migrate`.
 
 
-### geordi png-optimize PATH
+### `geordi png-optimize PATH`
 
 Optimize .png files.
+
+Example: `geordi png-optimize some/directory`
 
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
 - Eliminates unused colors and reduces bit-depth (if possible)
 - May reduce PNG file size lossless
 
-Batch-optimize all `*.png` files in a directory:
 
-    geordi png-optimize directory
+### `geordi purge-kernels`
 
-Batch-optimize the current directory:
-
-    geordi png-optimize .
-
-Optimize a single file:
-
-    geordi png-optimize input.png
-
-
-### geordi purge-kernels
-
-Purge linux kernels older than the current one.
+[sudo] Purge linux kernels older than the current one.
 
 Example: `sudo geordi purge-kernels`
 
@@ -190,7 +182,7 @@ This script will retrieve and print a list of all current or older kernels. If
 confirmed, it will then purge all kernels older than the current one.
 
 
-### geordi rake TASK
+### `geordi rake TASK`
 
 Run a rake task in several Rails environments.
 
@@ -203,12 +195,12 @@ Example: `geordi rake db:migrate`
 - cucumber
 
 
-### geordi remove-executable-flags
+### `geordi remove-executable-flags`
 
 Remove executable-flags from files that should not be executable.
 
 
-### geordi rspec [FILES]
+### `geordi rspec [FILES]`
 
 Run RSpec.
 
@@ -218,7 +210,7 @@ Runs RSpec as you want: with RSpec 1/2 detection, `bundle exec`, rspec_spinner
 detection, etc.
 
 
-### geordi security-update [STEP]
+### `geordi security-update [STEP]`
 
 Support for performing security updates.
 
@@ -230,12 +222,12 @@ Switches branches, pulls, pushes and deploys as required by our workflow. Tells
 what it will do before it does it.
 
 
-### geordi server [PORT]
+### `geordi server [PORT]`
 
 Start a development server.
 
 
-### geordi setup
+### `geordi setup`
 
 Setup a project for the first time.
 
@@ -257,7 +249,7 @@ After setting up, runs all tests when called with the `--test` option:
 See `geordi help setup` for details.
 
 
-### geordi shell TARGET
+### `geordi shell TARGET`
 
 Open a shell on a Capistrano deploy target.
 
@@ -268,17 +260,17 @@ Lets you select the server to connect to when called with `--select-server`:
     geordi shell production -s
 
 
-### geordi tests
+### `geordi tests`
 
 Run all employed tests.
 
 
-### geordi unit
+### `geordi unit`
 
 Run Test::Unit.
 
 
-### geordi update
+### `geordi update`
 
 Bring a project up to date.
 
@@ -298,12 +290,12 @@ After updating, runs all tests when called with the `--test` option:
 See `geordi help update` for details.
 
 
-### geordi version
+### `geordi version`
 
 Print the current version of geordi.
 
 
-### geordi vnc
+### `geordi vnc`
 
 Show the hidden VNC window.
 
@@ -355,7 +347,7 @@ calling your local geordi like so (adjust paths to your needs):
     ruby -I ../geordi/lib ../geordi/bin/geordi <command>
 
 Don't forget to update this README. The whole `geordi` section is auto-generated
-by `rake update_readme`.
+by `rake readme`.
 
 Geordi is (partially) tested with Cucumber and Aruba. Run all tests with `rake`.
 Of course you're free to use `geordi tests` ;)

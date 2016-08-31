@@ -1,20 +1,10 @@
 desc 'png-optimize PATH', 'Optimize .png files'
 long_desc <<-LONGDESC
+Example: `geordi png-optimize some/directory`
+
 - Removes color profiles: cHRM, sRGB, gAMA, ICC, etc.
 - Eliminates unused colors and reduces bit-depth (if possible)
 - May reduce PNG file size lossless
-
-Batch-optimize all `*.png` files in a directory:
-
-    geordi png-optimize directory
-
-Batch-optimize the current directory:
-
-    geordi png-optimize .
-
-Optimize a single file:
-
-    geordi png-optimize input.png
 LONGDESC
 
 def png_optimize(path)
@@ -23,7 +13,7 @@ def png_optimize(path)
   announce 'Optimizing .png files'
 
   if `which pngcrush`.strip.empty?
-    fail 'You have to install pngcrush first (sudo apt-get install pngcrush)'
+    fail 'Please install pngcrush first (sudo apt-get install pngcrush)'
   end
 
   po = PngOptimizer.new
