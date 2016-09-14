@@ -5,7 +5,7 @@ desc 'Default: Run all tests'
 task :default => :features
 
 task :features do
-  system 'cucumber'
+  system 'bundle exec cucumber'
 end
 
 task :readme do
