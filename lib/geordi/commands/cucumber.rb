@@ -49,15 +49,20 @@ def cucumber(*args)
     end
 
     # Serial run of @solo scenarios
-    files << 'features' if files.empty? # Proper grepping
-    solo_tag_usages = `grep -r '@solo' #{ files.join(' ') }`.split("\n")
-    if solo_tag_usages.any?
-      cmd_opts << '--tags' << '@solo'
+    if files.any? { |f| f.include? ':' }
+      note '@solo run skipped when called with line numbers' if options.verbose
+    else
+      files << 'features' if files.empty? # Proper grepping
+      solo_tag_usages = `grep -r '@solo' #{ files.join(' ') }`.split("\n")
 
-      announce 'Running @solo features'
-      Geordi::Cucumber.new.run files, cmd_opts, :verbose => options.verbose, :parallel => false
+      if solo_tag_usages.any?
+        cmd_opts << '--tags' << '@solo'
+
+        announce 'Running @solo features'
+        Geordi::Cucumber.new.run files, cmd_opts, :verbose => options.verbose, :parallel => false
+      end
+
     end
-
   else
     note 'Cucumber not employed.'
   end

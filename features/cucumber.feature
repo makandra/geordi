@@ -123,7 +123,26 @@ Feature: The cucumber command
     Then the output should contain "# Running features"
       And the output should match /^> .*cucumber .*--tags ~@solo/
     But the output should not contain "# Running @solo features"
-      And the output should not match /^> .*cucumber .*--tags @solo/
+
+
+  Scenario: When called with line numbers, the @solo extra run is skipped
+
+    Note that with line numbers in the passed file names, features are run
+    serially.
+
+    Given a file named "features/example.feature" with:
+    """
+    Feature: Test without solo tag
+      Scenario: Example scenario
+      Scenario: Other scenario
+    """
+
+    When I run `geordi cucumber --verbose features/example.feature:2`
+    Then the output should contain "# Running features"
+    But the output should not contain "# Running @solo features"
+      # Regression test, with line numbers grep would fail with:
+      #   grep: features/example.feature:2: No such file or directory
+      And the output should not contain "No such file or directory"
 
 
   Scenario: Specifying a firefox version to use
