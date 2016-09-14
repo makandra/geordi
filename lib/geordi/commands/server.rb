@@ -2,6 +2,8 @@ desc 'server [PORT]', 'Start a development server'
 
 option :port, :aliases => '-p', :default => '3000',
   :desc => 'Choose a port'
+option :public, :aliases => '-P', :type => :boolean,
+  :desc => 'Make the server accessible in the local network'
 
 def server(port = nil)
   invoke_cmd 'bundle_install'
@@ -12,8 +14,10 @@ def server(port = nil)
   note "URL: http://#{ File.basename(Dir.pwd) }.vcap.me:#{port}"
   puts
 
-  # -b 0.0.0.0: Allow connections from other machines, e.g. a testing iPad
-  Util.system! Util.server_command, "-p #{ port }", '-b 0.0.0.0'
+  command = [Util.server_command]
+  command << '-b 0.0.0.0' if options.public
+  command << "-p #{ port }"
+  Util.system! *command
 end
 
 map 'devserver' => 'server'
