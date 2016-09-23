@@ -18,7 +18,7 @@ LONGDESC
 option :opt, :type => :boolean, :aliases => '-o', :banner => 'VALUE_NAME',
        :desc => 'If set, VALUE_NAME will be used for something'
 
-def setup
+def example
   # Invoke other commands like this:
   invoke_cmd 'other_command', 'argument', :an => 'option'
 
@@ -27,3 +27,7 @@ def setup
   # For formatted output, see geordi/interaction.rb
   success 'Done.'
 end
+
+# Command mappings, usually not needed
+map 'beispiel' => 'example'
+map '-E' => 'example'
