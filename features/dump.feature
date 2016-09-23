@@ -23,7 +23,7 @@ Feature: The dump command
     When I run `geordi dump staging`
     Then the output should contain "# Dumping the database of staging"
       And the output should contain "> Connecting to www.example.com"
-      And the output should contain "Util.system! ssh user@www.example.com -t cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
+      And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
       And the output should contain "> Downloading remote dump to tmp/staging.dump"
       # Omitting the absolute path in this regex (.*)
       And the output should match %r<Util.system! scp user@www.example.com:~/dumps/dump_for_download.dump .*/tmp/aruba/tmp/staging.dump>

@@ -15,7 +15,7 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi`
-    Then the output should contain "Util.system! ssh deploy@first.example.com -t cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
 
   Scenario: It understands Capistrano 3 syntax
@@ -27,4 +27,4 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi`
-    Then the output should contain "Util.system! ssh deploy@first.example.com -t cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
