@@ -7,6 +7,7 @@ Feature: The cucumber command
     rerun: features
     """
 
+
   Scenario: Run a single feature
     Given a file named "features/single.feature" with:
     """
@@ -157,3 +158,12 @@ Feature: The cucumber command
 
     When I run `geordi cucumber --verbose`
     Then the output should match /^> PATH=.*24.0:\$PATH.* cucumber/
+
+
+  Scenario: Running all cucumber features matching a given string
+    Given a file named "features/given.feature" with "Feature: given"
+    And a file named "features/other.feature" with "Feature: other"
+
+    When I run `geordi cucumber --containing given`
+    Then the output should contain "Only: features/given.feature"
+    But the output should not contain "other.feature"
