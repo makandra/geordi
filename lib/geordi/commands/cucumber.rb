@@ -17,6 +17,8 @@ or `-d`.
 e.g. `--format pretty`.
 LONGDESC
 
+option :modified, :aliases => '-m', :type => :boolean,
+  :desc => 'Run all modified features'
 option :verbose, :aliases => '-v', :type => :boolean,
   :desc => 'Print the testrun command'
 option :debug, :aliases => '-d', :type => :boolean,
@@ -25,6 +27,15 @@ option :rerun, :aliases => '-r', :type => :numeric, :default => 0,
   :desc => 'Rerun features up to N times while failing'
 
 def cucumber(*args)
+  # This is not testable as there is no way to stub `git`
+  if options.modified? and args.empty?
+    modified_features = `git status --short`.split($/).map do |line|
+      indicators = line.slice!(0..2) # Remove leading indicators
+      line if line.include?('.feature') and not indicators.include?('D')
+    end.compact
+    args = modified_features
+  end
+
   if File.directory?('features')
     require 'geordi/cucumber'
 
