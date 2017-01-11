@@ -76,7 +76,7 @@ begin
 
     system(command)
   when /postgres/
-    command = "PGPASSWORD=\"#{config['password']}\" pg_dump #{config['database']} --format=custom"
+    command = "PGPASSWORD=\"#{config['password']}\" pg_dump #{config['database']} --format=custom --clean"
     command << " --file=#{dump_path}"
     command << " --username=\"#{config['username']}\""
     command << " --host=#{host}" if host
