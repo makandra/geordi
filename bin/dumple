@@ -63,24 +63,25 @@ begin
   puts "> Dumping database for \"#{environment}\" environment ..."
 
   host = config['host']
+  port = config['port']
 
   case config['adapter']
   when /mysql/
     command = "mysqldump -u\"#{config['username']}\" -p\"#{config['password']}\" #{config['database']} -r #{dump_path}"
-    if port = config['port']
+    if port
       command << " -h#{host || '127.0.0.1'} -P#{port}"
     else
       command << " -h#{host || 'localhost'}"
     end
+
     system(command)
   when /postgres/
-    command = "PGPASSWORD=\"#{config['password']}\" pg_dump -U\"#{config['username']}\" #{config['database']} -Fc -f #{dump_path}"
-    if host
-      command << " -h#{host}"
-    end
-    if port = config['port']
-      command << " -p #{port}"
-    end
+    command = "PGPASSWORD=\"#{config['password']}\" pg_dump #{config['database']} --format=custom"
+    command << " --file=#{dump_path}"
+    command << " --username=\"#{config['username']}\""
+    command << " --host=#{host}" if host
+    command << " --port=#{port}" if port
+
     system(command)
   else
     raise "Adapter \"#{config['adapter']} is not supported"
