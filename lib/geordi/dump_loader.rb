@@ -23,6 +23,7 @@ module Geordi
       command = 'mysql --silent'
       command << ' -p' << config['password'] if config['password']
       command << ' -u' << config['username'] if config['username']
+      command << ' --port=' << config['port'] if config['port']
       command << ' --default-character-set=utf8'
       command << ' ' << config['database']
       command << ' < ' << dump_file
@@ -33,6 +34,7 @@ module Geordi
       ENV['PGPASSWORD'] = config['password']
       command = 'pg_restore --no-owner --clean'
       command << ' --username=' << config['username'] if config['username']
+      command << ' --port=' << config['port'] if config['port']
       command << ' --host=' << config['host'] if config['host']
       command << ' --dbname=' << config['database']
       command << ' ' << dump_file
