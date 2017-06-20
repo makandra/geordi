@@ -70,8 +70,9 @@ with @solo are excluded and will be run sequentially, _after_ the parallel run.
 errors. In case a feature fails without a message, try running it with `--debug`
 or `-d`.
 
-- *Options:* Any unknown option will be passed through to Cucumber,
-e.g. `--format pretty`.
+- *Options:* Any unknown option will be passed through to Cucumber, but you need
+to use an `=` instead of a space to separate parameter name and value,
+e.g. `--format=pretty`.
 
 
 ### `geordi deploy [STAGE]`
