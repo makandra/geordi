@@ -99,7 +99,7 @@ begin
   dump_size_kb = (File.size(dump_path) / 1024).round
 
   puts "> Dumped to #{dump_path} (#{dump_size_kb} KB)"
-rescue Exception => e
+rescue StandardError => e
   $stderr.puts e.message
   exit 1
 end
