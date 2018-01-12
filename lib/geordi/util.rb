@@ -73,27 +73,6 @@ module Geordi
         `git rev-parse --abbrev-ref HEAD`.strip
       end
 
-      def retrieve_kernels
-        current_kernel = `uname -r`.strip
-
-        old_kernels = %x{
-          dpkg --list |          # List installed packages
-            grep linux-image |   # Filter
-            awk '{ print $2 }' | # Print second field (= package name)
-            sort -V |            # Sort ASC (version number mode)
-            sed -n '/'#{ current_kernel }'/q;p' # Cut list at current kernel
-        }.split("\n")
-
-        { :current => current_kernel, :old => old_kernels }
-      end
-
-      def root_required
-        unless ENV['GEORDI_TESTING']
-          user = `whoami`.strip
-          user == 'root' or fail 'Run this as root.'
-        end
-      end
-
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
           File.basename f, '.rb' # Filename without .rb extension
