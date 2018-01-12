@@ -73,13 +73,6 @@ module Geordi
         `git rev-parse --abbrev-ref HEAD`.strip
       end
 
-      def root_required
-        unless ENV['GEORDI_TESTING']
-          user = `whoami`.strip
-          user == 'root' or fail 'Run this as root.'
-        end
-      end
-
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
           File.basename f, '.rb' # Filename without .rb extension
