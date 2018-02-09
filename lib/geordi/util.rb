@@ -63,7 +63,7 @@ module Geordi
 
       def server_command
         if File.exists?('script/server')
-          'script/server' # Rails 2
+          'script/server ""' # Rails 2
         else
           'bundle exec rails server' # Rails 3+
         end
