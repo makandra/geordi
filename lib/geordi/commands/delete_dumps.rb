@@ -11,15 +11,14 @@ LONGDESC
 def delete_dumps(dump_directory = nil)
   deletable_dumps = []
   if dump_directory.nil?
-    announce 'Cleaning default directories'
     dump_directories = [
       File.join(Dir.home, 'dumps'),
       Dir.pwd
     ]
   else
-    announce "Cleaning #{dump_directory}"
     dump_directories = [dump_directory]
   end
+  announce 'Looking for *.dump in ' << dump_directories.join(',')
   dump_directories.each do |d|
     d2 = File.expand_path(d)
     unless File.directory? File.realdirpath(d2)
