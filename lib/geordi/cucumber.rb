@@ -79,10 +79,8 @@ module Geordi
     def parallel_execution_command
       note 'Using parallel_tests'
       self.argv = argv - command_line_features
-      gem 'parallel_tests', parallel_tests_version
-      require 'parallel_tests'
 
-      type_arg = Gem::Version.new(::ParallelTests::VERSION) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
+      type_arg = Gem::Version.new(parallel_tests_version) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
       features = features_to_run
       features = find_all_features_recursively('features') if features.empty?
 
