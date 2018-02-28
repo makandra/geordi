@@ -87,9 +87,17 @@ module Geordi
       [
         use_firefox_for_selenium,
         'b parallel_test -t ' + type_arg,
-        "-o '#{ command_line_options.join(' ') } --tags ~@solo'",
+        %(-o '#{ command_line_options.join(' ') } --tags "#{not_tag('@solo')}"'),
         "-- #{ features.join(' ') }"
       ].compact.join(' ')
+    end
+
+    def not_tag(name)
+      if cucumber_version < '3'
+        "~#{name}"
+      else
+        "not #{name}"
+      end
     end
 
     def use_firefox_for_selenium
@@ -196,14 +204,25 @@ module Geordi
       not parallel_tests_version.nil?
     end
 
-    # get the current parallel test version used in Gemfile.lock (nil if not available)
     def parallel_tests_version
-      @parallel_tests_version ||= begin
-        parallel_tests = `bundle list`.split("\n").detect{ |x| x =~ /parallel_tests/ }
-        if parallel_tests
-          parallel_tests.scan( /\(([\d\.]+).*\)/ ).flatten.first
-        end
+      @parallel_tests_version ||= gem_version('parallel_tests')
+    end
+
+    def cucumber_version
+      @cucumber_version ||= gem_version('cucumber')
+    end
+
+    # Get the version string for the given gem by parsing Gemfile.lock.
+    # Returns nil if the gem is not used.
+    def gem_version(gem)
+      gem_line = bundle_list.split("\n").detect{ |x| x.include?(gem) }
+      if gem_line
+        gem_line.scan( /\(([\d\.]+).*\)/ ).flatten.first
       end
+    end
+
+    def bundle_list
+      @bundle_list ||= `bundle list`
     end
 
     def use_parallel_tests?(options)
