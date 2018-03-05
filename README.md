@@ -75,6 +75,18 @@ to use an `=` instead of a space to separate parameter name and value,
 e.g. `--format=pretty`.
 
 
+### geordi delete_dumps [DIRECTORY]
+
+Delete database dump files (`*.dump`).
+
+Example: `geordi delete_dumps` or `geordy delete_dumps ~/tmp/dumps`
+
+Recursively search for files ending in `*.dump` and offer to delete those. When
+no argument is given, two default directories are searched for dump files: the
+current working directory and `~/dumps` (for dumps created with geordi).
+
+Geordi will ask for confirmation before actually deleting files.
+
 ### `geordi deploy [STAGE]`
 
 Guided deployment across branches.
@@ -104,6 +116,26 @@ When your project is running Capistrano 3, deployment will use `cap deploy`
 instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
 
+
+### `geordi drop_databases`
+
+Delete local MySQL/MariaDB and Postgres databases that are not whitelisted.
+
+Example: `geordi drop_databases`
+
+Check both MySQL/MariaDB and Postgres on the machine running geordi for databases
+and offer to delete them. Excluded are databases that are whitelisted. This comes
+in handy when you're keeping your currently active projects in the whitelist files
+and perform regular housekeeping with Geordi.
+
+When called with `-P` or `-M` options, only handles Postgres resp. MySQL/MariaDB.
+
+When called with `--postgres <port or local socket>` or `--mysql <port or local socket>`,
+will instruct the underlying management commands to use those connection methods
+instead of the defaults. This is useful when running multiple installations.
+
+Geordi will ask for confirmation before actually dropping databases and will
+offer to edit the whitelist instead.
 
 ### `geordi dump [TARGET]`
 

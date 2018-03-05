@@ -1,11 +1,15 @@
 desc 'delete_dumps [DIRECTORY]', 'delete database dump files (*.dump)'
 long_desc <<-LONGDESC
-Delete database dump files (files ending with *.dump) recursively.
+Delete database dump files (`*.dump`).
 
-If DIRECTORY is not supplied, the script will look for database dumps
-in ~/dumps and the current project's directory.
+Example: `geordi delete_dumps` or `geordy delete_dumps ~/tmp/dumps`
 
-If DIRECTORY is supplied, the script will only look in that directory.
+Recursively search for files ending in `*.dump` and offer to delete those. When
+no argument is given, two default directories are searched for dump files: the
+current working directory and `~/dumps` (for dumps created with geordi).
+
+Geordi will ask for confirmation before actually deleting files.
+
 LONGDESC
 
 def delete_dumps(dump_directory = nil)
