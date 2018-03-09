@@ -1,11 +1,18 @@
 require 'fileutils'
 require 'open3'
+require 'tempfile'
 
 module Geordi
   class DBCleaner
     include Geordi::Interaction
 
     def initialize(extra_flags)
+      puts 'Please enter your sudo password if asked, for db operations as system users'
+      puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
+      puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
+      `sudo true`
+      fail 'sudo access is required for database operations as database users' if $? != 0
+      @derivative_dbname = /_(test\d?|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = "#{Dir.home}" if base_directory.nil?
       @whitelist_directory = File.join(base_directory, '.config', 'geordi', 'whitelists')
@@ -16,15 +23,56 @@ module Geordi
 
     def edit_whitelist(dbtype)
       whitelist = whitelist_fname(dbtype)
-      texteditor = choose_texteditor
-      system("#{texteditor} #{whitelist}")
-    end
-
-    def create_new_whitelist(dbtype)
-      whitelist = whitelist_fname(dbtype)
-      return if File.exist? whitelist
-      File.open(whitelist, 'w') do |wl|
-        wl.write('# System databases are always whitelisted')
+      if File.exist? whitelist
+        whitelisted_dbs = Geordi::Util.stripped_lines(File.read(whitelist))\
+          .delete_if { |l| l.start_with? '#' }
+      else
+        whitelisted_dbs = Array.new
+      end
+      all_dbs = list_all_dbs(dbtype)
+      tmp = Tempfile.open("geordi_whitelist_#{dbtype}")
+      tmp.write <<-HEREDOC
+# Put each whitelisted database on a new line.
+# System databases will never be deleted.
+# When you whitelist foo, foo_development and foo_test\\d? are whitelisted, too.
+# This works even if foo does not exist. Also, you will only see foo in this list.
+#
+# Syntax: keep foo
+#         drop bar
+HEREDOC
+      tmpfile_content = Array.new
+      all_dbs.each do |db|
+        next if is_whitelisted?(dbtype, db)
+        next if is_protected?(dbtype, db)
+        db.sub!(@derivative_dbname, '')
+        tmpfile_content.push(['drop', db])
+      end
+      whitelisted_dbs.each do |db|
+        tmpfile_content.push(['keep', db])
+      end
+      tmpfile_content.sort_by! { |k| k[1] }
+      tmpfile_content.uniq!
+      tmpfile_content.each do |line|
+        tmp.write("#{line[0]} #{line[1]}\n")
+      end
+      tmp.close
+      texteditor = Geordi::Util.decide_texteditor
+      system("#{texteditor} #{tmp.path}")
+      File.open(tmp.path, 'r') do |wl_edited|
+        whitelisted_dbs = Array.new
+        whitelist_storage = File.open(whitelist, 'w')
+        lines = Geordi::Util.stripped_lines(wl_edited.read)
+        lines.each do |line|
+          next if line.start_with?('#')
+          fail 'Invalid edit to whitelist file' unless line.split.length == 2
+          fail 'Invalid edit to whitelist file' unless %w[keep drop k d].include? line.split[0]
+          db_status, db_name = line.split
+          if db_status == 'keep'
+            whitelisted_dbs.push db_name
+            whitelist_storage.write(db_name << "\n")
+          end
+        end
+        whitelist_storage.close
       end
     end
 
@@ -45,8 +93,9 @@ module Geordi
           cmd = 'mysql -uroot'
           cmd << " #{extra_flags}" unless extra_flags.nil?
           unless File.exist? File.join(Dir.home, '.my.cnf')
-            warn "You should create a ~/.my.cnf file first, or you'll need to enter your MySQL root password for each db.\n
-                  See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information."
+            puts "Please enter your MySQL/MariaDB password for account 'root'."
+            warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
+            warn "See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information."
             cmd << ' -p'  # need to ask for password now
           end
           Open3.popen3("#{cmd} -e 'QUIT'") do |stdin2, stdout2, stderr2, thread2|
@@ -89,6 +138,9 @@ module Geordi
     end
 
     def list_all_mysql_dbs
+      if @mysql_command.include? '-p'
+        puts "Please enter your MySQL/MariaDB account 'root' for: list all databases"
+      end
       `#{@mysql_command} -B -N -e 'show databases'`.split
     end
 
@@ -99,7 +151,11 @@ module Geordi
       deletable_dbs = confirm_deletion('mysql', database_list)
       return if deletable_dbs.nil?
       deletable_dbs.each do |db|
-        note "Dropping MySQL/MariaDB database #{db}"
+        if @mysql_command.include? '-p'
+          puts "Please enter your MySQL/MariaDB account 'root' for: DROP DATABASE #{db}"
+        else
+          note "Dropping MySQL/MariaDB database #{db}"
+        end
         `#{@mysql_command} -e 'DROP DATABASE \`#{db}\`;'`
       end
     end
@@ -153,29 +209,29 @@ module Geordi
     end
     private :confirm_deletion
 
-    def create_whitelist(dbtype)
-      whitelist = File.open(whitelist_fname(dbtype), 'w')
-      if dbtype == 'mysql'
-        whitelist.write("# Always whitelisted:\n# information_schema\n# performance_schema\n# mysql\n# sys\n")
-      elsif dbtype == 'postgres'
-        whitelist.write("# Always whitelisted: \n # postgres\n")
-      end
-      whitelist.write("# When you whitelist `foo`, `foo_development` and `foo_test\d?` will be considered whitelisted, too.")
-      whitelist.close
-    end
-
-    def filter_whitelisted(dbtype, database_list)
-      create_whitelist(dbtype) unless File.exist? whitelist_fname(dbtype)
+    def is_protected?(dbtype, database_name)
       protected = {
         'mysql'    => %w[mysql information_schema performance_schema sys],
         'postgres' => ['postgres'],
       }
-      whitelist_content = File.open(whitelist_fname(dbtype), 'r').read.lines.map(&:chomp).map(&:strip)
+      protected[dbtype].include? database_name
+    end
+
+    def is_whitelisted?(dbtype, database_name)
+      if File.exist? whitelist_fname(dbtype)
+        whitelist_content = Geordi::Util.stripped_lines(File.open(whitelist_fname(dbtype), 'r').read)
+      else
+        whitelist_content = Array.new
+      end
+      whitelist_content.include? database_name.sub(@derivative_dbname, '')
+    end
+
+    def filter_whitelisted(dbtype, database_list)
       # n.b. `delete` means 'delete from list of dbs that should be deleted in this context
       # i.e. `delete` means 'keep this database'
       deletable_dbs = database_list.dup
-      deletable_dbs.delete_if { |db| whitelist_content.include? db.sub(/_(test\d?|development)$/, '') }
-      deletable_dbs.delete_if { |db| protected[dbtype].include? db }
+      deletable_dbs.delete_if { |db| is_whitelisted?(dbtype, db) if File.exist? whitelist_fname(dbtype) }
+      deletable_dbs.delete_if { |db| is_protected?(dbtype, db) }
       deletable_dbs.delete_if { |db| db.start_with? '#' }
     end
     private :filter_whitelisted
