@@ -1,4 +1,5 @@
 require 'geordi/interaction'
+require 'socket'
 
 module Geordi
   class Util
@@ -79,6 +80,37 @@ module Geordi
         end
       end
 
+      # try to guess user's favorite cli text editor
+      def decide_texteditor
+        %w[$VISUAL $EDITOR /usr/bin/editor vi].each do |texteditor|
+          if cmd_exists? texteditor and texteditor.start_with? '$'
+            return ENV[texteditor[1..-1]]
+          elsif cmd_exists? texteditor
+            return texteditor
+          end
+        end
+      end
+
+      # check if given cmd is executable. Absolute path or command in $PATH allowed.
+      def cmd_exists? cmd
+        system("which #{cmd} > /dev/null")
+        return $?.exitstatus.zero?
+      end
+
+      def is_port_open?(port)
+        begin
+          socket = TCPSocket.new('127.0.0.1', port)
+          socket.close
+          return true
+        rescue Errno::ECONNREFUSED
+          return false
+        end
+      end
+
+      # splint lines e.g. read from a file into lines and clean those up
+      def stripped_lines(input_string)
+        input_string.lines.map(&:chomp).map(&:strip)
+      end
     end
   end
 end

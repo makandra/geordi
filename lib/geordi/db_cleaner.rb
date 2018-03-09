@@ -1,5 +1,4 @@
 require 'fileutils'
-require 'socket'
 require 'open3'
 
 module Geordi
@@ -180,26 +179,5 @@ module Geordi
       deletable_dbs.delete_if { |db| db.start_with? '#' }
     end
     private :filter_whitelisted
-  end
-end
-
-def choose_texteditor
-  %w[$VISUAL $EDITOR /usr/bin/editor vi].each do |texteditor|
-    return texteditor if cmd_exists? texteditor
-  end
-end
-
-def cmd_exists? cmd
-  system("which #{cmd} > /dev/null")
-  return $?.exitstatus.zero?
-end
-
-def is_port_open?(port)
-  begin
-    socket = TCPSocket.new('127.0.0.1', port)
-    socket.close
-    return true
-  rescue Errno::ECONNREFUSED
-    return false
   end
 end
