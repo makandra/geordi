@@ -1,31 +1,42 @@
+# Use the methods in this file to communicate with the user
+#
 module Geordi
   module Interaction
 
+    # Start your command by `announce`-ing what you're about to do
     def announce(text)
       message = "\n# #{text}"
       puts "\e[4;34m#{message}\e[0m" # blue underline
     end
 
+    # Any hints, comments, infos or explanations should be `note`d. Please do
+    # not print any output (data, file contents, lists) with `note`.
     def note(text)
       puts '> ' + text
     end
 
+    # Like `note`, but yellow. Use to warn the user.
     def warn(text)
       message = "> #{text}"
       puts "\e[33m#{message}\e[0m" # yellow
     end
 
+    # Like `note`, but pink. Use to print (bash) commands.
+    # Also see Util.system!
     def note_cmd(text)
       message = "> #{text}"
       puts "\e[35m#{message}\e[0m" # pink
     end
 
+    # Exit execution with status code 1 and give a short note what happened,
+    # e.g. "Failed" or "Cancelled"
     def fail(text)
       message = "\nx #{text}"
       puts "\e[31m#{message}\e[0m" # red
       exit(1)
     end
 
+    # When you're done, inform the user with a `success` and a short message
     def success(text)
       message = "\n> #{text}"
       puts "\e[32m#{message}\e[0m" # green
