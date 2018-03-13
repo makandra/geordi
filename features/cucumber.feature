@@ -97,7 +97,7 @@ Feature: The cucumber command
 
     When I run `geordi cucumber --verbose features`
     Then the output should contain "# Running features"
-      And the output should match /^> .*cucumber .*--tags ~@solo/
+      And the output should match /^> .*cucumber .*--tags \"~@solo\"/
       And the output should contain "# Running @solo features"
       And the output should match /^> .*cucumber .*--tags @solo/
 
@@ -122,7 +122,7 @@ Feature: The cucumber command
 
     When I run `geordi cucumber features/no_solo --verbose`
     Then the output should contain "# Running features"
-      And the output should match /^> .*cucumber .*--tags ~@solo/
+      And the output should match /^> .*cucumber .*--tags \"~@solo\"/
     But the output should not contain "# Running @solo features"
 
 
