@@ -35,7 +35,7 @@ def delete_dumps(dump_directory = nil)
     success 'No dumps to delete' if deletable_dumps.empty?
     exit 0
   end
-  deletable_dumps.uniq!
+  deletable_dumps.uniq!.sort!
   note 'The following dumps can be deleted:'
   puts
   puts deletable_dumps
