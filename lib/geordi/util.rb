@@ -39,7 +39,7 @@ module Geordi
       # @option fail_message: The text to print on command failure
       def system!(*commands)
         options = commands.last.is_a?(Hash) ? commands.pop : {}
-        note_cmd commands.inspect if options[:show_cmd]
+        note_cmd commands.join(' ') if options[:show_cmd]
 
         if options[:confirm]
           prompt('Run this now?', 'n', /y|yes/) or fail('Cancelled.')
