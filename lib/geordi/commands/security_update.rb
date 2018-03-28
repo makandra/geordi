@@ -21,20 +21,19 @@ def security_update(step='prepare')
 
     success 'Successfully prepared for security update'
     puts
-    note 'Please apply the security update now.'
+    note 'Please apply the security update now and commit your changes.'
     note 'When you are done, run `geordi security-update finish`.'
 
 
-  when 'finish'
-    announce 'Finishing security update'
-
+  when 'f', 'finish'
     # ensure everything is committed
-    `git status --porcelain`.empty? or fail('There are uncommitted changes.')
-    note 'Working directory clean.'
+    `git status --porcelain`.empty? or fail('Please commit your changes before finishing the update.')
 
+    announce 'Finishing security update'
+    note 'Working directory clean.'
     prompt('Have you successfully run all tests?', 'n', /y|yes/) or fail 'Please run tests first.'
 
-    note 'About to: push production, checkout & pull master, merge production, push master, deploy all stages'
+    note 'About to: push production, checkout & pull master, merge production, push master'
     prompt('Continue?', 'n', /y|yes/) or fail 'Cancelled.'
 
     Util.system! 'git push', :show_cmd => true
@@ -43,6 +42,7 @@ def security_update(step='prepare')
     Util.system! 'git merge production', :show_cmd => true
     Util.system! 'git push', :show_cmd => true
 
+    announce 'Deploying all targets'
     deploy = Util.capistrano3? ? 'deploy' : 'deploy:migrations'
     invoke_cmd 'capistrano', deploy
 
