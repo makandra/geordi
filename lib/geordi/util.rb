@@ -111,6 +111,15 @@ module Geordi
       def stripped_lines(input_string)
         input_string.lines.map(&:chomp).map(&:strip)
       end
+
+      def capistrano3?
+        Util.file_containing? 'Capfile', 'capistrano/setup'
+      end
+
+      def file_containing?(file, regex)
+        File.exists?(file) and File.read(file).scan(regex).any?
+      end
+
     end
   end
 end

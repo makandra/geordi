@@ -43,7 +43,8 @@ def security_update(step='prepare')
     Util.system! 'git merge production', :show_cmd => true
     Util.system! 'git push', :show_cmd => true
 
-    invoke_cmd 'capistrano', 'deploy:migrations'
+    deploy = Util.capistrano3? ? 'deploy' : 'deploy:migrations'
+    invoke_cmd 'capistrano', deploy
 
     success 'Successfully pushed and deployed security update'
     puts

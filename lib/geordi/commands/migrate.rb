@@ -12,7 +12,7 @@ def migrate
   announce 'Migrating'
 
   if File.directory?('db/migrate')
-    if file_containing?('Gemfile', /parallel_tests/)
+    if Util.file_containing?('Gemfile', /parallel_tests/)
       note 'Development and parallel test databases'
       puts
 

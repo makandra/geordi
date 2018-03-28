@@ -7,7 +7,7 @@ def create_databases
 
   if File.exists?('config/database.yml')
     command = 'bundle exec rake db:create:all'
-    command << ' parallel:create' if file_containing?('Gemfile', /parallel_tests/)
+    command << ' parallel:create' if Util.file_containing?('Gemfile', /parallel_tests/)
 
     Util.system! command
   else

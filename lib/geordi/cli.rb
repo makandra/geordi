@@ -14,10 +14,6 @@ module Geordi
 
     private
 
-    def file_containing?(file, regex)
-      File.exists?(file) and File.read(file).scan(regex).any?
-    end
-
     # fix weird implementation of #invoke
     def invoke_cmd(name, *args)
       options = args.last.is_a?(Hash) ? args.pop : {}
