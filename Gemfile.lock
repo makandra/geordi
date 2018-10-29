@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (1.9.1)
+    geordi (1.10.0)
       thor (>= 0.18.0)
 
 GEM
@@ -62,4 +62,4 @@ DEPENDENCIES
   rspec-mocks
 
 BUNDLED WITH
-   1.16.1
+   1.16.5

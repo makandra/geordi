@@ -367,7 +367,7 @@ calling your local geordi like so (adjust paths to your needs):
     ruby -I ../geordi/lib ../geordi/bin/geordi <command>
 
 Don't forget to update this README. The whole `geordi` section is auto-generated
-by `rake readme`.
+by `rake readme`. Also remember to add your changes to the CHANGELOG.
 
 Geordi is (partially) tested with Cucumber and Aruba. Run all tests with `rake`.
 Of course you're free to use `geordi tests` ;)

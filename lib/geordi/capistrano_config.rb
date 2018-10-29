@@ -11,7 +11,7 @@ module Geordi
 
     def user(server)
       cap2user = deploy_info[ /^set :user, ['"](.*?)['"]/, 1 ]
-      cap2user || deploy_info[ /^server ['"]#{ server }['"],.*user.{1,4}['"](.*?)['"]/, 1 ]
+      cap2user || deploy_info[ /^server ['"]#{ server }['"],.*user.{1,4}['"](.*?)['"]/m, 1 ]
     end
 
     def servers

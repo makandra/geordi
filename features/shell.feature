@@ -28,3 +28,15 @@ Feature: The shell command
 
     When I run `geordi shell geordi`
     Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+
+  Scenario: It allows multiline capistrano server definitions
+    Given a file named "config/deploy.rb" with "deploy.rb exists"
+    And a file named "config/deploy/geordi.rb" with:
+    """
+    set :deploy_to, '/var/www/example.com'
+    server 'first.example.com',
+      user: 'deploy'
+    """
+
+    When I run `geordi shell geordi`
+    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
