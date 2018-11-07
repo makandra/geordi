@@ -1,4 +1,5 @@
 Feature: The console command
+  Most aspects of connection to a server are tested in shell feature.
 
   Scenario: Opening a local Rails console
     When I run `geordi console`

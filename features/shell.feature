@@ -40,3 +40,22 @@ Feature: The shell command
 
     When I run `geordi shell geordi`
     Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+
+
+  Scenario: It prefers stage settings over general config
+    Given a file named "config/deploy.rb" with:
+    """
+    set :deploy_to, '/var/www/unknown.example.com'
+    set :user, 'user'
+
+    server 'www.unknown.example.com'
+    """
+    And a file named "config/deploy/staging.rb" with:
+    """
+    set :deploy_to, '/var/www/example.com'
+
+    server 'www.example.com'
+    """
+
+    When I run `geordi shell staging`
+    Then the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current"

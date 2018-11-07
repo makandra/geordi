@@ -42,11 +42,14 @@ module Geordi
     attr_accessor :deploy_info, :stage
 
     def load_deploy_info
-      self.deploy_info = File.read(File.join root, 'config/deploy.rb').tap do |info|
-        if stage
-          info << "\n" << File.read(File.join root, "config/deploy/#{ stage }.rb")
-        end
+      self.deploy_info = ''
+
+      if stage
+        deploy_info << File.read(File.join root, "config/deploy/#{ stage }.rb")
+        deploy_info << "\n"
       end
+
+      deploy_info << File.read(File.join root, 'config/deploy.rb')
     end
 
     def find_project_root!

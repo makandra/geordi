@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+## 1.11.0 2018-11-07
+
+### Compatible changes
+- Fixes [#36](https://github.com/makandra/geordi/issues/36): Capistrano Config: Settings in deploy/$stage.rb should take precedence over deploy.rb
+
 ## 1.10.0 2018-10-17
 
 ### Compatible changes
