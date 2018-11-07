@@ -59,3 +59,20 @@ Feature: The shell command
 
     When I run `geordi shell staging`
     Then the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current"
+
+
+  Scenario: It allows whitespaces in the config
+    We also add the unset command to check we are still matching the right
+    commands and not allow any char at the beginning.
+
+    Given a file named "config/deploy.rb" with "deploy.rb exists"
+    And a file named "config/deploy/staging.rb" with:
+    """
+    unset :user, 'wrong'
+     set    :deploy_to,  '/var/www/example.com'
+           set  :user,   'user'
+        server  'www.example.com'
+    """
+
+    When I run `geordi shell staging`
+    Then the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current"

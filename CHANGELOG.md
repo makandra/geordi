@@ -10,6 +10,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Fixes [#36](https://github.com/makandra/geordi/issues/36): Capistrano Config: Settings in deploy/$stage.rb should take precedence over deploy.rb
+- Fixes [#38](https://github.com/makandra/geordi/issues/31): Capistrano Config: Ignore whitespaces in the capistrano config files
 
 ## 1.10.0 2018-10-17
 
