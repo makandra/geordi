@@ -1,8 +1,6 @@
-desc 'delete_dumps [DIRECTORY]', 'delete database dump files (*.dump)'
+desc 'delete_dumps [DIRECTORY]', 'Delete database dump files (*.dump)'
 long_desc <<-LONGDESC
-Delete database dump files (`*.dump`).
-
-Example: `geordi delete_dumps` or `geordy delete_dumps ~/tmp/dumps`
+Example: `geordi delete_dumps` or `geordi delete_dumps ~/tmp/dumps`
 
 Recursively search for files ending in `*.dump` and offer to delete those. When
 no argument is given, two default directories are searched for dump files: the

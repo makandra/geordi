@@ -43,6 +43,11 @@ Remove unneeded files from the current directory.
 
 Commit using a story title from Pivotal Tracker.
 
+Example: `geordi commit`
+
+On the first execution we ask for your Pivotal Tracker API token. It will be
+stored in `~/.gitpt`.
+
 
 ### `geordi console [TARGET]`
 
@@ -70,22 +75,22 @@ with @solo are excluded and will be run sequentially, _after_ the parallel run.
 errors. In case a feature fails without a message, try running it with `--debug`
 or `-d`.
 
-- *Options:* Any unknown option will be passed through to Cucumber, but you need
-to use an `=` instead of a space to separate parameter name and value,
-e.g. `--format=pretty`.
+- *Options:* Any unknown option will be passed through to Cucumber,
+e.g. `--format pretty`.
 
 
-### geordi delete_dumps [DIRECTORY]
+### `geordi delete_dumps [DIRECTORY]`
 
-Delete database dump files (`*.dump`).
+Delete database dump files (*.dump).
 
-Example: `geordi delete_dumps` or `geordy delete_dumps ~/tmp/dumps`
+Example: `geordi delete_dumps` or `geordi delete_dumps ~/tmp/dumps`
 
 Recursively search for files ending in `*.dump` and offer to delete those. When
 no argument is given, two default directories are searched for dump files: the
 current working directory and `~/dumps` (for dumps created with geordi).
 
 Geordi will ask for confirmation before actually deleting files.
+
 
 ### `geordi deploy [STAGE]`
 
@@ -117,9 +122,9 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
 
 
-### `geordi drop_databases`
+### `geordi drop-databases`
 
-Delete local MySQL/MariaDB and Postgres databases that are not whitelisted.
+Interactively delete local databases.
 
 Example: `geordi drop_databases`
 
@@ -136,6 +141,7 @@ instead of the defaults. This is useful when running multiple installations.
 
 Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
+
 
 ### `geordi dump [TARGET]`
 
