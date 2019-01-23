@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 - Fixes [#59]: Removedb name prefix when reading whitelist
 - Fixes [#62]: Provide better error messages on whitelist editing errors.
+- Fixes [#63]: Allow explicit whitelisting of database names that would be considered derivative during db cleanup
 
 ## 2.0.0 2019-02-20
 
