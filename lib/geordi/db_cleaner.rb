@@ -87,8 +87,12 @@ HEREDOC
         lines = Geordi::Util.stripped_lines(wl_edited.read)
         lines.each do |line|
           next if line.start_with?('#')
-          fail 'Invalid edit to whitelist file' unless line.split.length == 2
-          fail 'Invalid edit to whitelist file' unless %w[keep drop k d].include? line.split[0]
+          unless line.split.length == 2
+            fail "Invalid edit to whitelist file: \`#{line}\` - Syntax is: ^[keep|drop] dbname$"
+          end
+          unless %w[keep drop k d].include? line.split.first
+            fail "Invalid edit to whitelist file: \`#{line}\` - must start with either drop or keep."
+          end
           db_status, db_name = line.split
           if db_status == 'keep'
             whitelisted_dbs.push db_name

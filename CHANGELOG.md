@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Fixes [#59]: Removedb name prefix when reading whitelist
+- Fixes [#62]: Provide better error messages on whitelist editing errors.
 
 ## 2.0.0 2019-02-20
 
@@ -18,7 +19,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Fixes [#54]: @solo features run first and are not skipped by accident on failures before
-- Fixes [#3]: Add spring support for RSpec
+- Fixes [#03]: Add spring support for RSpec
 - Fixes [#53]: Integrate yarn integrity
 - Fixes [#52]: Remote dumps are transmitted compressed
 
