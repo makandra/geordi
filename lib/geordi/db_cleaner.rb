@@ -47,8 +47,31 @@ HEREDOC
         db.sub!(@derivative_dbname, '')
         tmpfile_content.push(['drop', db])
       end
-      whitelisted_dbs.each do |db|
-        tmpfile_content.push(['keep', db])
+      warn_manual_whitelist = false
+      whitelisted_dbs.each do |db_name|
+        # Remove 'keep' word from whitelist entries. This is not normally required since geordi
+        # does not save 'keep' or 'drop' to the whitelist file on disk but rather saves a list
+        # of all whitelisted db names and just presents the keep/drop information while editing
+        # the whitelist to supply users a list of databases they can whitelist by changing the
+        # prefix to 'keep'. Everything prefixed 'drop' is not considered whitelisted and thus
+        # not written to the whitelist file on disk.
+        #
+        # However, if users manually edit their whitelist files they might use the keep/drop
+        # syntax they're familiar with.
+        if db_name.start_with? 'keep '
+          db_name.gsub!(/keep /, '')
+          db_name = db_name.split[1..-1].join(' ')
+          warn_manual_whitelist = true
+        end
+        tmpfile_content.push(['keep', db_name]) unless db_name.empty?
+      end
+      if warn_manual_whitelist
+        warn <<-ERROR_MSG.gsub(/^\s*/, '')
+        Your whitelist #{whitelist} seems to have been generated manually.
+        In that case, make sure to use only one database name per line and omit the 'keep' prefix."
+
+        Launching the editor.
+        ERROR_MSG
       end
       tmpfile_content.sort_by! { |k| k[1] }
       tmpfile_content.uniq!

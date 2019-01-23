@@ -18,6 +18,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Fixes [#3]: Add spring support for RSpec
 - Fixes [#53]: Integrate yarn integrity
 - Fixes [#52]: Remote dumps are transmitted compressed
+- Fixes [#59]: Removedb name prefix when reading whitelist
 
 ## 1.11.0 2018-11-07
 
