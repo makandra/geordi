@@ -82,7 +82,7 @@ module Geordi
 
       # try to guess user's favorite cli text editor
       def decide_texteditor
-        %w[$VISUAL $EDITOR /usr/bin/editor vi].each do |texteditor|
+        %w[/usr/bin/editor vi].each do |texteditor|
           if cmd_exists? texteditor and texteditor.start_with? '$'
             return ENV[texteditor[1..-1]]
           elsif cmd_exists? texteditor
