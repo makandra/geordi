@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+### Compatible changes
+- Fixes [#59]: Removedb name prefix when reading whitelist
+
 ## 2.0.0 2019-02-20
 
 ### Breaking changes
