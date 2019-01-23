@@ -15,9 +15,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Fixes [#54]: @solo features run first and are not skipped by accident on failures before
-- Fixes [#3]: Add spring support for RSpec
+- Fixes [#03]: Add spring support for RSpec
 - Fixes [#53]: Integrate yarn integrity
 - Fixes [#52]: Remote dumps are transmitted compressed
+- Fixes [#64]: Remove VISUAL and EDITOR from editor choices for DB whitelist editing
 
 ## 1.11.0 2018-11-07
 
