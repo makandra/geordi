@@ -223,7 +223,15 @@ HEREDOC
       else
         whitelist_content = Array.new
       end
-      whitelist_content.include? database_name.sub(@derivative_dbname, '')
+      # Allow explicit whitelisting of derivative databases like projectname_test2
+      if whitelist_content.include? database_name
+        true
+      # whitelisting `projectname` also whitelists `projectname_test\d+`, `projectname_development`
+      elsif whitelist_content.include? database_name.sub(@derivative_dbname, '')
+        true
+      else
+        false
+      end
     end
 
     def filter_whitelisted(dbtype, database_list)
