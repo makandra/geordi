@@ -7,6 +7,7 @@ option :public, :aliases => '-P', :type => :boolean,
 
 def server(port = nil)
   invoke_cmd 'bundle_install'
+  invoke_cmd 'yarn'
   require 'geordi/util'
 
   announce 'Booting a development server'

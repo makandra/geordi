@@ -49,6 +49,7 @@ def cucumber(*args)
     require 'geordi/cucumber'
 
     invoke_cmd 'bundle_install'
+    invoke_cmd 'yarn'
 
     cmd_opts, files = args.partition { |f| f.start_with? '-' }
     cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug

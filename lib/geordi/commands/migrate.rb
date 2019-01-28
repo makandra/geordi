@@ -9,6 +9,7 @@ LONGDESC
 
 def migrate
   invoke_cmd 'bundle_install'
+  invoke_cmd 'yarn'
   announce 'Migrating'
 
   if File.directory?('db/migrate')
