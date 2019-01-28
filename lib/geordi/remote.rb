@@ -45,7 +45,7 @@ module Geordi
 
       note "Downloading remote dump to #{relative_destination} ..."
       server = @config.primary_server
-      Util.system! "scp #{ @config.user(server) }@#{ server }:#{REMOTE_DUMP_PATH} #{destination_path}"
+      Util.system! "scp -C #{ @config.user(server) }@#{ server }:#{REMOTE_DUMP_PATH} #{destination_path}"
 
       success "Dumped the #{@stage} database to #{relative_destination}."
 
