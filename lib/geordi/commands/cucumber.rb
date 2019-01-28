@@ -55,6 +55,27 @@ def cucumber(*args)
 
     announce 'Running features'
 
+    # Serial run of @solo scenarios
+    if files.any? { |f| f.include? ':' }
+      note '@solo run skipped when called with line numbers' if options.verbose
+    else
+      solo_files = if files.empty?
+        'features' # Proper grepping
+      else
+        files.join(' ')
+      end
+
+      solo_tag_usages = `grep -r '@solo' #{ solo_files }`.split("\n")
+
+      if solo_tag_usages.any?
+        solo_cmd_opts = cmd_opts.dup
+        solo_cmd_opts << '--tags' << '@solo'
+
+        announce 'Running @solo features'
+        Geordi::Cucumber.new.run files, solo_cmd_opts, :verbose => options.verbose, :parallel => false
+      end
+    end
+
     # Normal run
     unless Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose)
       cmd_opts << '--profile' << 'rerun'
@@ -68,21 +89,6 @@ def cucumber(*args)
       end
     end
 
-    # Serial run of @solo scenarios
-    if files.any? { |f| f.include? ':' }
-      note '@solo run skipped when called with line numbers' if options.verbose
-    else
-      files << 'features' if files.empty? # Proper grepping
-      solo_tag_usages = `grep -r '@solo' #{ files.join(' ') }`.split("\n")
-
-      if solo_tag_usages.any?
-        cmd_opts << '--tags' << '@solo'
-
-        announce 'Running @solo features'
-        Geordi::Cucumber.new.run files, cmd_opts, :verbose => options.verbose, :parallel => false
-      end
-
-    end
   else
     note 'Cucumber not employed.'
   end
