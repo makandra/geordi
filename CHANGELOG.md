@@ -6,6 +6,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+### Breaking changes
+- Pivotal Tracker discontinued API V3 and V4. We now use API V5, which has a client library that does not support Ruby
+  version < 2.1 anymore (all other geordi commands will still work for older Ruby versions).
+  Run `gem uninstall pivotal-tracker` and `gem install tracker_api` to migrate `geordi` installed in a Ruby version >= 2.1.
+
+### Compatible changes
+- Fixes [#54]: @solo features run first and are not skipped by accident on failures before
+- Fixes [#3]: Add spring support for RSpec
+- Fixes [#53]: Integrate yarn integrity
+- Fixes [#52]: Remote dumps are transmitted compressed
+
 ## 1.11.0 2018-11-07
 
 ### Compatible changes

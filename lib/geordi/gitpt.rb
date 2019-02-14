@@ -2,143 +2,104 @@ class Gitpt
   include Geordi::Interaction
   require 'yaml'
   require 'highline'
-  require 'pivotal-tracker'
+  require 'tracker_api'
 
-  attr_reader :token, :initials, :settings_file, :deprecated_token_file,
-              :highline, :applicable_stories, :memberships
+  SETTINGS_FILE_NAME = '.gitpt'
+  PROJECT_IDS_FILE_NAME = '.pt_project_id'
 
   def initialize
-    @highline = HighLine.new
-    @settings_file = File.join(ENV['HOME'], '.gitpt')
-    @deprecated_token_file = File.join(ENV['HOME'], '.pt_token')
-    load_settings
-    settings_were_invalid = (not settings_valid?)
-
-    hello unless settings_valid?
-    request_settings while not settings_valid?
-    stored if settings_were_invalid
-
-    PivotalTracker::Client.use_ssl = true
-    PivotalTracker::Client.token = token
+    self.highline = HighLine.new
   end
 
-  def settings_valid?
-    token and token.size > 10
+  def run
+    settings = read_settings
+    client = build_client(settings)
+
+    puts 'Connecting to Pivotal Tracker...'
+
+    projects = load_projects(client)
+    applicable_stories = load_applicable_stories(projects)
+    choose_story(client.me, applicable_stories)
   end
 
-  def bold(string)
-    HighLine::BOLD + string + HighLine::RESET
-  end
+  private
 
-  def highlight(string)
-    bold HighLine::BLUE + string
-  end
+  attr_accessor :highline
 
-  def hello
-    highline.say HighLine::RESET
-    highline.say "Welcome to #{bold 'gitpt'}.\n\n"
-  end
+  def read_settings
+    file_path = File.join(ENV['HOME'], SETTINGS_FILE_NAME)
 
-  def loading(message, &block)
-    print message
-    STDOUT.flush
-    yield
-    print "\r" + ' ' * message.size + "\r" # Remove loading message
-    STDOUT.flush
-  end
+    unless File.exists?(file_path)
+      highline.say HighLine::RESET
+      highline.say "Welcome to #{bold 'gitpt'}.\n\n"
 
-  def stored
-    highline.say strip_heredoc(<<-MESSAGE)
-      Thank you. Your settings have been stored at #{highlight @settings_file}
-      You may remove that file for the wizard to reappear.
+      highline.say highlight('Your settings are missing or invalid.')
+      highline.say "Please configure your Pivotal Tracker access.\n\n"
+      token = highline.ask bold("Your API key:") + " "
+      highline.say "\n"
 
-      ----------------------------------------------------
-
-    MESSAGE
-  end
-
-  def request_settings
-    highline.say highlight('Your settings are missing or invalid.')
-    highline.say "Please configure your Pivotal Tracker access.\n\n"
-    token = highline.ask bold("Your API key:") + " "
-    initials = highline.ask bold("Your PT initials") + " (optional, used for highlighting your stories): "
-    highline.say "\n"
-
-    settings = { :token => token, :initials => initials }
-    File.open settings_file, 'w' do |file|
-      file.write settings.to_yaml
-    end
-    load_settings
-  end
-
-  def load_settings
-    if File.exists? settings_file
-      settings = YAML.load(File.read settings_file)
-      @initials = settings[:initials]
-      @token = settings[:token]
-    else
-      if File.exists?(deprecated_token_file)
-        highline.say strip_heredoc(<<-MESSAGE)
-#{HighLine::YELLOW}You are still using #{highlight(deprecated_token_file) + HighLine::YELLOW} which will be deprecated in a future version.
-          Please migrate your settings to ~/.gitpt or remove #{deprecated_token_file} for the wizard to cast magic.
-        MESSAGE
-        @token = File.read(deprecated_token_file)
+      settings = { :token => token }
+      File.open(file_path, 'w') do |file|
+        file.write settings.to_yaml
       end
     end
+
+    YAML.load_file(file_path)
   end
 
-  def load_projects
-    project_id_filename = '.pt_project_id'
-    if File.exists?(project_id_filename)
+  def build_client(settings)
+    TrackerApi::Client.new(:token => settings.fetch(:token))
+  end
+
+  def load_projects(client)
+    project_ids = read_project_ids
+
+    project_ids.collect { |project_id| client.project(project_id) }
+  end
+
+  def read_project_ids
+    file_path = PROJECT_IDS_FILE_NAME
+
+    if File.exists?(file_path)
       project_ids = File.read('.pt_project_id').split(/[\s]+/).map(&:to_i)
     end
 
-    unless project_ids and project_ids.size > 0
-      warn "Sorry, I could not find a project ID in #{project_id_filename} :("
+    if project_ids and project_ids.size > 0
+      project_ids
+    else
+      warn "Sorry, I could not find a project ID in #{file_path} :("
       puts
 
-      puts "Please put at least one Pivotal Tracker project id into #{project_id_filename} in this directory."
+      puts "Please put at least one Pivotal Tracker project id into #{file_path} in this directory."
       puts 'You may add multiple IDs, separated using white space.'
       exit 1
     end
-
-    loading 'Connecting to Pivotal Tracker...' do
-      projects = project_ids.collect do |project_id|
-        PivotalTracker::Project.find(project_id)
-      end
-
-      @memberships = projects.collect(&:memberships).map(&:all).flatten
-
-      @applicable_stories = projects.collect do |project|
-        project.stories.all(:state => 'started,finished,rejected')
-      end.flatten
-    end
   end
 
-  def choose_story
+  def load_applicable_stories(projects)
+    projects.collect { |project| project.stories(:filter => 'state:started,finished,rejected') }.flatten
+  end
+
+  def choose_story(me, applicable_stories)
     selected_story = nil
 
     highline.choose do |menu|
       menu.header = "Choose a story"
       applicable_stories.each do |story|
-        owner_name = story.owned_by
-        owner = if owner_name
-          owners = memberships.select{|member| member.name == owner_name}
-          owners.first ? owners.first.initials : '?'
-        else
-          '?'
-        end
-
         state = story.current_state
+        owners = story.owners
+        owner_is_me = owners.collect(&:id).include?(me.id)
+
         if state == 'started'
           state = HighLine::GREEN + state + HighLine::RESET
         elsif state != 'finished'
           state = HighLine::RED + state + HighLine::RESET
         end
-        state += HighLine::BOLD if owner == initials
 
-        label = "(#{owner}, #{state}) #{story.name}"
-        label = bold(label) if owner == initials
+        state += HighLine::BOLD if owner_is_me
+
+        label = "(#{owners.collect(&:name).join(', ')}, #{state}) #{story.name}"
+        label = bold(label) if owner_is_me
         menu.choice(label) { selected_story = story }
       end
       menu.hidden ''
@@ -157,9 +118,12 @@ class Gitpt
     end
   end
 
-  def run
-    load_projects
-    choose_story
+  def bold(string)
+    HighLine::BOLD + string + HighLine::RESET
+  end
+
+  def highlight(string)
+    bold HighLine::BLUE + string
   end
 
 end
