@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+## 2.0.0 2019-02-20
+
 ### Breaking changes
 - Pivotal Tracker discontinued API V3 and V4. We now use API V5, which has a client library that does not support Ruby
   version < 2.1 anymore (all other geordi commands will still work for older Ruby versions).
