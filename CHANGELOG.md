@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+## 2.1.0 2019-02-25
+
 ### Compatible changes
 - Fixes [#59]: Removedb name prefix when reading whitelist
 - Fixes [#62]: Provide better error messages on whitelist editing errors.
