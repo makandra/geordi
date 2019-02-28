@@ -12,10 +12,11 @@ def console(target = 'development', *args)
   require 'geordi/remote'
 
   if target == 'development'
+    invoke_cmd 'yarn_install'
+
     announce 'Opening a local Rails console'
 
     Util.system! Util.console_command(target)
-
   else
     announce 'Opening a Rails console on ' + target
 

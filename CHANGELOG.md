@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+### Compatible changes
+- Fixes [#67]: Don't run yarn install unless needed
+
 ## 2.1.0 2019-02-25
 
 ### Compatible changes

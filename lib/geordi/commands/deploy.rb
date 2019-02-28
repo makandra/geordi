@@ -73,7 +73,7 @@ def deploy(target_stage = nil)
     capistrano_call = "bundle exec #{capistrano_call}" if Util.file_containing?('Gemfile', /capistrano/)
 
     invoke_cmd 'bundle_install'
-    invoke_cmd 'yarn'
+    invoke_cmd 'yarn_install'
 
     puts
     commands = []
