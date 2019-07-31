@@ -43,7 +43,7 @@ def security_update(step='prepare')
     Util.system! 'git push', :show_cmd => true
 
     announce 'Deploying all targets'
-    deploy = Util.capistrano3? ? 'deploy' : 'deploy:migrations'
+    deploy = (Util.gem_major_version('capistrano') == 3) ? 'deploy' : 'deploy:migrations'
     invoke_cmd 'capistrano', deploy
 
     success 'Successfully pushed and deployed security update'

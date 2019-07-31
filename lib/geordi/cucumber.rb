@@ -80,7 +80,7 @@ module Geordi
       note 'Using parallel_tests'
       self.argv = argv - command_line_features
 
-      type_arg = Gem::Version.new(parallel_tests_version) > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
+      type_arg = Util.gem_version('parallel_tests') > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
       features = features_to_run
       features = find_all_features_recursively('features') if features.empty?
 
@@ -93,7 +93,7 @@ module Geordi
     end
 
     def not_tag(name)
-      if cucumber_version < '3'
+      if Util.gem_major_version('cucumber') < 3
         "~#{name}"
       else
         "not #{name}"
@@ -200,35 +200,10 @@ module Geordi
       @spinner_available ||= File.exists?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
     end
 
-    def parallel_tests_available?
-      not parallel_tests_version.nil?
-    end
-
-    def parallel_tests_version
-      @parallel_tests_version ||= gem_version('parallel_tests')
-    end
-
-    def cucumber_version
-      @cucumber_version ||= gem_version('cucumber')
-    end
-
-    # Get the version string for the given gem by parsing Gemfile.lock.
-    # Returns nil if the gem is not used.
-    def gem_version(gem)
-      gem_line = bundle_list.split("\n").detect{ |x| x.include?(gem) }
-      if gem_line
-        gem_line.scan( /\(([\d\.]+).*\)/ ).flatten.first
-      end
-    end
-
-    def bundle_list
-      @bundle_list ||= `bundle list`
-    end
-
     def use_parallel_tests?(options)
       options.fetch(:parallel, true) &&
         features_to_run.size != 1 &&
-        parallel_tests_available? &&
+        Util.gem_available?('parallel_tests') &&
         features_to_run.none? { |f| f.include? ':' }
     end
 
