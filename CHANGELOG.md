@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+### Compatible changes
+- Fixes [#70]: Make "console" and "server" commands ready for Rails 6
+
 ## 2.2.0 2019-02-28
 
 ### Compatible changes

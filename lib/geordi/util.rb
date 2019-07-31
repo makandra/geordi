@@ -55,18 +55,20 @@ module Geordi
       end
 
       def console_command(environment)
-        if File.exists?('script/console')
-          'script/console ' + environment # Rails 2
-        else
+        if gem_major_version('rails') == 2
+          'script/console ' + environment
+        elsif gem_major_version('rails') == 3
           'bundle exec rails console ' + environment
+        else
+          "bundle exec rails console -e #{environment}"
         end
       end
 
       def server_command
-        if File.exists?('script/server')
-          'script/server ""' # Rails 2
+        if gem_major_version('rails') == 2
+          'script/server ""'
         else
-          'bundle exec rails server' # Rails 3+
+          'bundle exec rails server'
         end
       end
 
@@ -112,12 +114,39 @@ module Geordi
         input_string.lines.map(&:chomp).map(&:strip)
       end
 
-      def capistrano3?
-        Util.file_containing? 'Capfile', 'capistrano/setup'
+      def gem_available?(gem)
+        !!gem_version(gem)
+      end
+
+      # Get the major version or for the given gem by parsing the Gemfile.lock.
+      # Returns nil if the gem is not used.
+      def gem_major_version(gem)
+        gem_version = gem_version(gem)
+        gem_version && gem_version.segments[0]
+      end
+
+      # Get the version for the given gem by parsing Gemfile.lock.
+      # Returns nil if the gem is not used.
+      def gem_version(gem)
+        # Lines look like `* will_paginate (2.3.15)` or `railslts-version (2.3.18.16 7f51cc7)`
+        bundle_list.split("\n").each do |line|
+          matches = line.match(/\* #{gem} \(([\d\.]+)/)
+          next if matches.nil? || matches[1].nil?
+
+          return Gem::Version.new(matches[1])
+        end
+
+        nil
       end
 
       def file_containing?(file, regex)
         File.exists?(file) and File.read(file).scan(regex).any?
+      end
+
+      private
+
+      def bundle_list
+        @bundle_list ||= `bundle list`
       end
 
     end

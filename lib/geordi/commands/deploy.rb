@@ -69,7 +69,7 @@ def deploy(target_stage = nil)
 
   if prompt('Go ahead with the deployment?', 'n', /y|yes/)
     capistrano_call = "cap #{target_stage} deploy"
-    capistrano_call << ':migrations' unless Util.capistrano3? || options.no_migrations
+    capistrano_call << ':migrations' unless Util.gem_major_version('capistrano') == 3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if Util.file_containing?('Gemfile', /capistrano/)
 
     invoke_cmd 'bundle_install'
