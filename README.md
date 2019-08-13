@@ -1,4 +1,4 @@
-Geordi
+Geordi [![Build Status](https://travis-ci.org/makandra/geordi.svg?branch=master)](https://travis-ci.org/makandra/geordi)
 ======
 
 Geordi is a collection of command line tools we use in our daily work with
@@ -375,10 +375,5 @@ calling your local geordi like so (adjust paths to your needs):
 Don't forget to update this README. The whole `geordi` section is auto-generated
 by `rake readme`. Also remember to add your changes to the CHANGELOG.
 
-Geordi is (partially) tested with Cucumber and Aruba. Run all tests with `rake`.
-Of course you're free to use `geordi tests` ;)
-
-**Note** that Geordi still needs to support Ruby 1.8.7, so make sure you only
-use syntax that was valid back then (e.g. the :old => hash syntax).
-Unfortunately, it is really hard to get Geordi's tests running on 1.8.7, so you
-need to make sure it runs on 1.8.7 manually.
+Geordi is (partially) tested with Cucumber and Aruba. Run `bundle exec rake` to test the gem against you current Ruby
+version. The `travis.yml` contains all Ruby versions the gem is and needs to be tested with.
