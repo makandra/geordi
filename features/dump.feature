@@ -27,6 +27,8 @@ Feature: The dump command
       And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
       And the output should contain "> Downloading remote dump to tmp/staging.dump"
       # Omitting the absolute path in this regex (.*)
-      And the output should match %r<Util.system! scp -C user@www.example.com:~/dumps/dump_for_download.dump .*/tmp/aruba/tmp/staging.dump>
+      And the output should match:
+      """
+      Util\.system! scp -C user@www\.example\.com:~\/dumps\/dump_for_download.dump .*?\/tmp\/aruba\/tmp\/staging.dump
+      """
       And the output should contain "> Dumped the staging database to tmp/staging.dump"
-
