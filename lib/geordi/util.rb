@@ -45,7 +45,7 @@ module Geordi
           prompt('Run this now?', 'n', /y|yes/) or fail('Cancelled.')
         end
 
-        if ENV['GEORDI_TESTING']
+        if testing?
           puts "Util.system! #{ commands.join ', ' }"
         else
           # Remove Geordi's Bundler environment when running commands.
@@ -73,7 +73,11 @@ module Geordi
       end
 
       def current_branch
-        `git rev-parse --abbrev-ref HEAD`.strip
+        if testing?
+          'master'
+        else
+          `git rev-parse --abbrev-ref HEAD`.strip
+        end
       end
 
       def deploy_targets
@@ -141,6 +145,10 @@ module Geordi
 
       def file_containing?(file, regex)
         File.exists?(file) and File.read(file).scan(regex).any?
+      end
+
+      def testing?
+        !!ENV['GEORDI_TESTING']
       end
 
       private

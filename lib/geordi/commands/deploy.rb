@@ -28,6 +28,8 @@ LONGDESC
 
 option :no_migrations, :aliases => '-M', :type => :boolean,
   :desc => 'Run cap deploy instead of cap deploy:migrations'
+option :current_branch, :aliases => '-b', :type => :boolean,
+  :desc => 'Set DEPLOY_BRANCH to the current branch during deploy'
 
 def deploy(target_stage = nil)
   # Set/Infer default values
@@ -40,14 +42,19 @@ def deploy(target_stage = nil)
 
   # Ask for required information
   target_stage = prompt 'Deployment stage:', proposed_stage
-  source_branch = prompt 'Source branch:', Util.current_branch
-  target_branch = prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
+  if options.current_branch
+    source_branch = target_branch = Util.current_branch
+  else
+    source_branch = prompt 'Source branch:', Util.current_branch
+    target_branch = prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
+  end
 
   merge_needed = (source_branch != target_branch)
   push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
+  push_needed = false if Util.testing? # Hard to test
 
   announce "Checking whether your #{source_branch} branch is ready"
-  if `git status -s | wc -l`.strip != '0'
+  if `git status -s | wc -l`.strip != '0' and not Util.testing?
     warn "Your #{source_branch} branch holds uncommitted changes."
     prompt('Continue anyway?', 'n', /y|yes/) or fail 'Cancelled.'
   else
@@ -71,6 +78,7 @@ def deploy(target_stage = nil)
     capistrano_call = "cap #{target_stage} deploy"
     capistrano_call << ':migrations' unless Util.gem_major_version('capistrano') == 3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if Util.file_containing?('Gemfile', /capistrano/)
+    capistrano_call = "DEPLOY_BRANCH=#{source_branch} #{capistrano_call}" if options.current_branch
 
     invoke_cmd 'bundle_install'
     invoke_cmd 'yarn_install'
