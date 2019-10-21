@@ -10,16 +10,25 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+
+## 2.4.0 2019-10-21
+
+### Compatible changes
+- [#36](https://github.com/makandra/geordi/issues/36): Add current branch option to "deploy" command. This actually sets the `DEPLOY_BRANCH` variable to the current branch during deployment. The deployed application needs to pick up this variable in the respective Capistrano stage file. Example: `set :branch, ENV['DEPLOY_BRANCH'] || 'master'`
+
+
 ## 2.3.0 2019-08-27
 
 ### Compatible changes
 - Fixes [#70]: Make "console" and "server" commands ready for Rails 6
 - Added: CI testing with Travis
 
+
 ## 2.2.0 2019-02-28
 
 ### Compatible changes
 - Fixes [#67]: Don't run yarn install unless needed
+
 
 ## 2.1.0 2019-02-25
 
