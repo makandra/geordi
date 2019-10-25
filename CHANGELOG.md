@@ -11,10 +11,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
+## 2.5.0 2019-10-25
+
+### Compatible changes
+- Added [#69](https://github.com/makandra/geordi/issues/69): If bin/setup exists, prefer it over Geordi's standard setup routine.
+- Fixed [#48](https://github.com/makandra/geordi/issues/48): Bundle right before deploying
+- Improved [#56](https://github.com/makandra/geordi/issues/56): Print instructions how to set up `DEPLOY_BRANCH` when deploying the current branch.
+
+
 ## 2.4.0 2019-10-21
 
 ### Compatible changes
-- [#36](https://github.com/makandra/geordi/issues/36): Add current branch option to "deploy" command. This actually sets the `DEPLOY_BRANCH` variable to the current branch during deployment. The deployed application needs to pick up this variable in the respective Capistrano stage file. Example: `set :branch, ENV['DEPLOY_BRANCH'] || 'master'`
+- [#56](https://github.com/makandra/geordi/issues/56): Add current branch option to "deploy" command. This actually sets the `DEPLOY_BRANCH` variable to the current branch during deployment. The deployed application needs to pick up this variable in the respective Capistrano stage file. Example: `set :branch, ENV['DEPLOY_BRANCH'] || 'master'`
 
 
 ## 2.3.0 2019-08-27
