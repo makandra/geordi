@@ -53,7 +53,8 @@ def deploy(target_stage = nil)
   push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
   push_needed = false if Util.testing? # Hard to test
 
-  announce "Checking whether your #{source_branch} branch is ready"
+  announce "Checking whether your #{source_branch} branch is ready" ############
+  Util.system! "git checkout #{source_branch}"
   if `git status -s | wc -l`.strip != '0' and not Util.testing?
     warn "Your #{source_branch} branch holds uncommitted changes."
     prompt('Continue anyway?', 'n', /y|yes/) or fail 'Cancelled.'
@@ -91,6 +92,7 @@ def deploy(target_stage = nil)
 
     success 'Deployment complete.'
   else
+    Util.system! "git checkout #{source_branch}"
     fail 'Deployment cancelled.'
   end
 
