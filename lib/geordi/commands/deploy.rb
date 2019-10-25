@@ -41,11 +41,11 @@ def deploy(target_stage = nil)
   if target_stage and not Util.deploy_targets.include? target_stage
     # Target stage autocompletion from available stages
     target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
+    target_stage || warn('Given deployment stage not found')
   end
-  proposed_stage = target_stage || branch_stage_map.fetch(Util.current_branch, 'staging')
 
   # Ask for required information
-  target_stage = prompt 'Deployment stage:', proposed_stage
+  target_stage ||= prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
   if options.current_branch
     stage_file = "config/deploy/#{target_stage}.rb"
     Util.file_containing? stage_file, 'DEPLOY_BRANCH' or fail <<-ERROR
