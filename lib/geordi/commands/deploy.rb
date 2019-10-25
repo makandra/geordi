@@ -86,21 +86,26 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
   end
   note "Deploy to #{target_stage}"
+  note "From current branch #{source_branch}" if options.current_branch
 
   if prompt('Go ahead with the deployment?', 'n', /y|yes/)
+    puts
+    git_call = []
+    git_call << "git merge #{source_branch}" if merge_needed
+    git_call << 'git push' if push_needed
+
     capistrano_call = "cap #{target_stage} deploy"
     capistrano_call << ':migrations' unless Util.gem_major_version('capistrano') == 3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if Util.file_containing?('Gemfile', /capistrano/)
     capistrano_call = "DEPLOY_BRANCH=#{source_branch} #{capistrano_call}" if options.current_branch
 
+    if git_call.any?
+      Util.system! git_call.join(' && '), :show_cmd => true
+    end
+
     invoke_cmd 'bundle_install'
 
-    puts
-    commands = []
-    commands << "git merge #{source_branch}" if merge_needed
-    commands << 'git push' if push_needed
-    commands << capistrano_call
-    Util.system! commands.join(' && '), :show_cmd => true
+    Util.system! capistrano_call, :show_cmd => true
 
     success 'Deployment complete.'
   else
