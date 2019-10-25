@@ -39,6 +39,18 @@ Feature: The deploy command
     When I run `geordi deploy --current-branch` interactively
       # Answer deployment stage prompt
       And I type "staging"
+    Then the output should contain "configure config/deploy/staging.rb"
+      And the output should contain "ENV['DEPLOY_BRANCH']"
+
+    Given a file named "config/deploy/staging.rb" with:
+      """
+      set :branch, ENV['DEPLOY_BRANCH'] || 'master'
+      """
+    When I run `geordi deploy --current-branch` interactively
+      # Answer deployment stage prompt
+      And I type "staging"
       # Confirm deployment
       And I type "yes"
-    Then the output should contain "DEPLOY_BRANCH=master cap staging deploy:migrations"
+    # Current branch is always "master" during tests
+    Then the output should contain "From current branch master"
+      And the output should contain "DEPLOY_BRANCH=master cap staging deploy:migrations"

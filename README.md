@@ -96,16 +96,20 @@ Geordi will ask for confirmation before actually deleting files.
 
 Guided deployment across branches.
 
-Example: `geordi deploy` or `geordi deploy p[roduction]`
+Example: `geordi deploy` or `geordi deploy p[roduction]` or `geordi deploy --current-branch`
 
-Merge, push and deploy with a single command! There are several scenarios where
-this command comes in handy:
+Merge, push and deploy with a single command! **It always tells what it will do
+before it does it.** There are different scenarios where this command is handy:
 
 1) *Production deploy:* From the master branch, run `geordi deploy production`.
    This will merge `master` to `production`, push and deploy to production.
 
 2) *Feature branch deploy:* From a feature branch, run `geordi deploy staging`.
    This will merge the feature branch to `master`, push and deploy to staging.
+
+   To deploy a feature branch directly without merging, run
+   `geordi deploy --current-branch`. This feature depends on the environment
+   variable `DEPLOY_BRANCH` to be picked up in the respective deploy file.
 
 3) *Simple deploy:* If the source branch matches the target branch, merging will
    be skipped.
