@@ -81,7 +81,6 @@ def deploy(target_stage = nil)
     capistrano_call = "DEPLOY_BRANCH=#{source_branch} #{capistrano_call}" if options.current_branch
 
     invoke_cmd 'bundle_install'
-    invoke_cmd 'yarn_install'
 
     puts
     commands = []
