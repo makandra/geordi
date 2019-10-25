@@ -8,4 +8,4 @@ gem 'rspec-mocks'
 gem 'highline'
 gem 'parallel_tests'
 gem 'launchy'
-gem 'pry'
+# gem 'pry' # Not supported for 1.8.7
