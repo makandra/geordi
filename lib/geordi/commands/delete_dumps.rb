@@ -1,4 +1,4 @@
-desc 'delete_dumps [DIRECTORY]', 'Delete database dump files (*.dump)'
+desc 'delete-dumps [DIRECTORY]', 'Delete database dump files (*.dump)'
 long_desc <<-LONGDESC
 Example: `geordi delete_dumps` or `geordi delete_dumps ~/tmp/dumps`
 

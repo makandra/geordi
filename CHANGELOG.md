@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+- Added [#73](https://github.com/makandra/geordi/issues/73): New command `chromdriver-update` allows you to update your
+  chromedriver to the newest matching version.
+
 ### Breaking changes
 
 

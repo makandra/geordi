@@ -34,6 +34,15 @@ Run a capistrano command on all deploy targets.
 Example: `geordi capistrano deploy`
 
 
+### `geordi chromedriver-update`
+
+Update the chromedriver.
+
+Example: `geordi chromedriver_update`
+
+This command will find and install the matching chromedriver for the currently installed Chrome.
+
+
 ### `geordi clean`
 
 Remove unneeded files from the current directory.
@@ -79,7 +88,7 @@ or `-d`.
 e.g. `--format pretty`.
 
 
-### `geordi delete_dumps [DIRECTORY]`
+### `geordi delete-dumps [DIRECTORY]`
 
 Delete database dump files (*.dump).
 
