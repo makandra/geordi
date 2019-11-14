@@ -6,10 +6,12 @@ def create_database_yml
   if File.exists?(sample_yml) and not File.exists?(real_yml)
     announce 'Creating ' + real_yml
 
-    print 'Please enter your DB password: '
+    sample = File.read(sample_yml)
+    adapter = sample.match(/adapter: (\w+)\n/).captures.first
+
+    print "Please enter your #{adapter} password: "
     db_password = STDIN.gets.strip
 
-    sample = File.read(sample_yml)
     real = sample.gsub(/password:.*$/, "password: #{db_password}")
     File.open(real_yml, 'w') { |f| f.write(real) }
 
