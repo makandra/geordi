@@ -18,6 +18,7 @@ Feature: The cucumber command
     When I run `geordi cucumber features/single.feature`
     Then the output should contain "# Running features"
       And the output should contain "> Only: features/single.feature"
+      And the output should contain "Features green."
     But the output should not contain "parallel"
 
 
@@ -60,6 +61,7 @@ Feature: The cucumber command
       And the output should contain "Rerunning failed scenarios"
       And the output should contain "Using the rerun profile"
       And the exit status should be 1
+      And the output should contain "Features failed."
 
 
   Scenario: Running all features in a given subfolder
@@ -96,10 +98,10 @@ Feature: The cucumber command
     """
 
     When I run `geordi cucumber --verbose features`
-    Then the output should contain "# Running features"
-      And the output should match /^> .*cucumber .*--tags \"~@solo\"/
-      And the output should contain "# Running @solo features"
+    Then the output should contain "# Running @solo features"
       And the output should match /^> .*cucumber .*--tags @solo/
+      And the output should contain "# Running features"
+      And the output should match /^> .*cucumber .*--tags \"~@solo\"/
 
 
   Scenario: When there are no scenarios tagged @solo, the extra run is skipped
@@ -144,6 +146,28 @@ Feature: The cucumber command
       # Regression test, with line numbers grep would fail with:
       #   grep: features/example.feature:2: No such file or directory
       And the output should not contain "No such file or directory"
+
+
+  Scenario: It does not start the full test run when the @solo run fails
+    Given a file named "features/step_definitions/test_steps.rb" with:
+    """
+    Given 'this test fails' do
+      raise
+    end
+    """
+    And a file named "features/failing.feature" with:
+    """
+    Feature: Failing feature
+      @solo
+      Scenario: Failing scenario
+        And this test fails
+      Scenario: Other scenario
+    """
+
+    When I run `geordi cucumber`
+    Then the output should contain "# Running @solo features"
+      And the output should contain "Features failed."
+    But the output should not contain "# Running features"
 
 
   Scenario: Specifying a firefox version to use

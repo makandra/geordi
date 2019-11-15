@@ -6,7 +6,7 @@ Feature: The firefox/chrome command
     Given a file named "testfile" with "testcontent"
 
     When I run `geordi firefox cat testfile`
-    Then the output should contain "> VNC is ready to hold Selenium test browsers. Use `geordi vnc` to view them."
+    Then the output should contain "> Run `geordi vnc` to view the Selenium test browsers"
       And the output should contain "testcontent"
     But the output should not contain "Firefox for Selenium"
 
@@ -15,7 +15,7 @@ Feature: The firefox/chrome command
     Given a file named "testfile" with "testcontent"
 
     When I run `geordi chrome cat testfile`
-    Then the output should contain "> VNC is ready to hold Selenium test browsers. Use `geordi vnc` to view them."
+    Then the output should contain "> Run `geordi vnc` to view the Selenium test browsers"
       And the output should contain "testcontent"
 
 
@@ -48,7 +48,7 @@ Feature: The firefox/chrome command
       And a file named "testfile" with "testcontent"
 
     When I run `geordi firefox cat testfile`
-    Then the output should contain "> VNC is ready"
+    Then the output should contain "> Run `geordi vnc`"
       And the output should contain "testcontent"
     But the output should not contain "Firefox for Selenium"
 

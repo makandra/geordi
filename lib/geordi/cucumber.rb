@@ -60,7 +60,7 @@ module Geordi
         ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
         ENV["DISPLAY"] = VNC_DISPLAY
 
-        note 'VNC is ready to hold Selenium test browsers. Use `geordi vnc` to view them.'
+        note 'Run `geordi vnc` to view the Selenium test browsers'
       end
     end
 

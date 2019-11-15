@@ -5,10 +5,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 
 ## Unreleased
+### Compatible changes
+### Breaking changes
+
+
+## Unreleased
 
 ### Compatible changes
-
-### Breaking changes
+- Fixed [#68](https://github.com/makandra/geordi/issues/68): The "cucumber" command now fails early when @solo features fail.
 
 
 ## 2.6.0 2019-11-04

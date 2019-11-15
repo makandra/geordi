@@ -54,9 +54,7 @@ def cucumber(*args)
     cmd_opts, files = args.partition { |f| f.start_with? '-' }
     cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug
 
-    announce 'Running features'
-
-    # Serial run of @solo scenarios
+    # Serial run of @solo scenarios ############################################
     if files.any? { |f| f.include? ':' }
       note '@solo run skipped when called with line numbers' if options.verbose
     else
@@ -73,22 +71,28 @@ def cucumber(*args)
         solo_cmd_opts << '--tags' << '@solo'
 
         announce 'Running @solo features'
-        Geordi::Cucumber.new.run files, solo_cmd_opts, :verbose => options.verbose, :parallel => false
+        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, :verbose => options.verbose, :parallel => false
+        solo_success or fail 'Features failed.'
       end
     end
 
-    # Normal run
-    unless Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose)
+    # Parallel run of all given features + reruns ##############################
+    announce 'Running features'
+    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose)
+
+    unless normal_run_successful
       cmd_opts << '--profile' << 'rerun'
 
       # Reruns
-      (1 + options.rerun).times do |i|
+      (options.rerun + 1).times do |i|
         fail 'Features failed.' if (i == options.rerun) # All reruns done?
 
         announce "Rerun ##{ i + 1 } of #{ options.rerun }"
         break if Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose, :parallel => false)
       end
     end
+
+    success 'Features green.'
 
   else
     note 'Cucumber not employed.'
