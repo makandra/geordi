@@ -13,6 +13,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Fixed [#68](https://github.com/makandra/geordi/issues/68): The "cucumber" command now fails early when @solo features fail.
+- Added: The "setup" command now prints the db adapter when prompting db credentials.
+- Fixed [#71](https://github.com/makandra/geordi/issues/71): When used without staged changes, the "commit" command will print a warning and create an empty commit. Any arguments to the command are forwarded to Git.
+- Fixed: The "commit" command will not print the extra message any more.
+- Added: The "commit" command prints a (progress) loading message. The message is removed once loading is done.
 
 
 ## 2.6.0 2019-11-04

@@ -80,6 +80,15 @@ module Geordi
         end
       end
 
+      def staged_changes?
+        if testing?
+          ENV['GEORDI_TESTING_STAGED_CHANGES'] == 'true'
+        else
+          statuses = `git status --porcelain`.split("\n")
+          statuses.any? { |l| l.start_with? 'A' }
+        end
+      end
+
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
           File.basename f, '.rb' # Filename without .rb extension

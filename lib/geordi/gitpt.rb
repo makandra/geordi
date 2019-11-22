@@ -9,22 +9,23 @@ class Gitpt
 
   def initialize
     self.highline = HighLine.new
+    self.client = build_client(read_settings)
   end
 
-  def run
-    settings = read_settings
-    client = build_client(settings)
+  def run(git_args)
+    warn <<-WARNING if !Geordi::Util.staged_changes?
+No staged changes. Will create an empty commit.
+    WARNING
 
-    puts 'Connecting to Pivotal Tracker...'
-
-    projects = load_projects(client)
-    applicable_stories = load_applicable_stories(projects)
-    choose_story(client.me, applicable_stories)
+    story = choose_story
+    if story
+      create_commit "[##{story.id}] #{story.name}", *git_args
+    end
   end
 
   private
 
-  attr_accessor :highline
+  attr_accessor :highline, :client
 
   def read_settings
     file_path = File.join(ENV['HOME'], SETTINGS_FILE_NAME)
@@ -51,9 +52,8 @@ class Gitpt
     TrackerApi::Client.new(:token => settings.fetch(:token))
   end
 
-  def load_projects(client)
+  def load_projects
     project_ids = read_project_ids
-
     project_ids.collect { |project_id| client.project(project_id) }
   end
 
@@ -76,19 +76,32 @@ class Gitpt
     end
   end
 
-  def load_applicable_stories(projects)
-    projects.collect { |project| project.stories(:filter => 'state:started,finished,rejected') }.flatten
+  def applicable_stories
+    projects = load_projects
+    projects.collect do |project|
+      project.stories(:filter => 'state:started,finished,rejected')
+    end.flatten
   end
 
-  def choose_story(me, applicable_stories)
-    selected_story = nil
+  def choose_story
+    if Geordi::Util.testing?
+      return OpenStruct.new(:id => 12, :name => 'Test Story')
+    end
+
+    loading_message = 'Connecting to Pivotal Tracker ...'
+    print(loading_message)
+    stories = applicable_stories
+    reset_loading_message = "\r#{ ' ' * (loading_message.length + stories.length)}\r"
 
     highline.choose do |menu|
-      menu.header = "Choose a story"
-      applicable_stories.each do |story|
+      menu.header = 'Choose a story'
+
+      stories.each do |story|
+        print '.' # Progress
+
         state = story.current_state
         owners = story.owners
-        owner_is_me = owners.collect(&:id).include?(me.id)
+        owner_is_me = owners.collect(&:id).include?(client.me.id)
 
         if state == 'started'
           state = HighLine::GREEN + state + HighLine::RESET
@@ -100,22 +113,22 @@ class Gitpt
 
         label = "(#{owners.collect(&:name).join(', ')}, #{state}) #{story.name}"
         label = bold(label) if owner_is_me
-        menu.choice(label) { selected_story = story }
+
+        menu.choice(label) { return story }
       end
+
       menu.hidden ''
+      print reset_loading_message # Once menu is build
     end
 
-    if selected_story
-      message = highline.ask("\nAdd an optional message")
-      highline.say message
+    nil # Return nothing
+  end
 
-      commit_message = "[##{selected_story.id}] #{selected_story.name}"
-      if message.strip != ''
-        commit_message << ' - '<< message.strip
-      end
+  def create_commit(message, *git_args)
+    extra = highline.ask("\nAdd an optional message").strip
+    message << ' - ' << extra if (extra != "")
 
-      exec('git', 'commit', '-m', commit_message)
-    end
+    Geordi::Util.system! 'git', 'commit', '--allow-empty', '-m', message, *git_args
   end
 
   def bold(string)
