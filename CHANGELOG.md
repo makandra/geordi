@@ -6,8 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
-- Fixed [#77](https://github.com/makandra/geordi/issues/77): Remove deprecation warning for "Bundler.clean_system"
 ### Breaking changes
+
+
+## 2.8.0 2020-01-02
+
+### Compatible changes
+- Fixed [#77](https://github.com/makandra/geordi/issues/77): Remove deprecation warning for "Bundler.clean_system"
 
 
 ## 2.7.0 2019-11-25
@@ -23,7 +28,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## 2.6.0 2019-11-04
 
 ### Compatible changes
-
 - Added [#73](https://github.com/makandra/geordi/issues/73): New command `chromdriver-update` allows you to update your
   chromedriver to the newest matching version.
 
