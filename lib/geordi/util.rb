@@ -49,7 +49,16 @@ module Geordi
           puts "Util.system! #{ commands.join ', ' }"
         else
           # Remove Geordi's Bundler environment when running commands.
-          success = defined?(Bundler) ? Bundler.clean_system(*commands) : system(*commands)
+          success = if !defined?(Bundler)
+            system(*commands)
+          elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('2.1.2')
+            Bundler.with_unbundled_env do
+              system(*commands)
+            end
+          else
+            Bundler.clean_system(*commands)
+          end
+
           success or fail(options[:fail_message] || 'Something went wrong.')
         end
       end

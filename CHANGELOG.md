@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+- Fixed [#77](https://github.com/makandra/geordi/issues/77): Remove deprecation warning for "Bundler.clean_system"
 ### Breaking changes
 
 
