@@ -8,8 +8,8 @@ gem 'rspec-mocks'
 gem 'highline'
 gem 'parallel_tests'
 gem 'launchy'
-gem 'tracker_api'
 
 if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.8.7')
   gem 'pry'
+  gem 'tracker_api'
 end

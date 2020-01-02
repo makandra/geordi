@@ -1,4 +1,4 @@
-@announce-output
+@ruby>=1.9
 Feature: Creating a git commit from a Pivotal Tracker story
 
   Scenario: Extra arguments are forwarded to "git commit"
