@@ -9,4 +9,7 @@ gem 'highline'
 gem 'parallel_tests'
 gem 'launchy'
 gem 'tracker_api'
-# gem 'pry' # Not supported for 1.8.7
+
+if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.8.7')
+  gem 'pry'
+end
