@@ -18,20 +18,6 @@ Feature: The firefox/chrome command
     Then the output should contain "> Run `geordi vnc` to view the Selenium test browsers"
       And the output should contain "testcontent"
 
-
-    # Could not get this to work
-#  Scenario: Running a command with VNC and Firefox set up
-#    Given a mocked home directory
-#    Given a file named ".firefox-version" with "1337"
-#      And a file named "bin/firefoxes/1337/firefox" with "<fake>"
-#      And a file named "testfile" with "testcontent"
-#
-#    When I run `geordi firefox cat testfile`
-#    Then the output should contain "> VNC is ready"
-#      And the output should contain "> Firefox for Selenium set up"
-#      And the output should contain "testcontent"
-
-
   Scenario: Having a .firefox-version that is not installed yet
     Given a file named ".firefox-version" with "1337"
       And a file named "testfile" with "testcontent"
