@@ -191,3 +191,14 @@ Feature: The cucumber command
     When I run `geordi cucumber --containing given`
     Then the output should contain "Only: features/given.feature"
     But the output should not contain "other.feature"
+
+
+  Scenario: Passing a format argument will skip the default format for a single run
+    Given a file named "features/single.feature" with:
+    """
+    Feature: Running a single feature
+      Scenario: A single scenario
+    """
+
+    When I run `geordi cucumber features/single.feature --format=pretty --verbose`
+    Then the output should contain "b cucumber features/single.feature --format pretty"

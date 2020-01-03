@@ -16,7 +16,7 @@ module Geordi
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
     def run(files, cucumber_options, options = {})
-      self.argv = files + cucumber_options
+      self.argv = files + cucumber_options.map { |option| option.split('=') }.flatten
 
       consolidate_rerun_txt_files
       show_features_to_run
