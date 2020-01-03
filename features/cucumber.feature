@@ -64,6 +64,63 @@ Feature: The cucumber command
       And the output should contain "Features failed."
 
 
+  Scenario: A rerun should only consider the specified file
+    Note that we need a cucumber.yml to write the rerun.txt and read the rerun.txt for the reruns.
+
+    Given a file named "features/step_definitions/test_steps.rb" with:
+    """
+    Given /^this test fails$/ do
+      raise
+    end
+
+    Given /^I use puts with text "(.*)"$/ do |ann|
+      puts(ann)
+    end
+    """
+      And a file named "features/some.feature" with:
+      """
+      Feature: Failing feature
+        Scenario: Passing scenario
+          And I use puts with text "Running passing Feature"
+
+        Scenario: Failing scenario
+          And I use puts with text "Running failing Feature"
+          And this test fails
+      """
+      And an empty file named "tmp/rerun.txt"
+      And a file named "cucumber.yml" with:
+      """
+      <%
+      rerun_log = 'tmp/rerun.txt'
+      rerun_failures = File.file?(rerun_log) ? File.read(rerun_log).gsub("\n", ' ') : ''
+      log_failures = "--format=rerun --out=#{rerun_log}"
+      %>
+      default: features <%= log_failures %>
+      rerun: <%= rerun_failures %> <%= log_failures %>
+      """
+
+    When I run `geordi cucumber --rerun=1 features/some.feature`
+    Then the output should contain:
+    """
+    # Rerun #1 of 1
+    > Rerunning failed scenarios
+    > Run `geordi vnc` to view the Selenium test browsers
+
+    Using the rerun profile...
+
+    Running failing Feature
+    .F
+
+    (::) failed steps (::)
+
+     (RuntimeError)
+    features/some.feature:7:in `And this test fails'
+
+    Failing Scenarios:
+    cucumber -p rerun features/some.feature:5 # Scenario: Failing scenario
+    """
+
+
   Scenario: Running all features in a given subfolder
     Given a file named "features/sub/one.feature" with:
     """

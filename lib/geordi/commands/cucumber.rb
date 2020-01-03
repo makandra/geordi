@@ -88,7 +88,7 @@ def cucumber(*args)
         fail 'Features failed.' if (i == options.rerun) # All reruns done?
 
         announce "Rerun ##{ i + 1 } of #{ options.rerun }"
-        break if Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose, :parallel => false)
+        break if Geordi::Cucumber.new.run([], cmd_opts, :verbose => options.verbose, :parallel => false)
       end
     end
 
