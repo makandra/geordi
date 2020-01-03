@@ -6,6 +6,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+### Breaking changes
+
+
+## 2.9.0 2020-01-03
+
+### Compatible changes
 - Fixes [#37](https://github.com/makandra/geordi/issues/37): `geordi cucumber` crashes with `--format=pretty`
 - Fixes [#27](https://github.com/makandra/geordi/issues/27): Cucumber rerun switch does work when passing files
 ### Breaking changes
