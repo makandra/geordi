@@ -12,7 +12,7 @@ module Geordi
       puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
       `sudo true`
       fail 'sudo access is required for database operations as database users' if $? != 0
-      @derivative_dbname = /_(test\d?|development|cucumber)$/
+      @derivative_dbname = /_(test\d*|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = "#{Dir.home}" if base_directory.nil?
       @whitelist_directory = File.join(base_directory, '.config', 'geordi', 'whitelists')
@@ -34,7 +34,7 @@ module Geordi
       tmp.write <<-HEREDOC
 # Put each whitelisted database on a new line.
 # System databases will never be deleted.
-# When you whitelist foo, foo_development and foo_test\\d? are whitelisted, too.
+# When you whitelist foo, foo_development and foo_test\\d* are whitelisted, too.
 # This works even if foo does not exist. Also, you will only see foo in this list.
 #
 # Syntax: keep foo
@@ -253,7 +253,7 @@ HEREDOC
       # Allow explicit whitelisting of derivative databases like projectname_test2
       if whitelist_content.include? database_name
         true
-      # whitelisting `projectname` also whitelists `projectname_test\d+`, `projectname_development`
+      # whitelisting `projectname` also whitelists `projectname_test\d*`, `projectname_development`
       elsif whitelist_content.include? database_name.sub(@derivative_dbname, '')
         true
       else
