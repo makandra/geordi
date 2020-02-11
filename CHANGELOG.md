@@ -6,10 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+### Breaking changes
+
+
+## 2.10.0 2020-02-11
+
+### Compatible changes
 - Fixes [#78](https://github.com/makandra/geordi/pull/78): Add compatibility for more than 9 CPU cores in
   `geordi drop-databases`.
-
-### Breaking changes
 
 
 ## 2.9.0 2020-01-03
@@ -17,7 +21,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 - Fixes [#37](https://github.com/makandra/geordi/issues/37): `geordi cucumber` crashes with `--format=pretty`
 - Fixes [#27](https://github.com/makandra/geordi/issues/27): Cucumber rerun switch does work when passing files
-### Breaking changes
 
 
 ## 2.8.0 2020-01-02
