@@ -6,6 +6,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+- Fixes [#78](https://github.com/makandra/geordi/pull/78): Add compatibility for more than 9 CPU cores in
+  `geordi drop-databases`.
+
 ### Breaking changes
 
 
