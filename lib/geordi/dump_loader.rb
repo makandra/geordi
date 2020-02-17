@@ -18,12 +18,13 @@ module Geordi
       @config['development']
     end
     alias_method :config, :development_database_config
-  
+
     def mysql_command
       command = 'mysql --silent'
       command << ' -p' << config['password'].to_s if config['password']
       command << ' -u' << config['username'].to_s if config['username']
       command << ' --port=' << config['port'].to_s if config['port']
+      command << ' --host=' << config['host'].to_s if config['host']
       command << ' --default-character-set=utf8'
       command << ' ' << config['database'].to_s
       command << ' < ' << dump_file
