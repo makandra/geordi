@@ -9,6 +9,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
+## 2.10.1 2020-02-17
+
+### Compatible changes
+- Add host parameter to mysql dump loader
+
 ## 2.10.0 2020-02-11
 
 ### Compatible changes

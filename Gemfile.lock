@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (2.10.0)
+    geordi (2.10.1)
       thor (>= 0.18.0)
 
 GEM
@@ -68,7 +68,7 @@ GEM
       diff-lcs (>= 1.2.0, < 2.0)
       rspec-support (~> 3.4.0)
     rspec-support (3.4.1)
-    thor (0.20.3)
+    thor (1.0.1)
     thread_safe (0.3.6)
     tracker_api (1.10.0)
       addressable
