@@ -53,18 +53,21 @@ module Geordi
     end
 
     def find_project_root!
-      current = Dir.pwd
-      until File.exists?('Capfile')
-        Dir.chdir '..'
-        raise <<-ERROR if current == Dir.pwd
-Could not locate Capfile.
+      current = ENV['RAILS_ROOT'] || Dir.pwd
 
-Are you calling me from within a Rails project?
-Maybe Capistrano is not installed in this project.
-        ERROR
+      until File.exists?(File.join(current, 'Capfile'))
+        if current == '/' || current == '/home' || !File.directory?(current)
+          raise <<-ERROR
+  Could not locate Capfile.
 
-        current = Dir.pwd
+  Are you calling me from within a Rails project?
+  Maybe Capistrano is not installed in this project.
+          ERROR
+        else
+          current = File.dirname(current)
+        end
       end
+
       current
     end
 
