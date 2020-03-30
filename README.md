@@ -385,6 +385,9 @@ calling your local geordi like so (adjust paths to your needs):
 
     # @option -I: add directory to load path
     ruby -I ../geordi/lib ../geordi/bin/geordi <command>
+    
+    # with debugger
+    ruby -r byebug -I ../geordi/lib ../geordi/bin/geordi <command>
 
 Don't forget to update this README. The whole `geordi` section is auto-generated
 by `rake readme`. Also remember to add your changes to the CHANGELOG.
