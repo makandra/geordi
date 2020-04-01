@@ -7,6 +7,10 @@ module Geordi
   class CLI < Thor
     include Geordi::Interaction
 
+    def self.exit_on_failure?
+      true
+    end
+
     # load all tasks defined in lib/geordi/commands
     Dir[File.expand_path '../commands/*.rb', __FILE__].each do |file|
       class_eval File.read(file), file
