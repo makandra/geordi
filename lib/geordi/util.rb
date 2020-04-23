@@ -52,7 +52,7 @@ module Geordi
           success = if !defined?(Bundler)
             system(*commands)
           elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('2.1.2')
-            Bundler.with_unbundled_env do
+            Bundler.with_original_env do
               system(*commands)
             end
           else
