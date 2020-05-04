@@ -11,6 +11,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Bug fix for "no staged changes" even if there are changes present (#83).
 - Fixed deprecation warning for `Thor exit with status 0 on errors` (#84).
 - Replaced `Bundler.with_unbundled_env` with `Bundler.with_original_env` (#77). This is a better replacement than 42cd1c4.
+- Add deprecation warning `Deprecation warning: Ruby 1.8.7 and 1.9.3 support will be dropped in Geordi 3.x.` to Geordi 2.
 
 ### Breaking changes
 
