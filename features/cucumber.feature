@@ -63,7 +63,8 @@ Feature: The cucumber command
       And the exit status should be 1
       And the output should contain "Features failed."
 
-
+  # We skip this test for Ruby 2.1 as the backtrace looks different than in any following Ruby versions
+  @ruby>=2.1
   Scenario: A rerun should only consider the specified file
     Note that we need a cucumber.yml to write the rerun.txt and read the rerun.txt for the reruns.
 

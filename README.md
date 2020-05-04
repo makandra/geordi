@@ -378,6 +378,14 @@ browser, as opposed to opening it within the VNC window.
 Contributing
 ============
 
+* Run the tests for the oldest supported ruby version with `bundle exec rake`. Ensure that all other ruby versions in the `travis.yml` pass as well after pushing your feature branch and triggering the travis build.
+* Update this `README`. The whole `geordi` section is auto-generated
+  by `rake readme`.
+* Document your changes in the `CHANGELOG.md` file.
+
+Adding a new command
+---------------
+
 Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and
 edit it to do what you need it to do. Usually, it is hard to automatedly test
 Geordi commands, so make sure you've manually tested it. You can do so by
@@ -388,9 +396,3 @@ calling your local geordi like so (adjust paths to your needs):
     
     # with debugger
     ruby -r byebug -I ../geordi/lib ../geordi/bin/geordi <command>
-
-Don't forget to update this README. The whole `geordi` section is auto-generated
-by `rake readme`. Also remember to add your changes to the CHANGELOG.
-
-Geordi is (partially) tested with Cucumber and Aruba. Run `bundle exec rake` to test the gem against you current Ruby
-version. The `travis.yml` contains all Ruby versions the gem is and needs to be tested with.

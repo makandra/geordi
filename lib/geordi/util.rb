@@ -161,10 +161,6 @@ module Geordi
         nil
       end
 
-      def ruby_version
-        Gem::Version.new(RUBY_VERSION)
-      end
-
       def file_containing?(file, regex)
         File.exists?(file) and File.read(file).scan(regex).any?
       end

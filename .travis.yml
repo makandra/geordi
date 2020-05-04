@@ -1,8 +1,13 @@
 language: ruby
 
 rvm:
-  - '1.8.7'
-  - '2.6.3'
+  - '2.0.0'
+  - '2.1.10'
+  - '2.2.10'
+  - '2.3.8'
+  - '2.4.10'
+  - '2.5.8'
+  - '2.6.6'
 
 gemfile:
   - 'Gemfile'
@@ -10,6 +15,7 @@ gemfile:
 dist: trusty
 
 install:
+  - gem install bundler:1.17.3
   # Replace default Travis CI bundler script with a version that doesn't
   # explode when lockfile doesn't match recently bumped version
   - bundle install --no-deployment --jobs=3 --retry=3 --path=${BUNDLE_PATH:-vendor/bundle}

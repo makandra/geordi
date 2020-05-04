@@ -5,11 +5,7 @@ desc 'Default: Run all tests'
 task :default => :features
 
 task :features do
-  if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.8.7')
-    system 'bundle exec cucumber'
-  else
-    system 'bundle exec cucumber --tags "~@ruby>=1.9"'
-  end
+  system 'bundle exec cucumber'
 end
 
 task :readme do

@@ -5,11 +5,6 @@ require 'geordi/util'
 
 module Geordi
   class CLI < Thor
-
-    if Geordi::Util.ruby_version <= Gem::Version.new('2.0.0')
-      warn "Deprecation warning: Ruby 1.8.7 and 1.9.3 support will be dropped in Geordi 3.x."
-    end
-
     include Geordi::Interaction
 
     def self.exit_on_failure?
