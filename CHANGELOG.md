@@ -5,7 +5,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 
 ## Unreleased
+
 ### Compatible changes
+- Added the possibility to change the Rails root for the capistrano config via the environment variable `RAILS_ROOT`. This allows you as a gem developer to run a command like `RAILS_ROOT=~/Projects/my-blog geordi console staging` whereas `geordi` uses the capistrano config from `my-blog`. Otherwise you would need to follow the instructions of [this card](https://makandracards.com/makandra/46617-how-to-use-a-local-gem-in-your-gemfile) to test changes in the gem locally.
+- Bug fix for "no staged changes" even if there are changes present (#83).
+- Fixed deprecation warning for `Thor exit with status 0 on errors` (#84).
+- Replaced `Bundler.with_unbundled_env` with `Bundler.with_original_env` (#77). This is a better replacement than 42cd1c4.
+
 ### Breaking changes
 
 
