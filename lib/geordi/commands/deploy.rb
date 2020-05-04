@@ -30,15 +30,15 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
 LONGDESC
 
-option :no_migrations, :aliases => '-M', :type => :boolean,
-  :desc => 'Run cap deploy instead of cap deploy:migrations'
-option :current_branch, :aliases => '-c', :type => :boolean,
-  :desc => 'Set DEPLOY_BRANCH to the current branch during deploy'
+option :no_migrations, aliases: '-M', type: :boolean,
+  desc: 'Run cap deploy instead of cap deploy:migrations'
+option :current_branch, aliases: '-c', type: :boolean,
+  desc: 'Set DEPLOY_BRANCH to the current branch during deploy'
 
 def deploy(target_stage = nil)
   # Set/Infer default values
-  branch_stage_map = { 'master' => 'staging', 'production' => 'production'}
-  if target_stage and not Util.deploy_targets.include? target_stage
+  branch_stage_map = { 'master' => 'staging', 'production' => 'production' }
+  if target_stage && (Util.deploy_targets.exclude? target_stage)
     # Target stage autocompletion from available stages
     target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
     target_stage || warn('Given deployment stage not found')
@@ -48,7 +48,7 @@ def deploy(target_stage = nil)
   target_stage ||= prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
   if options.current_branch
     stage_file = "config/deploy/#{target_stage}.rb"
-    Util.file_containing? stage_file, 'DEPLOY_BRANCH' or fail <<-ERROR
+    Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || raise(<<-ERROR)
 To deploy from the current branch, configure #{stage_file} to respect the
 environment variable DEPLOY_BRANCH. Example:
 
@@ -67,9 +67,9 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
 
   announce "Checking whether your #{source_branch} branch is ready" ############
   Util.system! "git checkout #{source_branch}"
-  if `git status -s | wc -l`.strip != '0' and not Util.testing?
+  if (`git status -s | wc -l`.strip != '0') && !Util.testing?
     warn "Your #{source_branch} branch holds uncommitted changes."
-    prompt('Continue anyway?', 'n', /y|yes/) or fail 'Cancelled.'
+    prompt('Continue anyway?', 'n', /y|yes/) || raise('Cancelled.')
   else
     note 'All good.'
   end
@@ -100,17 +100,16 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     capistrano_call = "DEPLOY_BRANCH=#{source_branch} #{capistrano_call}" if options.current_branch
 
     if git_call.any?
-      Util.system! git_call.join(' && '), :show_cmd => true
+      Util.system! git_call.join(' && '), show_cmd: true
     end
 
     invoke_cmd 'bundle_install'
 
-    Util.system! capistrano_call, :show_cmd => true
+    Util.system! capistrano_call, show_cmd: true
 
     success 'Deployment complete.'
   else
     Util.system! "git checkout #{source_branch}"
-    fail 'Deployment cancelled.'
+    raise 'Deployment cancelled.'
   end
-
 end

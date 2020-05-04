@@ -2,14 +2,14 @@ require 'bundler'
 Bundler::GemHelper.install_tasks
 
 desc 'Default: Run all tests'
-task :default => :features
+task default: :features
 
 task :features do
   system 'bundle exec cucumber'
 end
 
 task :readme do
-  require File.expand_path('../lib/geordi/cli', __FILE__)
+  require File.expand_path('lib/geordi/cli', __dir__)
 
   readme = File.read('README.md')
   geordi_section_regex = /
@@ -39,9 +39,9 @@ For details on commands, e.g. supported options, you may always run
 
   Geordi::CLI.all_commands.sort.each do |_, command|
     unless command.hidden?
-      geordi_section << "### `geordi #{ command.usage }`\n\n"
-      geordi_section << "#{ command.description.sub /(\.)?$/, '.' }\n\n"
-      geordi_section << "#{ command.long_description.strip }\n\n" if command.long_description
+      geordi_section << "### `geordi #{command.usage}`\n\n"
+      geordi_section << "#{command.description.sub /(\.)?$/, '.'}\n\n"
+      geordi_section << "#{command.long_description.strip}\n\n" if command.long_description
       geordi_section << "\n"
     end
   end

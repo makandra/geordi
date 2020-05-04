@@ -1,6 +1,6 @@
 desc 'unit', 'Run Test::Unit'
 def unit
-  if File.exists?('test/test_helper.rb')
+  if File.exist?('test/test_helper.rb')
     invoke_cmd 'bundle_install'
     invoke_cmd 'yarn_install'
 

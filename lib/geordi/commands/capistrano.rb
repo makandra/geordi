@@ -8,7 +8,7 @@ def capistrano(*args)
 
   note 'Found the following deploy targets:'
   puts targets
-  prompt('Continue?', 'n', /y|yes/) or fail 'Cancelled.'
+  prompt('Continue?', 'n', /y|yes/) || raise('Cancelled.')
 
   targets << nil if targets.empty? # default target
   targets.each do |stage|
@@ -17,7 +17,6 @@ def capistrano(*args)
     command = "bundle exec cap #{stage} " + args.join(' ')
     note_cmd command
 
-    Util.system!(command, :fail_message => 'Capistrano failed. Have a look!')
+    Util.system!(command, fail_message: 'Capistrano failed. Have a look!')
   end
-
 end

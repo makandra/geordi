@@ -13,7 +13,7 @@ def png_optimize(path)
   announce 'Optimizing .png files'
 
   if `which pngcrush`.strip.empty?
-    fail 'Please install pngcrush first (sudo apt-get install pngcrush)'
+    raise 'Please install pngcrush first (sudo apt-get install pngcrush)'
   end
 
   po = PngOptimizer.new
@@ -22,7 +22,7 @@ def png_optimize(path)
   elsif File.file?(path)
     po.optimize_inplace(path)
   else
-    fail 'Neither directory nor file: ' + path
+    raise 'Neither directory nor file: ' + path
   end
 
   success 'PNG optimization completed.'
@@ -35,10 +35,10 @@ class PngOptimizer
   end
 
   def optimization_default_args
-    args = ""
-    args << "-rem alla " # remove everything except transparency
-    args << "-rem text " # remove text chunks
-    args << "-reduce " # eliminate unused colors and reduce bit-depth (if possible)
+    args = ''
+    args << '-rem alla ' # remove everything except transparency
+    args << '-rem text ' # remove text chunks
+    args << '-reduce ' # eliminate unused colors and reduce bit-depth (if possible)
     args
   end
 
@@ -50,10 +50,11 @@ class PngOptimizer
     dirname = File.dirname(original)
     basename = File.basename(original)
     count = 0
-    begin
+
+    loop do
       tmp_name = "#{dirname}/#{basename}_temp_#{count += 1}.png"
-    end while File.exists?(tmp_name)
-    tmp_name
+      break tmp_name unless File.exist?(tmp_name)
+    end
   end
 
   def optimize_inplace(input_file)
@@ -61,9 +62,9 @@ class PngOptimizer
     result = optimize_file(input_file, temp_file)
     if result
       FileUtils.rm(input_file)
-      FileUtils.mv("#{temp_file}", "#{input_file}")
+      FileUtils.mv(temp_file.to_s, input_file.to_s)
     else
-      fail 'Error:' + $?
+      raise 'Error:' + $CHILD_STATUS
     end
   end
 
@@ -71,7 +72,7 @@ class PngOptimizer
     # Dir[".png"] works case sensitive, so to catch all funky .png extensions we have to go the following way:
     png_relative_paths = []
     Dir["#{path}/*.*"].each do |file_name|
-      png_relative_paths << file_name if ends_with?(File.basename(file_name.downcase), ".png")
+      png_relative_paths << file_name if ends_with?(File.basename(file_name.downcase), '.png')
     end
     png_relative_paths.each do |png_relative_path|
       optimize_inplace(png_relative_path)

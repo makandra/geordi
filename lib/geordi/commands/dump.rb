@@ -20,18 +20,18 @@ dump into the development database after downloading it.
     geordi dump staging -l
 DESC
 
-option :load, :aliases => ['-l'], :type => :string, :desc => 'Load a dump'
-option :select_server, :default => false, :type => :boolean, :aliases => '-s'
+option :load, aliases: ['-l'], type: :string, desc: 'Load a dump'
+option :select_server, default: false, type: :boolean, aliases: '-s'
 
-def dump(target = nil, *args)
+def dump(target = nil, *_args)
   require 'geordi/dump_loader'
   require 'geordi/remote'
 
   if target.nil?
     if options.load
       # validate load option
-      fail 'Missing a dump file.' if options.load == 'load'
-      File.exists?(options.load) or fail 'Could not find the given dump file: ' + options.load
+      raise 'Missing a dump file.' if options.load == 'load'
+      File.exist?(options.load) || raise('Could not find the given dump file: ' + options.load)
 
       loader = DumpLoader.new(options.load)
 
@@ -59,5 +59,4 @@ def dump(target = nil, *args)
       success "Your #{loader.config['database']} database has now the data of #{target}."
     end
   end
-
 end

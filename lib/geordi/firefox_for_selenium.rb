@@ -1,13 +1,13 @@
 require 'pathname'
 require 'tempfile'
-require File.expand_path('../interaction', __FILE__)
+require File.expand_path('interaction', __dir__)
 
 module Geordi
   module FirefoxForSelenium
     extend Geordi::Interaction
 
     FIREFOX_FOR_SELENIUM_BASE_PATH = Pathname.new('~/bin/firefoxes').expand_path
-    FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'
+    FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'.freeze
     FIREFOX_VERSION_FILE = Pathname.new('.firefox-version')
 
     def self.install(version)
@@ -17,16 +17,16 @@ module Geordi
     def self.path_from_config
       version = FIREFOX_VERSION_FILE.exist? && File.read(FIREFOX_VERSION_FILE).strip
 
-      if version and version != 'system'
+      if version && (version != 'system')
         unless FirefoxForSelenium.binary(version).exist?
-          warn "Firefox #{ version } not found"
+          warn "Firefox #{version} not found"
 
           note strip_heredoc(<<-INSTRUCTIONS)
           Install it with
-            geordi firefox --setup #{ version }
+            geordi firefox --setup #{version}
           INSTRUCTIONS
 
-          prompt 'Run tests anyway?', 'n', /y|yes/ or fail 'Cancelled.'
+          prompt('Run tests anyway?', 'n', /y|yes/) || raise('Cancelled.')
         end
 
         path(version)
@@ -37,7 +37,7 @@ module Geordi
       FIREFOX_FOR_SELENIUM_BASE_PATH.join(version)
     end
 
-    def self.binary(version, name = "firefox")
+    def self.binary(version, name = 'firefox')
       path(version).join(name)
     end
 
@@ -72,7 +72,7 @@ module Geordi
       private
 
       def execute_command(cmd)
-        system(cmd) or raise "Error while executing command: #{cmd}"
+        system(cmd) || raise("Error while executing command: #{cmd}")
       end
 
       def run_firefox_for_selenium(args = '')
@@ -92,7 +92,7 @@ module Geordi
       end
 
       def original_binary
-        FirefoxForSelenium.binary(@version, "firefox-original")
+        FirefoxForSelenium.binary(@version, 'firefox-original')
       end
 
       def say_hello
@@ -137,7 +137,7 @@ module Geordi
         INSTRUCTION
         prompt 'Continue?'
 
-        File.file?(binary) or raise "Could not find #{binary}"
+        File.file?(binary) || raise("Could not find #{binary}")
       end
 
       def create_separate_profile
@@ -156,7 +156,7 @@ module Geordi
         patched_binary.write strip_heredoc(<<-PATCH)
           #!/usr/bin/env ruby
           exec('#{original_binary}', '-no-remote', '-P', '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}', *ARGV)
-          PATCH
+        PATCH
         patched_binary.close
         execute_command("mv #{patched_binary.path} #{binary}")
         execute_command("chmod +x #{binary}")
@@ -200,4 +200,3 @@ module Geordi
     end
   end
 end
-

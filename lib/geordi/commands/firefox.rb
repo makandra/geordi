@@ -10,12 +10,12 @@ Useful when you need Firefox for Selenium or the VNC set up, but can't use the
 This command is aliased `chrome` for users running Selenium in Chrome.
 LONGDESC
 
-option :setup, :banner => 'FIREFOX_VERSION',
-  :desc => 'Install a special test runner Firefox with the given version'
+option :setup, banner: 'FIREFOX_VERSION',
+  desc: 'Install a special test runner Firefox with the given version'
 
 def firefox(*command)
   if options.setup
-    fail 'Firefox version required (e.g. --setup 24.0)' if options.setup == 'setup'
+    raise 'Firefox version required (e.g. --setup 24.0)' if options.setup == 'setup'
 
     require 'geordi/firefox_for_selenium'
     Geordi::FirefoxForSelenium.install(options.setup)

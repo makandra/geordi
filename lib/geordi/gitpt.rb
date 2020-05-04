@@ -4,8 +4,8 @@ class Gitpt
   require 'highline'
   require 'tracker_api'
 
-  SETTINGS_FILE_NAME = '.gitpt'
-  PROJECT_IDS_FILE_NAME = '.pt_project_id'
+  SETTINGS_FILE_NAME = '.gitpt'.freeze
+  PROJECT_IDS_FILE_NAME = '.pt_project_id'.freeze
 
   def initialize
     self.highline = HighLine.new
@@ -13,7 +13,7 @@ class Gitpt
   end
 
   def run(git_args)
-    warn <<-WARNING if !Geordi::Util.staged_changes?
+    warn <<-WARNING unless Geordi::Util.staged_changes?
 No staged changes. Will create an empty commit.
     WARNING
 
@@ -30,16 +30,16 @@ No staged changes. Will create an empty commit.
   def read_settings
     file_path = File.join(ENV['HOME'], SETTINGS_FILE_NAME)
 
-    unless File.exists?(file_path)
+    unless File.exist?(file_path)
       highline.say HighLine::RESET
       highline.say "Welcome to #{bold 'gitpt'}.\n\n"
 
       highline.say highlight('Your settings are missing or invalid.')
       highline.say "Please configure your Pivotal Tracker access.\n\n"
-      token = highline.ask bold("Your API key:") + " "
+      token = highline.ask bold('Your API key:') + ' '
       highline.say "\n"
 
-      settings = { :token => token }
+      settings = { token: token }
       File.open(file_path, 'w') do |file|
         file.write settings.to_yaml
       end
@@ -49,7 +49,7 @@ No staged changes. Will create an empty commit.
   end
 
   def build_client(settings)
-    TrackerApi::Client.new(:token => settings.fetch(:token))
+    TrackerApi::Client.new(token: settings.fetch(:token))
   end
 
   def load_projects
@@ -60,11 +60,11 @@ No staged changes. Will create an empty commit.
   def read_project_ids
     file_path = PROJECT_IDS_FILE_NAME
 
-    if File.exists?(file_path)
+    if File.exist?(file_path)
       project_ids = File.read('.pt_project_id').split(/[\s]+/).map(&:to_i)
     end
 
-    if project_ids and project_ids.size > 0
+    if project_ids && (project_ids.size > 0)
       project_ids
     else
       warn "Sorry, I could not find a project ID in #{file_path} :("
@@ -79,19 +79,19 @@ No staged changes. Will create an empty commit.
   def applicable_stories
     projects = load_projects
     projects.collect do |project|
-      project.stories(:filter => 'state:started,finished,rejected')
+      project.stories(filter: 'state:started,finished,rejected')
     end.flatten
   end
 
   def choose_story
     if Geordi::Util.testing?
-      return OpenStruct.new(:id => 12, :name => 'Test Story')
+      return OpenStruct.new(id: 12, name: 'Test Story')
     end
 
     loading_message = 'Connecting to Pivotal Tracker ...'
     print(loading_message)
     stories = applicable_stories
-    reset_loading_message = "\r#{ ' ' * (loading_message.length + stories.length)}\r"
+    reset_loading_message = "\r#{' ' * (loading_message.length + stories.length)}\r"
 
     highline.choose do |menu|
       menu.header = 'Choose a story'
@@ -126,7 +126,7 @@ No staged changes. Will create an empty commit.
 
   def create_commit(message, *git_args)
     extra = highline.ask("\nAdd an optional message").strip
-    message << ' - ' << extra if (extra != "")
+    message << ' - ' << extra if extra != ''
 
     Geordi::Util.system! 'git', 'commit', '--allow-empty', '-m', message, *git_args
   end

@@ -8,16 +8,16 @@ Switches branches, pulls, pushes and deploys as required by our workflow. Tells
 what it will do before it does it.
 LONGDESC
 
-def security_update(step='prepare')
+def security_update(step = 'prepare')
   case step
   when 'prepare'
     announce 'Preparing for security update'
     warn 'Please read https://makandracards.com/makandra/1587 before applying security updates!'
     note 'About to checkout production and pull'
-    prompt('Continue?', 'y', /y|yes/) or fail 'Cancelled.'
+    prompt('Continue?', 'y', /y|yes/) || raise('Cancelled.')
 
-    Util.system! 'git checkout production', :show_cmd => true
-    Util.system! 'git pull', :show_cmd => true
+    Util.system! 'git checkout production', show_cmd: true
+    Util.system! 'git pull', show_cmd: true
 
     success 'Successfully prepared for security update'
     puts
@@ -27,20 +27,20 @@ def security_update(step='prepare')
 
   when 'f', 'finish'
     # ensure everything is committed
-    `git status --porcelain`.empty? or fail('Please commit your changes before finishing the update.')
+    `git status --porcelain`.empty? || raise('Please commit your changes before finishing the update.')
 
     announce 'Finishing security update'
     note 'Working directory clean.'
-    prompt('Have you successfully run all tests?', 'n', /y|yes/) or fail 'Please run tests first.'
+    prompt('Have you successfully run all tests?', 'n', /y|yes/) || raise('Please run tests first.')
 
     note 'About to: push production, checkout & pull master, merge production, push master'
-    prompt('Continue?', 'n', /y|yes/) or fail 'Cancelled.'
+    prompt('Continue?', 'n', /y|yes/) || raise('Cancelled.')
 
-    Util.system! 'git push', :show_cmd => true
-    Util.system! 'git checkout master', :show_cmd => true
-    Util.system! 'git pull', :show_cmd => true
-    Util.system! 'git merge production', :show_cmd => true
-    Util.system! 'git push', :show_cmd => true
+    Util.system! 'git push', show_cmd: true
+    Util.system! 'git checkout master', show_cmd: true
+    Util.system! 'git pull', show_cmd: true
+    Util.system! 'git merge production', show_cmd: true
+    Util.system! 'git push', show_cmd: true
 
     announce 'Deploying all targets'
     deploy = (Util.gem_major_version('capistrano') == 3) ? 'deploy' : 'deploy:migrations'

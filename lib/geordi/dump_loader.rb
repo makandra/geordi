@@ -14,7 +14,7 @@ module Geordi
     def development_database_config
       require 'yaml'
 
-      @config ||= YAML::load(ERB.new(File.read('config/database.yml')).result)
+      @config ||= YAML.safe_load(ERB.new(File.read('config/database.yml')).result)
       @config['development']
     end
     alias_method :config, :development_database_config
@@ -47,7 +47,7 @@ module Geordi
         available_dumps = Dir.glob(dumps_glob).sort
 
         HighLine.new.choose(*available_dumps) do |menu|
-          menu.hidden('') { fail 'Abort.' }
+          menu.hidden('') { raise 'Abort.' }
         end
       end
     end
@@ -56,7 +56,7 @@ module Geordi
       note 'Source file: ' + dump_file
 
       source_command = send("#{config['adapter']}_command")
-      Util.system! source_command, :fail_message => "An error occured loading #{File.basename(dump_file)}"
+      Util.system! source_command, fail_message: "An error occured loading #{File.basename(dump_file)}"
     end
 
   end

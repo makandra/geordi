@@ -10,13 +10,13 @@ def apache_site(*args)
     puts 'Please call: apache-site my-site'
     puts
     puts 'Available sites:'
-    Dir.new(".").each do |file|
+    Dir.new('.').each do |file|
       puts "- #{file}" if file != '.' && file != '..'
     end
     exit
   end
 
-  has_default = File.exists?('default')
-  exec "sudo a2dissite \*; sudo a2ensite #{"default " if has_default}#{site} && sudo apache2ctl restart"
+  has_default = File.exist?('default')
+  exec "sudo a2dissite \*; sudo a2ensite #{'default ' if has_default}#{site} && sudo apache2ctl restart"
   Dir.chdir old_cwd
 end

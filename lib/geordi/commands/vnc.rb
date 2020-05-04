@@ -8,7 +8,7 @@ tests.
 When called with `--setup`, will guide through the setup of VNC.
 LONGDESC
 
-option :setup, :type => :boolean
+option :setup, type: :boolean
 
 def vnc
   if options.setup

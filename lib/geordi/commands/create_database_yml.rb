@@ -1,9 +1,9 @@
-desc 'create-database-yml', '[sic]', :hide => true
+desc 'create-database-yml', '[sic]', hide: true
 def create_database_yml
   real_yml = 'config/database.yml'
   sample_yml = 'config/database.sample.yml'
 
-  if File.exists?(sample_yml) and not File.exists?(real_yml)
+  if File.exist?(sample_yml) && !File.exist?(real_yml)
     announce 'Creating ' + real_yml
 
     sample = File.read(sample_yml)

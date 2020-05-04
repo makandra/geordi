@@ -3,17 +3,17 @@ require 'tempfile'
 
 # This require-style is to prevent Ruby from loading files of a different
 # version of Geordi.
-require File.expand_path('../interaction', __FILE__)
-require File.expand_path('../firefox_for_selenium', __FILE__)
+require File.expand_path('interaction', __dir__)
+require File.expand_path('firefox_for_selenium', __dir__)
 
 module Geordi
   class Cucumber
     include Geordi::Interaction
 
-    VNC_DISPLAY = ':17'
-    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024"
-    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
-    VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
+    VNC_DISPLAY = ':17'.freeze
+    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024".freeze
+    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}".freeze
+    VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER].freeze
 
     def run(files, cucumber_options, options = {})
       self.argv = files + cucumber_options.map { |option| option.split('=') }.flatten
@@ -30,20 +30,20 @@ module Geordi
     end
 
     def launch_vnc_viewer
-      fork {
+      fork do
         error = capture_stderr do
           system(VNC_VIEWER_COMMAND)
         end
-        unless $?.success?
-          if $?.exitstatus == 127
-            fail 'VNC viewer not found. Install it with `geordi vnc --setup`.'
+        unless $CHILD_STATUS.success?
+          if $CHILD_STATUS.exitstatus == 127
+            raise 'VNC viewer not found. Install it with `geordi vnc --setup`.'
           else
             note 'VNC viewer could not be opened:'
             puts error
             puts
           end
         end
-      }
+      end
     end
 
     def restore_env
@@ -57,8 +57,8 @@ module Geordi
         VNC_ENV_VARIABLES.each do |variable|
           ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
         end
-        ENV["BROWSER"] = ENV["LAUNCHY_BROWSER"] = File.expand_path('../../../bin/launchy_browser', __FILE__)
-        ENV["DISPLAY"] = VNC_DISPLAY
+        ENV['BROWSER'] = ENV['LAUNCHY_BROWSER'] = File.expand_path('../../bin/launchy_browser', __dir__)
+        ENV['DISPLAY'] = VNC_DISPLAY
 
         note 'Run `geordi vnc` to view the Selenium test browsers'
       end
@@ -73,7 +73,7 @@ module Geordi
       unless argv.include?('--format') || argv.include?('-f')
         format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
       end
-      [use_firefox_for_selenium, "b", "cucumber", format_args, escape_shell_args(argv)].flatten.compact.join(" ")
+      [use_firefox_for_selenium, 'b', 'cucumber', format_args, escape_shell_args(argv)].flatten.compact.join(' ')
     end
 
     def parallel_execution_command
@@ -87,8 +87,8 @@ module Geordi
       [
         use_firefox_for_selenium,
         'b parallel_test -t ' + type_arg,
-        %(-o '#{ command_line_options.join(' ') } --tags "#{not_tag('@solo')}"'),
-        "-- #{ features.join(' ') }"
+        %(-o '#{command_line_options.join(' ')} --tags "#{not_tag('@solo')}"'),
+        "-- #{features.join(' ')}",
       ].compact.join(' ')
     end
 
@@ -109,7 +109,7 @@ module Geordi
 
     def escape_shell_args(*args)
       args.flatten.collect do |arg|
-        arg.gsub(/([\\ "])/) { |match| "\\#{$1}" }
+        arg.gsub(/([\\ "])/) { |_match| "\\#{Regexp.last_match(1)}" }
       end
     end
 
@@ -137,8 +137,8 @@ module Geordi
 
     def rerun_txt_features
       @rerun_txt_features ||= begin
-        if File.exists?("rerun.txt")
-          IO.read("rerun.txt").to_s.strip.split(/\s+/)
+        if File.exist?('rerun.txt')
+          IO.read('rerun.txt').to_s.strip.split(/\s+/)
         else
           []
         end
@@ -150,7 +150,7 @@ module Geordi
     end
 
     def command_line_options
-      @command_line_options ||= Array.new.tap do |args|
+      @command_line_options ||= [].tap do |args|
         # Sorry for this mess. Option parsing doesn't get much prettier.
         argv.each_cons(2) do |a, b|
           break if a == '--' # This is the common no-options-beyond marker
@@ -171,7 +171,7 @@ module Geordi
     end
 
     def consolidate_rerun_txt_files
-      parallel_rerun_files = Dir.glob("parallel_rerun*.txt")
+      parallel_rerun_files = Dir.glob('parallel_rerun*.txt')
       unless parallel_rerun_files.empty?
         note 'Consolidating parallel_rerun.txt files ...'
 
@@ -181,8 +181,8 @@ module Geordi
           File.unlink(filename)
         end
 
-        File.open("rerun.txt", "w") do |f|
-          f.puts(rerun_content.join(" "))
+        File.open('rerun.txt', 'w') do |f|
+          f.puts(rerun_content.join(' '))
         end
       end
     end
@@ -190,14 +190,14 @@ module Geordi
     def find_all_features_recursively(files_or_dirs)
       Array(files_or_dirs).map do |file_or_dir|
         if File.directory?(file_or_dir)
-          file_or_dir = Dir.glob(File.join(file_or_dir, "**", "*.feature"))
+          file_or_dir = Dir.glob(File.join(file_or_dir, '**', '*.feature'))
         end
         file_or_dir
       end.flatten.uniq.compact
     end
 
     def spinner_available?
-      @spinner_available ||= File.exists?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
+      @spinner_available ||= File.exist?('Gemfile') && File.open('Gemfile').read.scan(/cucumber_spinner/).any?
     end
 
     def use_parallel_tests?(options)
@@ -209,7 +209,7 @@ module Geordi
 
     def try_and_start_vnc
       # check if vnc is already running
-      #return true if vnc_server_running?
+      # return true if vnc_server_running?
       error = capture_stderr do
         system(VNC_SERVER_COMMAND)
       end

@@ -1,4 +1,4 @@
-desc '-setup-vnc', 'Setup VNC for running Selenium tests there', :hide => true
+desc '-setup-vnc', 'Setup VNC for running Selenium tests there', hide: true
 def _setup_vnc
   `clear`
 

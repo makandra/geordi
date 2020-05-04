@@ -10,8 +10,8 @@ module Geordi
     end
 
     def user(server)
-      cap2user = deploy_info[ /^\s*set\s*:user,\s*['"](.*?)['"]/, 1 ]
-      cap2user || deploy_info[ /^\s*server\s*['"]#{ server }['"],.*user.{1,4}['"](.*?)['"]/m, 1 ]
+      cap2user = deploy_info[/^\s*set\s*:user,\s*['"](.*?)['"]/, 1]
+      cap2user || deploy_info[/^\s*server\s*['"]#{server}['"],.*user.{1,4}['"](.*?)['"]/m, 1]
     end
 
     def servers
@@ -26,11 +26,11 @@ module Geordi
     end
 
     def remote_root
-      File.join deploy_info[ /^\s*set\s*:deploy_to,\s*['"](.*?)['"]/, 1 ], 'current'
+      File.join deploy_info[/^\s*set\s*:deploy_to,\s*['"](.*?)['"]/, 1], 'current'
     end
 
     def env
-      deploy_info[ /^\s*set\s*:rails_env,\s*['"](.*?)['"]/, 1 ]
+      deploy_info[/^\s*set\s*:rails_env,\s*['"](.*?)['"]/, 1]
     end
 
     def shell
@@ -45,17 +45,17 @@ module Geordi
       self.deploy_info = ''
 
       if stage
-        deploy_info << File.read(File.join root, "config/deploy/#{ stage }.rb")
+        deploy_info << File.read(File.join(root, "config/deploy/#{stage}.rb"))
         deploy_info << "\n"
       end
 
-      deploy_info << File.read(File.join root, 'config/deploy.rb')
+      deploy_info << File.read(File.join(root, 'config/deploy.rb'))
     end
 
     def find_project_root!
       current = ENV['RAILS_ROOT'] || Dir.pwd
 
-      until File.exists?(File.join(current, 'Capfile'))
+      until File.exist?(File.join(current, 'Capfile'))
         if current == '/' || current == '/home' || !File.directory?(current)
           raise <<-ERROR
   Could not locate Capfile.

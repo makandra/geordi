@@ -6,9 +6,9 @@ Open a Rails console on `staging`: `geordi console staging`
 LONGDESC
 
 
-option :select_server, :default => false, :type => :boolean, :aliases => '-s'
+option :select_server, default: false, type: :boolean, aliases: '-s'
 
-def console(target = 'development', *args)
+def console(target = 'development', *_args)
   require 'geordi/remote'
 
   if target == 'development'

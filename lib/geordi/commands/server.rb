@@ -1,9 +1,9 @@
 desc 'server [PORT]', 'Start a development server'
 
-option :port, :aliases => '-p', :default => '3000',
-  :desc => 'Choose a port'
-option :public, :aliases => '-P', :type => :boolean,
-  :desc => 'Make the server accessible in the local network'
+option :port, aliases: '-p', default: '3000',
+  desc: 'Choose a port'
+option :public, aliases: '-P', type: :boolean,
+  desc: 'Make the server accessible in the local network'
 
 def server(port = nil)
   invoke_cmd 'bundle_install'
@@ -12,7 +12,7 @@ def server(port = nil)
 
   announce 'Booting a development server'
   port ||= options.port
-  note "URL: http://#{ File.basename(Dir.pwd) }.vcap.me:#{port}"
+  note "URL: http://#{File.basename(Dir.pwd)}.vcap.me:#{port}"
   puts
 
   command = Util.server_command

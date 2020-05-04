@@ -17,30 +17,30 @@ or `-d`.
 e.g. `--format pretty`.
 LONGDESC
 
-option :modified, :aliases => '-m', :type => :boolean,
-  :desc => 'Run all modified features'
-option :containing, :aliases => '-c', :banner => 'STRING',
-  :desc => 'Run all features that contain STRING'
-option :verbose, :aliases => '-v', :type => :boolean,
-  :desc => 'Print the testrun command'
-option :debug, :aliases => '-d', :type => :boolean,
-  :desc => 'Run with `-f pretty -b` which helps hunting down bugs'
-option :rerun, :aliases => '-r', :type => :numeric, :default => 0,
-  :desc => 'Rerun features up to N times while failing'
+option :modified, aliases: '-m', type: :boolean,
+  desc: 'Run all modified features'
+option :containing, aliases: '-c', banner: 'STRING',
+  desc: 'Run all features that contain STRING'
+option :verbose, aliases: '-v', type: :boolean,
+  desc: 'Print the testrun command'
+option :debug, aliases: '-d', type: :boolean,
+  desc: 'Run with `-f pretty -b` which helps hunting down bugs'
+option :rerun, aliases: '-r', type: :numeric, default: 0,
+  desc: 'Rerun features up to N times while failing'
 
 def cucumber(*args)
   if args.empty?
     # This is not testable as there is no way to stub `git` :(
     if options.modified?
-      modified_features = `git status --short`.split($/).map do |line|
+      modified_features = `git status --short`.split($INPUT_RECORD_SEPARATOR).map do |line|
         indicators = line.slice!(0..2) # Remove leading indicators
-        line if line.include?('.feature') and not indicators.include?('D')
+        line if line.include?('.feature') && indicators.exclude?('D')
       end.compact
       args = modified_features
     end
 
     if options.containing
-      matching_features = `grep -lri '#{options.containing}' --include=*.feature features/`.split($/)
+      matching_features = `grep -lri '#{options.containing}' --include=*.feature features/`.split($INPUT_RECORD_SEPARATOR)
       args = matching_features.uniq
     end
   end
@@ -64,31 +64,31 @@ def cucumber(*args)
         files.join(' ')
       end
 
-      solo_tag_usages = `grep -r '@solo' #{ solo_files }`.split("\n")
+      solo_tag_usages = `grep -r '@solo' #{solo_files}`.split("\n")
 
       if solo_tag_usages.any?
         solo_cmd_opts = cmd_opts.dup
         solo_cmd_opts << '--tags' << '@solo'
 
         announce 'Running @solo features'
-        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, :verbose => options.verbose, :parallel => false
-        solo_success or fail 'Features failed.'
+        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, verbose: options.verbose, parallel: false
+        solo_success || raise('Features failed.')
       end
     end
 
     # Parallel run of all given features + reruns ##############################
     announce 'Running features'
-    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, :verbose => options.verbose)
+    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, verbose: options.verbose)
 
     unless normal_run_successful
       cmd_opts << '--profile' << 'rerun'
 
       # Reruns
       (options.rerun + 1).times do |i|
-        fail 'Features failed.' if (i == options.rerun) # All reruns done?
+        raise 'Features failed.' if i == options.rerun # All reruns done?
 
-        announce "Rerun ##{ i + 1 } of #{ options.rerun }"
-        break if Geordi::Cucumber.new.run([], cmd_opts, :verbose => options.verbose, :parallel => false)
+        announce "Rerun ##{i + 1} of #{options.rerun}"
+        break if Geordi::Cucumber.new.run([], cmd_opts, verbose: options.verbose, parallel: false)
       end
     end
 

@@ -3,16 +3,16 @@ $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
 require 'geordi/version'
 
 Gem::Specification.new do |spec|
-  spec.name        = "geordi"
-  spec.version     = Geordi::VERSION
+  spec.name = 'geordi'
+  spec.version = Geordi::VERSION
   spec.required_ruby_version = '>= 2.0.0'
-  spec.authors     = ["Henning Koch"]
-  spec.email       = ["henning.koch@makandra.de"]
+  spec.authors = ['Henning Koch']
+  spec.email = ['henning.koch@makandra.de']
 
-  spec.summary     = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
+  spec.summary = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
   spec.description = 'Collection of command line tools we use in our daily work with Ruby, Rails and Linux at makandra.'
-  spec.homepage    = "http://makandra.com"
-  spec.license     = 'MIT'
+  spec.homepage = 'http://makandra.com'
+  spec.license = 'MIT'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.

@@ -21,4 +21,3 @@ Unsupported Ruby Version #{RUBY_VERSION}. `geordi commit` requires Ruby 2.1+.
 
   Gitpt.new.run(git_args)
 end
-

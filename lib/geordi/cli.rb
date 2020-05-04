@@ -12,7 +12,7 @@ module Geordi
     end
 
     # load all tasks defined in lib/geordi/commands
-    Dir[File.expand_path '../commands/*.rb', __FILE__].each do |file|
+    Dir[File.expand_path 'commands/*.rb', __dir__].each do |file|
       class_eval File.read(file), file
     end
 

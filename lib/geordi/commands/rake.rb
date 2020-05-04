@@ -10,8 +10,8 @@ Example: `geordi rake db:migrate`
 LONGDESC
 
 def rake(*args)
-  for env in %w(development test cucumber) # update long_desc when changing this
-    if File.exists? "config/environments/#{env}.rb"
+  %w[development test cucumber].each do |env| # update long_desc when changing this
+    if File.exist? "config/environments/#{env}.rb"
       call = %w[bundle exec rake] + args + ["RAILS_ENV=#{env}"]
       note_cmd call.join(' ')
 

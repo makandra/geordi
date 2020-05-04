@@ -15,12 +15,11 @@ by `rake update_readme`. Thus, please format descriptions in a way that's reader
 friendly both in Markdown and the console.
 LONGDESC
 
-option :opt, :type => :boolean, :aliases => '-o', :banner => 'VALUE_NAME',
-       :desc => 'If set, VALUE_NAME will be used for something'
+option :opt, type: :boolean, aliases: '-o', banner: 'VALUE_NAME', desc: 'If set, VALUE_NAME will be used for something'
 
 def example
   # Invoke other commands like this:
-  invoke_cmd 'other_command', 'argument', :an => 'option'
+  invoke_cmd 'other_command', 'argument', an: 'option'
 
   fail 'Option missing' unless options.opt?
 

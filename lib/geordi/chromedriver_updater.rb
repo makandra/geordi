@@ -27,12 +27,12 @@ module Geordi
 
     def determine_chrome_version
       stdout_str, _error_str, status = Open3.capture3('google-chrome', '--version')
-      chrome_version = if !stdout_str.nil?
+      chrome_version = unless stdout_str.nil?
         stdout_str[/\AGoogle Chrome (\d+)/, 1]
       end
 
       if !status.success? || chrome_version.nil?
-        fail('Could not determine the current Google Chrome version')
+        raise('Could not determine the current Google Chrome version')
       else
         chrome_version.to_i
       end
@@ -42,12 +42,12 @@ module Geordi
       return unless Open3.capture2('which chromedriver')[1].success?
 
       stdout_str, _error_str, status = Open3.capture3('chromedriver', '-v')
-      chromedriver_version = if !stdout_str.nil?
+      chromedriver_version = unless stdout_str.nil?
         stdout_str[/\AChromeDriver (\d+)/, 1]
       end
 
       if !status.success? || chromedriver_version.nil?
-        fail('Could not determine the current chromedriver version')
+        raise('Could not determine the current chromedriver version')
       else
         chromedriver_version.to_i
       end
@@ -69,7 +69,7 @@ module Geordi
 
         file
       else
-        fail("Could not download chromedriver version #{latest_version}")
+        raise("Could not download chromedriver version #{latest_version}")
       end
     end
 
@@ -80,7 +80,7 @@ module Geordi
       if response.is_a?(Net::HTTPSuccess)
         response.body.to_s
       else
-        fail("Could not find the latest version for Google Chrome version #{chrome_version}")
+        raise("Could not find the latest version for Google Chrome version #{chrome_version}")
       end
     end
 
@@ -88,7 +88,7 @@ module Geordi
       _stdout_str, _error_str, status = Open3.capture3('unzip', '-d', output_dir, '-o', zip.path)
 
       unless status.success?
-        fail("Could not unzip #{zip.path}")
+        raise("Could not unzip #{zip.path}")
       end
     end
   end

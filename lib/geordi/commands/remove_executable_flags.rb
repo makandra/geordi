@@ -6,7 +6,7 @@ def remove_executable_flags
     *.rb *.html *.erb *.haml *.yml *.css *.sass *.rake *.png *.jpg
     *.gif *.pdf *.txt *.rdoc *.feature Rakefile VERSION README Capfile
   ]
-  for pattern in patterns
+  patterns.each do |pattern|
     note pattern
     `find . -name "#{pattern}" -exec chmod -x {} ';'`
   end

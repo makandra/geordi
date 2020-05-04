@@ -10,19 +10,19 @@ module Geordi
       # all employed gems as runtime dependencies because that would
       # unnecessarily slow down all commands.
       # Thus, we have this handy method here.
-      def installing_missing_gems(&block)
+      def installing_missing_gems
         yield
       rescue LoadError => error
         error.message =~ /-- (\S+)\Z/
-        $1 or raise # could not extract a gem name from the error message, re-raise the error
+        Regexp.last_match(1) || raise # could not extract a gem name from the error message, re-raise the error
 
-        gem_name = $1.strip.split('/').first
+        gem_name = Regexp.last_match(1).strip.split('/').first
         install_command = 'gem install ' + gem_name
 
         # install missing gem
         warn 'Probably missing gem: ' + gem_name
-        prompt('Install it now?', 'y', /y|yes/) or fail 'Missing Gems.'
-        system! install_command, :show_cmd => true
+        prompt('Install it now?', 'y', /y|yes/) || raise('Missing Gems.')
+        system! install_command, show_cmd: true
 
         # retry
         Gem.clear_paths
@@ -42,11 +42,11 @@ module Geordi
         note_cmd commands.join(' ') if options[:show_cmd]
 
         if options[:confirm]
-          prompt('Run this now?', 'n', /y|yes/) or fail('Cancelled.')
+          prompt('Run this now?', 'n', /y|yes/) || raise('Cancelled.')
         end
 
         if testing?
-          puts "Util.system! #{ commands.join ', ' }"
+          puts "Util.system! #{commands.join ', '}"
         else
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)
@@ -59,7 +59,7 @@ module Geordi
             Bundler.clean_system(*commands)
           end
 
-          success or fail(options[:fail_message] || 'Something went wrong.')
+          success || raise(options[:fail_message] || 'Something went wrong.')
         end
       end
 
@@ -107,7 +107,7 @@ module Geordi
       # try to guess user's favorite cli text editor
       def decide_texteditor
         %w[/usr/bin/editor vi].each do |texteditor|
-          if cmd_exists? texteditor and texteditor.start_with? '$'
+          if cmd_exists?(texteditor) && texteditor.start_with?('$')
             return ENV[texteditor[1..-1]]
           elsif cmd_exists? texteditor
             return texteditor
@@ -116,19 +116,17 @@ module Geordi
       end
 
       # check if given cmd is executable. Absolute path or command in $PATH allowed.
-      def cmd_exists? cmd
+      def cmd_exists?(cmd)
         system("which #{cmd} > /dev/null")
-        return $?.exitstatus.zero?
+        $CHILD_STATUS.exitstatus.zero?
       end
 
       def is_port_open?(port)
-        begin
-          socket = TCPSocket.new('127.0.0.1', port)
-          socket.close
-          return true
-        rescue Errno::ECONNREFUSED
-          return false
-        end
+        socket = TCPSocket.new('127.0.0.1', port)
+        socket.close
+        true
+      rescue Errno::ECONNREFUSED
+        false
       end
 
       # splint lines e.g. read from a file into lines and clean those up
@@ -162,7 +160,7 @@ module Geordi
       end
 
       def file_containing?(file, regex)
-        File.exists?(file) and File.read(file).scan(regex).any?
+        File.exist?(file) && File.read(file).scan(regex).any?
       end
 
       def testing?
