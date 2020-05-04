@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 
 ### Breaking changes
+
+
+## 3.0.0 2020-05-04
+
+### Compatible changes
+
+### Breaking changes
 - Remove support for Ruby 1.8.7 and Ruby 1.9.3. Bug fixes might still be backported to 2.x, but we will not add any features to 2.x anymore. Please consider to upgrade the Ruby version of your project.
 
 
