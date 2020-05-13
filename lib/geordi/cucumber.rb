@@ -33,8 +33,8 @@ module Geordi
         error = capture_stderr do
           system(VNC_VIEWER_COMMAND)
         end
-        unless $CHILD_STATUS.success?
-          if $CHILD_STATUS.exitstatus == 127
+        unless $?.success?
+          if $?.exitstatus == 127
             Interaction.fail 'VNC viewer not found. Install it with `geordi vnc --setup`.'
           else
             Interaction.note 'VNC viewer could not be opened:'

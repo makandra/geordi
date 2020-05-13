@@ -117,7 +117,7 @@ module Geordi
       # check if given cmd is executable. Absolute path or command in $PATH allowed.
       def cmd_exists?(cmd)
         system("which #{cmd} > /dev/null")
-        $CHILD_STATUS.exitstatus.zero?
+        $?.exitstatus.zero?
       end
 
       def is_port_open?(port)

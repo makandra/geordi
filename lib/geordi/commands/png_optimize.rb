@@ -64,7 +64,7 @@ class PngOptimizer
       FileUtils.rm(input_file)
       FileUtils.mv(temp_file.to_s, input_file.to_s)
     else
-      Interaction.fail 'Error:' + $CHILD_STATUS
+      Interaction.fail 'Error:' + $?
     end
   end
 

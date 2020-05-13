@@ -10,7 +10,7 @@ module Geordi
       puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
       puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
       `sudo true`
-      Interaction.fail 'sudo access is required for database operations as database users' if $CHILD_STATUS != 0
+      Interaction.fail 'sudo access is required for database operations as database users' if $? != 0
       @derivative_dbname = /_(test\d*|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = Dir.home.to_s if base_directory.nil?
