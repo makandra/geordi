@@ -14,6 +14,6 @@ option :select_server, default: false, type: :boolean, aliases: '-s'
 def shelll(target, *_args)
   require 'geordi/remote'
 
-  announce 'Opening a shell on ' + target
+  Interaction.announce 'Opening a shell on ' + target
   Geordi::Remote.new(target).shell(options)
 end

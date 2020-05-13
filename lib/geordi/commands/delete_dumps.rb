@@ -20,24 +20,24 @@ def delete_dumps(dump_directory = nil)
   else
     [dump_directory]
   end
-  announce 'Looking for *.dump in ' << dump_directories.join(',')
+  Interaction.announce 'Looking for *.dump in ' << dump_directories.join(',')
   dump_directories.each do |d|
     d_2 = File.expand_path(d)
     unless File.directory? File.realdirpath(d_2)
-      warn "Directory #{d_2} does not exist"
+      Interaction.warn "Directory #{d_2} does not exist"
       next
     end
     deletable_dumps.concat(Dir.glob("#{d_2}/**/*.dump"))
   end
   if deletable_dumps.empty?
-    success 'No dumps to delete' if deletable_dumps.empty?
+    Interaction.success 'No dumps to delete' if deletable_dumps.empty?
     exit 0
   end
   deletable_dumps.uniq!.sort!
-  note 'The following dumps can be deleted:'
+  Interaction.note 'The following dumps can be deleted:'
   puts
   puts deletable_dumps
-  prompt('Delete those dumps', 'n', /y|yes/) || raise('Cancelled.')
+  Interaction.prompt('Delete those dumps', 'n', /y|yes/) || raise('Cancelled.')
   deletable_dumps.each do |dump|
     File.delete dump unless File.directory? dump
   end

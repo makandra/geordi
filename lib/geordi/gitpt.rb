@@ -1,5 +1,4 @@
 class Gitpt
-  include Geordi::Interaction
   require 'yaml'
   require 'highline'
   require 'tracker_api'
@@ -13,7 +12,7 @@ class Gitpt
   end
 
   def run(git_args)
-    warn <<-WARNING unless Geordi::Util.staged_changes?
+    Geordi::Interaction.warn <<-WARNING unless Geordi::Util.staged_changes?
 No staged changes. Will create an empty commit.
     WARNING
 
@@ -67,7 +66,7 @@ No staged changes. Will create an empty commit.
     if project_ids && (project_ids.size > 0)
       project_ids
     else
-      warn "Sorry, I could not find a project ID in #{file_path} :("
+      Geordi::Interaction.warn "Sorry, I could not find a project ID in #{file_path} :("
       puts
 
       puts "Please put at least one Pivotal Tracker project id into #{file_path} in this directory."

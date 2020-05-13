@@ -28,7 +28,7 @@ option :mysql, banner: 'PORT_OR_SOCKET',
 
 def drop_databases
   require 'geordi/db_cleaner'
-  raise '-P and -M are mutually exclusive' if options.postgres_only && options.mysql_only
+  Interaction.fail '-P and -M are mutually exclusive' if options.postgres_only && options.mysql_only
   mysql_flags = nil
   postgres_flags = nil
 
@@ -38,7 +38,7 @@ def drop_databases
       mysql_flags = "--port=#{mysql_port} --protocol=TCP"
     rescue AttributeError
       unless File.exist? options.mysql
-        raise "Path #{options.mysql} is not a valid MySQL socket"
+        Interaction.fail "Path #{options.mysql} is not a valid MySQL socket"
       end
       mysql_flags = "--socket=#{options.mysql}"
     end
@@ -54,5 +54,5 @@ def drop_databases
   cleaner.clean_mysql unless options.postgres_only
   cleaner.clean_postgres unless options.mysql_only
 
-  success 'Done.'
+  Interaction.success 'Done.'
 end

@@ -21,10 +21,9 @@ def example
   # Invoke other commands like this:
   invoke_cmd 'other_command', 'argument', an: 'option'
 
-  fail 'Option missing' unless options.opt?
+  Interaction.fail 'Option missing' unless options.opt?
 
-  # For formatted output, see geordi/interaction.rb
-  success 'Done.'
+  Interaction.success 'Done.'
 end
 
 # Command mappings, usually not needed

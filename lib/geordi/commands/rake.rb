@@ -13,7 +13,7 @@ def rake(*args)
   %w[development test cucumber].each do |env| # update long_desc when changing this
     if File.exist? "config/environments/#{env}.rb"
       call = %w[bundle exec rake] + args + ["RAILS_ENV=#{env}"]
-      note_cmd call.join(' ')
+      Interaction.note_cmd call.join(' ')
 
       Util.system! *call
     end

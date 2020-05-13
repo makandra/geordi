@@ -4,10 +4,10 @@ def with_rake
     invoke_cmd 'bundle_install'
     invoke_cmd 'yarn_install'
 
-    announce 'Running tests with `rake`'
+    Interaction.announce 'Running tests with `rake`'
     Util.system! 'rake'
   else
-    note '`rake` does not run tests.'
+    Interaction.note '`rake` does not run tests.'
     :did_not_perform
   end
 end

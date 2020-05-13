@@ -5,7 +5,6 @@ require 'geordi/util'
 
 module Geordi
   class DumpLoader
-    include Geordi::Interaction
 
     def initialize(file)
       @dump_file = file
@@ -47,13 +46,13 @@ module Geordi
         available_dumps = Dir.glob(dumps_glob).sort
 
         HighLine.new.choose(*available_dumps) do |menu|
-          menu.hidden('') { raise 'Abort.' }
+          menu.hidden('') { Interaction.fail 'Abort.' }
         end
       end
     end
 
     def load
-      note 'Source file: ' + dump_file
+      Interaction.note 'Source file: ' + dump_file
 
       source_command = send("#{config['adapter']}_command")
       Util.system! source_command, fail_message: "An error occured loading #{File.basename(dump_file)}"

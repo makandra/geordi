@@ -6,7 +6,6 @@ require 'pathname'
 
 module Geordi
   class Remote
-    include Geordi::Interaction
 
     REMOTE_DUMP_PATH = '~/dumps/dump_for_download.dump'.freeze
 
@@ -43,11 +42,11 @@ module Geordi
       destination_path = File.join(destination_directory, "#{@stage}.dump")
       relative_destination = Pathname.new(destination_path).relative_path_from Pathname.new(@config.root)
 
-      note "Downloading remote dump to #{relative_destination} ..."
+      Interaction.note "Downloading remote dump to #{relative_destination} ..."
       server = @config.primary_server
       Util.system! "scp -C #{@config.user(server)}@#{server}:#{REMOTE_DUMP_PATH} #{destination_path}"
 
-      success "Dumped the #{@stage} database to #{relative_destination}."
+      Interaction.success "Dumped the #{@stage} database to #{relative_destination}."
 
       destination_path
     end
@@ -62,7 +61,7 @@ module Geordi
       remote_command = "cd #{@config.remote_root} && #{@config.shell}"
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
 
-      note 'Connecting to ' + server.to_s
+      Interaction.note 'Connecting to ' + server.to_s
       Util.system! 'ssh', "#{@config.user(server)}@#{server}", '-t', remote_command
     end
 

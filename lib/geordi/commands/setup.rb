@@ -25,8 +25,8 @@ option :test, type: :boolean, aliases: '-t', desc: 'After setup, run tests'
 
 def setup
   if File.exist? 'bin/setup'
-    announce 'Running bin/setup'
-    note "Geordi's own setup routine is skipped"
+    Interaction.announce 'Running bin/setup'
+    Interaction.note "Geordi's own setup routine is skipped"
 
     Util.system! 'bin/setup'
   else
@@ -34,7 +34,7 @@ def setup
     invoke_cmd 'migrate'
   end
 
-  success 'Successfully set up the project.'
+  Interaction.success 'Successfully set up the project.'
 
   invoke_cmd 'dump', options.dump, load: true if options.dump
   invoke_cmd 'tests' if options.test

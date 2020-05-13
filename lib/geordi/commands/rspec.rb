@@ -11,19 +11,19 @@ def rspec(*files)
     invoke_cmd 'bundle_install'
     invoke_cmd 'yarn_install'
 
-    announce 'Running specs'
+    Interaction.announce 'Running specs'
 
     if Util.file_containing?('Gemfile', /parallel_tests/) && files.empty?
-      note 'All specs at once (using parallel_tests)'
+      Interaction.note 'All specs at once (using parallel_tests)'
       Util.system! 'bundle exec rake parallel:spec', fail_message: 'Specs failed.'
 
     else
       # tell which specs will be run
       if files.empty?
         files << 'spec/'
-        note 'All specs in spec/'
+        Interaction.note 'All specs in spec/'
       else
-        note 'Only: ' + files.join(', ')
+        Interaction.note 'Only: ' + files.join(', ')
       end
 
       command = ['bundle exec']
@@ -41,6 +41,6 @@ def rspec(*files)
       Util.system! command.join(' '), fail_message: 'Specs failed.'
     end
   else
-    note 'RSpec not employed.'
+    Interaction.note 'RSpec not employed.'
   end
 end

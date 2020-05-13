@@ -10,5 +10,5 @@ def tests
     invoke_cmd 'cucumber'
   end
 
-  success 'Successfully ran tests.'
+  Interaction.success 'Successfully ran tests.'
 end

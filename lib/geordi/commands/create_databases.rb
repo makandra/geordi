@@ -3,7 +3,7 @@ def create_databases
   invoke_cmd 'create_database_yml'
   invoke_cmd 'bundle_install'
 
-  announce 'Creating databases'
+  Interaction.announce 'Creating databases'
 
   if File.exist?('config/database.yml')
     command = 'bundle exec rake db:create:all'

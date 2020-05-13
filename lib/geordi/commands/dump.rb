@@ -30,33 +30,33 @@ def dump(target = nil, *_args)
   if target.nil?
     if options.load
       # validate load option
-      raise 'Missing a dump file.' if options.load == 'load'
+      Interaction.fail 'Missing a dump file.' if options.load == 'load'
       File.exist?(options.load) || raise('Could not find the given dump file: ' + options.load)
 
       loader = DumpLoader.new(options.load)
 
-      announce "Sourcing dump into the #{loader.config['database']} db"
+      Interaction.announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
 
-      success "Your #{loader.config['database']} database has now the data of #{options.load}."
+      Interaction.success "Your #{loader.config['database']} database has now the data of #{options.load}."
 
     else
-      announce 'Dumping the development database'
+      Interaction.announce 'Dumping the development database'
       Util.system! 'dumple development'
-      success 'Successfully dumped the development database.'
+      Interaction.success 'Successfully dumped the development database.'
     end
 
   else
-    announce 'Dumping the database of ' + target
+    Interaction.announce 'Dumping the database of ' + target
     dump_path = Geordi::Remote.new(target).dump(options)
 
     if options.load
       loader = DumpLoader.new(dump_path)
 
-      announce "Sourcing dump into the #{loader.config['database']} db"
+      Interaction.announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
 
-      success "Your #{loader.config['database']} database has now the data of #{target}."
+      Interaction.success "Your #{loader.config['database']} database has now the data of #{target}."
     end
   end
 end

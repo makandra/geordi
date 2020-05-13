@@ -4,14 +4,13 @@ require 'tempfile'
 
 module Geordi
   class DBCleaner
-    include Geordi::Interaction
 
     def initialize(extra_flags)
       puts 'Please enter your sudo password if asked, for db operations as system users'
       puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
       puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
       `sudo true`
-      raise 'sudo access is required for database operations as database users' if $CHILD_STATUS != 0
+      Interaction.fail 'sudo access is required for database operations as database users' if $CHILD_STATUS != 0
       @derivative_dbname = /_(test\d*|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = Dir.home.to_s if base_directory.nil?
@@ -66,7 +65,7 @@ HEREDOC
         tmpfile_content.push(['keep', db_name]) unless db_name.empty?
       end
       if warn_manual_whitelist
-        warn <<-ERROR_MSG.gsub(/^\s*/, '')
+        Interaction.warn <<-ERROR_MSG.gsub(/^\s*/, '')
         Your whitelist #{whitelist} seems to have been generated manually.
         In that case, make sure to use only one database name per line and omit the 'keep' prefix."
 
@@ -88,10 +87,10 @@ HEREDOC
         lines.each do |line|
           next if line.start_with?('#')
           unless line.split.length == 2
-            raise "Invalid edit to whitelist file: \`#{line}\` - Syntax is: ^[keep|drop] dbname$"
+            Interaction.fail "Invalid edit to whitelist file: \`#{line}\` - Syntax is: ^[keep|drop] dbname$"
           end
           unless %w[keep drop k d].include? line.split.first
-            raise "Invalid edit to whitelist file: \`#{line}\` - must start with either drop or keep."
+            Interaction.fail "Invalid edit to whitelist file: \`#{line}\` - must start with either drop or keep."
           end
           db_status, db_name = line.split
           if db_status == 'keep'
@@ -108,7 +107,7 @@ HEREDOC
       unless extra_flags.nil?
         if extra_flags.include? 'port'
           port = Integer(extra_flags.split('=')[1].split[0])
-          raise "Port #{port} is not open" unless Geordi::Util.is_port_open? port
+          Interaction.fail "Port #{port} is not open" unless Geordi::Util.is_port_open? port
         end
         cmd << " #{extra_flags}"
       end
@@ -121,15 +120,15 @@ HEREDOC
           cmd << " #{extra_flags}" unless extra_flags.nil?
           unless File.exist? File.join(Dir.home, '.my.cnf')
             puts "Please enter your MySQL/MariaDB password for account 'root'."
-            warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
-            warn 'See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information.'
+            Interaction.warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
+            Interaction.warn 'See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information.'
             cmd << ' -p' # need to ask for password now
           end
           Open3.popen3("#{cmd} -e 'QUIT'") do |_stdin_2, _stdout_2, _stderr_2, thread_2|
-            raise 'Could not connect to MySQL/MariaDB' unless thread_2.value.exitstatus == 0
+            Interaction.fail 'Could not connect to MySQL/MariaDB' unless thread_2.value.exitstatus == 0
           end
         elsif mysql_error == '2013' # connection to port or socket failed
-          raise 'MySQL/MariaDB connection failed, is this the correct port?'
+          Interaction.fail 'MySQL/MariaDB connection failed, is this the correct port?'
         end
       end
       cmd
@@ -141,10 +140,10 @@ HEREDOC
       unless extra_flags.nil?
         begin
           port = Integer(extra_flags.split('=')[1])
-          raise "Port #{port} is not open" unless Geordi::Util.is_port_open? port
+          Interaction.fail "Port #{port} is not open" unless Geordi::Util.is_port_open? port
         rescue ArgumentError
           socket = extra_flags.split('=')[1]
-          raise "Socket #{socket} does not exist" unless File.exist? socket
+          Interaction.fail "Socket #{socket} does not exist" unless File.exist? socket
         end
         cmd << " #{extra_flags}"
       end
@@ -172,7 +171,7 @@ HEREDOC
     end
 
     def clean_mysql
-      announce 'Checking for MySQL databases'
+      Interaction.announce 'Checking for MySQL databases'
       database_list = list_all_dbs('mysql')
       # confirm_deletion includes option for whitelist editing
       deletable_dbs = confirm_deletion('mysql', database_list)
@@ -181,19 +180,19 @@ HEREDOC
         if @mysql_command.include? '-p'
           puts "Please enter your MySQL/MariaDB account 'root' for: DROP DATABASE #{db}"
         else
-          note "Dropping MySQL/MariaDB database #{db}"
+          Interaction.note "Dropping MySQL/MariaDB database #{db}"
         end
         `#{@mysql_command} -e 'DROP DATABASE \`#{db}\`;'`
       end
     end
 
     def clean_postgres
-      announce 'Checking for Postgres databases'
+      Interaction.announce 'Checking for Postgres databases'
       database_list = list_all_dbs('postgres')
       deletable_dbs = confirm_deletion('postgres', database_list)
       return if deletable_dbs.nil?
       deletable_dbs.each do |db|
-        note "Dropping PostgreSQL database `#{db}`."
+        Interaction.note "Dropping PostgreSQL database `#{db}`."
         `#{@postgres_command} -c 'DROP DATABASE "#{db}";'`
       end
     end
@@ -207,27 +206,27 @@ HEREDOC
       until %w[y n].include? proceed
         deletable_dbs = filter_whitelisted(dbtype, database_list)
         if deletable_dbs.empty?
-          note "No #{dbtype} databases found that were not whitelisted"
-          if prompt('Edit the whitelist? [y]es or [n]o') == 'y'
+          Interaction.note "No #{dbtype} databases found that were not whitelisted"
+          if Interaction.prompt('Edit the whitelist? [y]es or [n]o') == 'y'
             proceed = 'e'
           else
             return []
           end
         end
         if proceed.empty?
-          note "The following #{dbtype} databases are not whitelisted and could be deleted:"
+          Interaction.note "The following #{dbtype} databases are not whitelisted and could be deleted:"
           deletable_dbs.sort.each do |db|
             puts db
           end
-          note "Those #{dbtype} databases are not whitelisted and could be deleted."
-          proceed = prompt('Proceed? [y]es, [n]o or [e]dit whitelist')
+          Interaction.note "Those #{dbtype} databases are not whitelisted and could be deleted."
+          proceed = Interaction.prompt('Proceed? [y]es, [n]o or [e]dit whitelist')
         end
         case proceed
         when 'e'
           proceed = '' # reset user selection
           edit_whitelist dbtype
         when 'n'
-          success 'Not deleting anything'
+          Interaction.success 'Not deleting anything'
           return []
         when 'y'
           return deletable_dbs

@@ -41,14 +41,14 @@ def deploy(target_stage = nil)
   if target_stage && (Util.deploy_targets.exclude? target_stage)
     # Target stage autocompletion from available stages
     target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
-    target_stage || warn('Given deployment stage not found')
+    target_stage || Interaction.warn('Given deployment stage not found')
   end
 
   # Ask for required information
-  target_stage ||= prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
+  target_stage ||= Interaction.prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
   if options.current_branch
     stage_file = "config/deploy/#{target_stage}.rb"
-    Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || raise(<<-ERROR)
+    Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || Interaction.fail(<<-ERROR)
 To deploy from the current branch, configure #{stage_file} to respect the
 environment variable DEPLOY_BRANCH. Example:
 
@@ -57,38 +57,38 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
 
     source_branch = target_branch = Util.current_branch
   else
-    source_branch = prompt 'Source branch:', Util.current_branch
-    target_branch = prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
+    source_branch = Interaction.prompt 'Source branch:', Util.current_branch
+    target_branch = Interaction.prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
   end
 
   merge_needed = (source_branch != target_branch)
   push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
   push_needed = false if Util.testing? # Hard to test
 
-  announce "Checking whether your #{source_branch} branch is ready" ############
+  Interaction.announce "Checking whether your #{source_branch} branch is ready" ############
   Util.system! "git checkout #{source_branch}"
   if (`git status -s | wc -l`.strip != '0') && !Util.testing?
-    warn "Your #{source_branch} branch holds uncommitted changes."
-    prompt('Continue anyway?', 'n', /y|yes/) || raise('Cancelled.')
+    Interaction.warn "Your #{source_branch} branch holds uncommitted changes."
+    Interaction.prompt('Continue anyway?', 'n', /y|yes/) || raise('Cancelled.')
   else
-    note 'All good.'
+    Interaction.note 'All good.'
   end
 
   if merge_needed
-    announce "Checking what's in your #{target_branch} branch right now" #######
+    Interaction.announce "Checking what's in your #{target_branch} branch right now" #######
     Util.system! "git checkout #{target_branch} && git pull"
   end
 
-  announce 'You are about to:' #################################################
-  note "Merge branch #{source_branch} into #{target_branch}" if merge_needed
+  Interaction.announce 'You are about to:' #################################################
+  Interaction.note "Merge branch #{source_branch} into #{target_branch}" if merge_needed
   if push_needed
-    note 'Push these commits:' if push_needed
+    Interaction.note 'Push these commits:' if push_needed
     Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
   end
-  note "Deploy to #{target_stage}"
-  note "From current branch #{source_branch}" if options.current_branch
+  Interaction.note "Deploy to #{target_stage}"
+  Interaction.note "From current branch #{source_branch}" if options.current_branch
 
-  if prompt('Go ahead with the deployment?', 'n', /y|yes/)
+  if Interaction.prompt('Go ahead with the deployment?', 'n', /y|yes/)
     puts
     git_call = []
     git_call << "git merge #{source_branch}" if merge_needed
@@ -107,9 +107,9 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
 
     Util.system! capistrano_call, show_cmd: true
 
-    success 'Deployment complete.'
+    Interaction.success 'Deployment complete.'
   else
     Util.system! "git checkout #{source_branch}"
-    raise 'Deployment cancelled.'
+    Interaction.fail 'Deployment cancelled.'
   end
 end

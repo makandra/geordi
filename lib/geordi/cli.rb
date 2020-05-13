@@ -5,7 +5,6 @@ require 'geordi/util'
 
 module Geordi
   class CLI < Thor
-    include Geordi::Interaction
 
     def self.exit_on_failure?
       true

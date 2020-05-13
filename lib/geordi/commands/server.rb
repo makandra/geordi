@@ -10,9 +10,9 @@ def server(port = nil)
   invoke_cmd 'yarn_install'
   require 'geordi/util'
 
-  announce 'Booting a development server'
+  Interaction.announce 'Booting a development server'
   port ||= options.port
-  note "URL: http://#{File.basename(Dir.pwd)}.vcap.me:#{port}"
+  Interaction.note "URL: http://#{File.basename(Dir.pwd)}.vcap.me:#{port}"
   puts
 
   command = Util.server_command

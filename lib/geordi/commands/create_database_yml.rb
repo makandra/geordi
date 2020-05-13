@@ -4,7 +4,7 @@ def create_database_yml
   sample_yml = 'config/database.sample.yml'
 
   if File.exist?(sample_yml) && !File.exist?(real_yml)
-    announce 'Creating ' + real_yml
+    Interaction.announce 'Creating ' + real_yml
 
     sample = File.read(sample_yml)
     adapter = sample.match(/adapter: (\w+)\n/).captures.first
@@ -15,6 +15,6 @@ def create_database_yml
     real = sample.gsub(/password:.*$/, "password: #{db_password}")
     File.open(real_yml, 'w') { |f| f.write(real) }
 
-    note "Created #{real_yml}."
+    Interaction.note "Created #{real_yml}."
   end
 end

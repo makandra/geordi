@@ -3,6 +3,8 @@
 module Geordi
   module Interaction
 
+    module_function
+
     # Start your command by `announce`-ing what you're about to do
     def announce(text)
       message = "\n# #{text}"
@@ -40,12 +42,6 @@ module Geordi
     def success(text)
       message = "\n> #{text}"
       puts "\e[32m#{message}\e[0m" # green
-    end
-
-    def strip_heredoc(string)
-      leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
-      string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
-      string
     end
 
     # Returns the user's input.

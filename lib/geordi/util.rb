@@ -4,7 +4,6 @@ require 'socket'
 module Geordi
   class Util
     class << self
-      include Geordi::Interaction
 
       # Geordi commands sometimes require external gems. However, we don't want
       # all employed gems as runtime dependencies because that would
@@ -20,13 +19,13 @@ module Geordi
         install_command = 'gem install ' + gem_name
 
         # install missing gem
-        warn 'Probably missing gem: ' + gem_name
-        prompt('Install it now?', 'y', /y|yes/) || raise('Missing Gems.')
+        Interaction.warn 'Probably missing gem: ' + gem_name
+        Interaction.prompt('Install it now?', 'y', /y|yes/) || Interaction.fail('Missing Gems.')
         system! install_command, show_cmd: true
 
         # retry
         Gem.clear_paths
-        note 'Retrying ...'
+        Interaction.note 'Retrying ...'
         require gem_name
         retry
       end
@@ -39,10 +38,10 @@ module Geordi
       # @option fail_message: The text to print on command failure
       def system!(*commands)
         options = commands.last.is_a?(Hash) ? commands.pop : {}
-        note_cmd commands.join(' ') if options[:show_cmd]
+        Interaction.note_cmd commands.join(' ') if options[:show_cmd]
 
         if options[:confirm]
-          prompt('Run this now?', 'n', /y|yes/) || raise('Cancelled.')
+          Interaction.prompt('Run this now?', 'n', /y|yes/) or Interaction.fail('Cancelled.')
         end
 
         if testing?
@@ -59,7 +58,7 @@ module Geordi
             Bundler.clean_system(*commands)
           end
 
-          success || raise(options[:fail_message] || 'Something went wrong.')
+          success || Interaction.fail(options[:fail_message] || 'Something went wrong.')
         end
       end
 
@@ -165,6 +164,12 @@ module Geordi
 
       def testing?
         !!ENV['GEORDI_TESTING']
+      end
+
+      def strip_heredoc(string)
+        leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
+        string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
+        string
       end
 
       private

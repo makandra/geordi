@@ -10,10 +10,10 @@ LONGDESC
 def png_optimize(path)
   require 'fileutils'
 
-  announce 'Optimizing .png files'
+  Interaction.announce 'Optimizing .png files'
 
   if `which pngcrush`.strip.empty?
-    raise 'Please install pngcrush first (sudo apt-get install pngcrush)'
+    Interaction.fail 'Please install pngcrush first (sudo apt-get install pngcrush)'
   end
 
   po = PngOptimizer.new
@@ -22,10 +22,10 @@ def png_optimize(path)
   elsif File.file?(path)
     po.optimize_inplace(path)
   else
-    raise 'Neither directory nor file: ' + path
+    Interaction.fail 'Neither directory nor file: ' + path
   end
 
-  success 'PNG optimization completed.'
+  Interaction.success 'PNG optimization completed.'
 end
 
 class PngOptimizer
@@ -64,7 +64,7 @@ class PngOptimizer
       FileUtils.rm(input_file)
       FileUtils.mv(temp_file.to_s, input_file.to_s)
     else
-      raise 'Error:' + $CHILD_STATUS
+      Interaction.fail 'Error:' + $CHILD_STATUS
     end
   end
 

@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+- Fix #92: Geordi fail messages were converted to exceptions by accident. Now they are printed as red error message without the backtrace again.
 
 ### Breaking changes
 

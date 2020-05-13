@@ -15,7 +15,7 @@ option :setup, banner: 'FIREFOX_VERSION',
 
 def firefox(*command)
   if options.setup
-    raise 'Firefox version required (e.g. --setup 24.0)' if options.setup == 'setup'
+    Interaction.fail 'Firefox version required (e.g. --setup 24.0)' if options.setup == 'setup'
 
     require 'geordi/firefox_for_selenium'
     Geordi::FirefoxForSelenium.install(options.setup)
@@ -27,7 +27,7 @@ def firefox(*command)
     FirefoxForSelenium.setup_firefox
 
     puts
-    note_cmd command.join(' ')
+    Interaction.note_cmd command.join(' ')
     system *command # Util.system! would reset the Firefox PATH
   end
 end

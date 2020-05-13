@@ -4,7 +4,6 @@ require File.expand_path('interaction', __dir__)
 
 module Geordi
   module FirefoxForSelenium
-    extend Geordi::Interaction
 
     FIREFOX_FOR_SELENIUM_BASE_PATH = Pathname.new('~/bin/firefoxes').expand_path
     FIREFOX_FOR_SELENIUM_PROFILE_NAME = 'firefox-for-selenium'.freeze
@@ -19,14 +18,14 @@ module Geordi
 
       if version && (version != 'system')
         unless FirefoxForSelenium.binary(version).exist?
-          warn "Firefox #{version} not found"
+          Interaction.warn "Firefox #{version} not found"
 
-          note strip_heredoc(<<-INSTRUCTIONS)
+          Interaction.note Util.strip_heredoc(<<-INSTRUCTIONS)
           Install it with
             geordi firefox --setup #{version}
           INSTRUCTIONS
 
-          prompt('Run tests anyway?', 'n', /y|yes/) || raise('Cancelled.')
+          Interaction.prompt('Run tests anyway?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
         end
 
         path(version)
@@ -46,13 +45,12 @@ module Geordi
 
       if path
         ENV['PATH'] = "#{path}:#{ENV['PATH']}"
-        note 'Firefox for Selenium set up'
+        Interaction.note 'Firefox for Selenium set up'
       end
     end
 
 
     class Installer
-      include Geordi::Interaction
 
       def initialize(version)
         @version = version
@@ -98,7 +96,7 @@ module Geordi
       def say_hello
         execute_command('clear')
 
-        puts strip_heredoc(<<-HELLO)
+        puts Util.strip_heredoc(<<-HELLO)
         Whenever Firefox updates, Selenium breaks. This is annoying. This
         script will help you create an unchanging version of Firefox for your
         Selenium tests.
@@ -117,31 +115,31 @@ module Geordi
         - It will live in #{path}
         HELLO
 
-        prompt "Press ENTER when you're ready to begin."
+        Interaction.prompt "Press ENTER when you're ready to begin."
       end
 
       def check_if_run_before
         if original_binary.exist?
-          note 'This version seems to be already installed.'
-          prompt 'Press ENTER to continue anyway or press CTRL+C to abort.'
+          Interaction.note 'This version seems to be already installed.'
+          Interaction.prompt 'Press ENTER to continue anyway or press CTRL+C to abort.'
         end
       end
 
       def download_firefox
         path.mkpath
 
-        puts strip_heredoc(<<-INSTRUCTION)
+        puts Util.strip_heredoc(<<-INSTRUCTION)
         Please download an old version of Firefox from: #{download_url}
         Unpack it with: tar xjf firefox-#{@version}.tar.bz2 -C #{path} --strip-components=1
         Now #{path.join('firefox')} should be the firefox binary, not a directory.
         INSTRUCTION
-        prompt 'Continue?'
+        Interaction.prompt 'Continue?'
 
         File.file?(binary) || raise("Could not find #{binary}")
       end
 
       def create_separate_profile
-        note "Creating a separate profile named '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}' so your own profile will be safe..."
+        Interaction.note "Creating a separate profile named '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}' so your own profile will be safe..."
         # don't use the patched firefox binary for this, we don't want to give
         # a -p option here
         execute_command("PATH=#{path}:$PATH firefox -no-remote -CreateProfile #{FIREFOX_FOR_SELENIUM_PROFILE_NAME}")
@@ -149,11 +147,11 @@ module Geordi
       end
 
       def patch_old_firefox
-        note "Patching #{binary} so it uses the new profile and never re-uses windows from other Firefoxes..."
+        Interaction.note "Patching #{binary} so it uses the new profile and never re-uses windows from other Firefoxes..."
         execute_command("mv #{binary} #{original_binary}")
         execute_command("mv #{binary}-bin #{original_binary}-bin")
         patched_binary = Tempfile.new('firefox')
-        patched_binary.write strip_heredoc(<<-PATCH)
+        patched_binary.write Util.strip_heredoc(<<-PATCH)
           #!/usr/bin/env ruby
           exec('#{original_binary}', '-no-remote', '-P', '#{FIREFOX_FOR_SELENIUM_PROFILE_NAME}', *ARGV)
         PATCH
@@ -164,7 +162,7 @@ module Geordi
       end
 
       def configure_old_firefox
-        puts strip_heredoc(<<-INSTRUCTION)
+        puts Util.strip_heredoc(<<-INSTRUCTION)
         You will now have to do some manual configuration.
 
         This script will open the patched copy of Firefox when you press ENTER.
@@ -178,15 +176,15 @@ module Geordi
           Firefox profile
         INSTRUCTION
 
-        prompt 'Will open the patched copy of Firefox now'
+        Interaction.prompt 'Will open the patched copy of Firefox now'
         run_firefox_for_selenium
       end
 
       def kkthxbb
-        success "Congratulations, you're done!"
+        Interaction.success "Congratulations, you're done!"
 
         puts
-        puts strip_heredoc(<<-INSTRUCTION)
+        puts Util.strip_heredoc(<<-INSTRUCTION)
         Your patched copy of Firefox will be used when you run Cucumber using
         the cucumber script that comes with the geordi gem. If you cannot use
         `geordi cucumber`, but still need the test browser set up, you can use:

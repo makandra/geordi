@@ -8,7 +8,6 @@ require File.expand_path('firefox_for_selenium', __dir__)
 
 module Geordi
   class Cucumber
-    include Geordi::Interaction
 
     VNC_DISPLAY = ':17'.freeze
     VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024".freeze
@@ -23,7 +22,7 @@ module Geordi
       setup_vnc
 
       command = use_parallel_tests?(options) ? parallel_execution_command : serial_execution_command
-      note_cmd(command) if options[:verbose]
+      Interaction.note_cmd(command) if options[:verbose]
 
       puts # Make newline
       system command # Util.system! would reset the Firefox PATH
@@ -36,9 +35,9 @@ module Geordi
         end
         unless $CHILD_STATUS.success?
           if $CHILD_STATUS.exitstatus == 127
-            raise 'VNC viewer not found. Install it with `geordi vnc --setup`.'
+            Interaction.fail 'VNC viewer not found. Install it with `geordi vnc --setup`.'
           else
-            note 'VNC viewer could not be opened:'
+            Interaction.note 'VNC viewer could not be opened:'
             puts error
             puts
           end
@@ -60,7 +59,7 @@ module Geordi
         ENV['BROWSER'] = ENV['LAUNCHY_BROWSER'] = File.expand_path('../../bin/launchy_browser', __dir__)
         ENV['DISPLAY'] = VNC_DISPLAY
 
-        note 'Run `geordi vnc` to view the Selenium test browsers'
+        Interaction.note 'Run `geordi vnc` to view the Selenium test browsers'
       end
     end
 
@@ -77,7 +76,7 @@ module Geordi
     end
 
     def parallel_execution_command
-      note 'Using parallel_tests'
+      Interaction.note 'Using parallel_tests'
       self.argv = argv - command_line_features
 
       type_arg = Util.gem_version('parallel_tests') > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
@@ -115,15 +114,15 @@ module Geordi
 
     def show_features_to_run
       if command_line_options.include? '@solo'
-        note 'All features tagged with @solo'
+        Interaction.note 'All features tagged with @solo'
       elsif command_line_options.include? 'rerun'
-        note 'Rerunning failed scenarios'
+        Interaction.note 'Rerunning failed scenarios'
       elsif features_to_run.empty?
-        note 'All features in features/'
+        Interaction.note 'All features in features/'
       else
         notification = 'Only: ' + features_to_run.join(', ')
         notification << ' (from rerun.txt)' if (features_to_run == rerun_txt_features) && (features_to_run != command_line_features)
-        note notification
+        Interaction.note notification
       end
     end
 
@@ -173,7 +172,7 @@ module Geordi
     def consolidate_rerun_txt_files
       parallel_rerun_files = Dir.glob('parallel_rerun*.txt')
       unless parallel_rerun_files.empty?
-        note 'Consolidating parallel_rerun.txt files ...'
+        Interaction.note 'Consolidating parallel_rerun.txt files ...'
 
         rerun_content = []
         parallel_rerun_files.each do |filename|
@@ -218,10 +217,10 @@ module Geordi
         98 # was already running after all
         true
       when 127 # not installed
-        warn 'Could not launch VNC server. Install it with `geordi vnc --setup`.'
+        Interaction.warn 'Could not launch VNC server. Install it with `geordi vnc --setup`.'
         false
       else
-        warn 'Starting VNC failed:'
+        Interaction.warn 'Starting VNC failed:'
         puts error
         puts
         false

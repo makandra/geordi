@@ -10,11 +10,11 @@ LONGDESC
 def migrate
   invoke_cmd 'bundle_install'
   invoke_cmd 'yarn_install'
-  announce 'Migrating'
+  Interaction.announce 'Migrating'
 
   if File.directory?('db/migrate')
     if Util.file_containing?('Gemfile', /parallel_tests/)
-      note 'Development and parallel test databases'
+      Interaction.note 'Development and parallel test databases'
       puts
 
       Util.system! 'bundle exec rake db:migrate parallel:prepare'
@@ -22,6 +22,6 @@ def migrate
       invoke_cmd 'rake', 'db:migrate'
     end
   else
-    note 'No migrations directory found.'
+    Interaction.note 'No migrations directory found.'
   end
 end

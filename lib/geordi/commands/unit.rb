@@ -4,9 +4,9 @@ def unit
     invoke_cmd 'bundle_install'
     invoke_cmd 'yarn_install'
 
-    announce 'Running Test::Unit'
+    Interaction.announce 'Running Test::Unit'
     Util.system! 'bundle exec rake test'
   else
-    note 'Test::Unit not employed.'
+    Interaction.note 'Test::Unit not employed.'
   end
 end
