@@ -34,7 +34,7 @@ def cucumber(*args)
     if options.modified?
       modified_features = `git status --short`.split($INPUT_RECORD_SEPARATOR).map do |line|
         indicators = line.slice!(0..2) # Remove leading indicators
-        line if line.include?('.feature') && indicators.exclude?('D')
+        line if line.include?('.feature') && !indicators.include?('D')
       end.compact
       args = modified_features
     end

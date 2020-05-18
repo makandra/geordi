@@ -8,6 +8,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+- Fix #95: Method change from `! *.include?` to `*.exclude?` was not valid as we do not have active support in Geordi. Affected commands where `geordi cucumber` and `geordi deploy`.
+
 ### Breaking changes
 
 

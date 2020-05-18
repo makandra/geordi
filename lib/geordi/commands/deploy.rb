@@ -38,7 +38,7 @@ option :current_branch, aliases: '-c', type: :boolean,
 def deploy(target_stage = nil)
   # Set/Infer default values
   branch_stage_map = { 'master' => 'staging', 'production' => 'production' }
-  if target_stage && (Util.deploy_targets.exclude? target_stage)
+  if target_stage && !Util.deploy_targets.include?(target_stage)
     # Target stage autocompletion from available stages
     target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
     target_stage || Interaction.warn('Given deployment stage not found')
