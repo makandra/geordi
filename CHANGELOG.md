@@ -8,9 +8,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
-- Fix #98: Changing the `config/database.yml` reader from `YAML.load` to `YAML.safe_load` dropped the support for aliases. We now allow aliases and the classes `Time` and `Symbol`. If we encounter further issues with this approach a revert to `YAML.load` would be an option, too.
-
 ### Breaking changes
+
+
+## 3.0.3 2020-05-27
+
+### Compatible changes
+
+- Fix #98: Changing the `config/database.yml` reader from `YAML.load` to `YAML.safe_load` dropped the support for aliases. We now allow aliases and the classes `Time` and `Symbol`. If we encounter further issues with this approach a revert to `YAML.load` would be an option, too.
 
 
 ## 3.0.2 2020-05-18
