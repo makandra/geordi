@@ -2,10 +2,30 @@ desc 'security-update [STEP]', 'Support for performing security updates'
 long_desc <<-LONGDESC
 Preparation for security update: `geordi security-update`
 
+Checks out production and pulls.
+
 After performing the update: `geordi security-update finish`
 
 Switches branches, pulls, pushes and deploys as required by our workflow. Tells
-what it will do before it does it.
+what it will do before it does it. In detail:
+
+1. Asks user, if tests are green
+
+2. Pushes production
+
+3. Checks out master and pulls
+
+4. Merges production and pushes in master
+
+5. Deploys staging first, if there is a staging environment
+
+6. Asks user, if deployment log is okay and application is still running on staging
+
+7. Deploys other stages
+
+8. Asks user, if deployment log is okay and application is still running on all other stages
+
+9. Informs user about the next steps
 LONGDESC
 
 def security_update(step = 'prepare')
@@ -13,7 +33,7 @@ def security_update(step = 'prepare')
   when 'prepare'
     Interaction.announce 'Preparing for security update'
     Interaction.warn 'Please read https://makandracards.com/makandra/1587 before applying security updates!'
-    Interaction.note 'About to checkout production and pull'
+    Interaction.note 'About to checkout production and pull.'
     Interaction.prompt('Continue?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
 
     Util.system! 'git checkout production', show_cmd: true
@@ -27,13 +47,17 @@ def security_update(step = 'prepare')
 
   when 'f', 'finish'
     # ensure everything is committed
-    `git status --porcelain`.empty? || Interaction.fail('Please commit your changes before finishing the update.')
+    if Util.testing?
+      puts 'Util.system! git status --porcelain'
+    else
+      `git status --porcelain`.empty? || Interaction.fail('Please commit your changes before finishing the update.')
+    end
 
     Interaction.announce 'Finishing security update'
     Interaction.note 'Working directory clean.'
     Interaction.prompt('Have you successfully run all tests?', 'n', /y|yes/) || Interaction.fail('Please run tests first.')
 
-    Interaction.note 'About to: push production, checkout & pull master, merge production, push master'
+    Interaction.note 'About to: push production, checkout & pull master, merge production, push master.'
     Interaction.prompt('Continue?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
 
     Util.system! 'git push', show_cmd: true
@@ -42,9 +66,42 @@ def security_update(step = 'prepare')
     Util.system! 'git merge production', show_cmd: true
     Util.system! 'git push', show_cmd: true
 
-    Interaction.announce 'Deploying all targets'
+    Interaction.announce 'Deployment'
     deploy = (Util.gem_major_version('capistrano') == 3) ? 'deploy' : 'deploy:migrations'
-    invoke_cmd 'capistrano', deploy
+
+    all_deploy_targets = Util.deploy_targets
+    Interaction.fail 'There are no deploy targets!' if all_deploy_targets.empty?
+
+    if all_deploy_targets.include?('staging')
+      Interaction.note 'There is a staging environment.'
+      Interaction.prompt('Deploy staging now?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
+
+      Interaction.announce 'Deploy staging'
+      Util.system! "bundle exec cap staging #{deploy}", show_cmd: true
+
+      Interaction.prompt('Is the deployment log okay and the application is still running on staging?', 'y', /y|yes/) || Interaction.fail('Please fix the deployment issues on staging before you continue.')
+    else
+      Interaction.note 'There is no staging environment.'
+    end
+
+    deploy_targets_without_staging = all_deploy_targets.select { |target| target != 'staging' }
+
+    if deploy_targets_without_staging.empty?
+      Interaction.note 'There are no other stages.'
+    else
+      puts
+      Interaction.note 'Found the following other stages:'
+      puts deploy_targets_without_staging
+      puts
+      Interaction.prompt('Deploy other stages now?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
+
+      deploy_targets_without_staging.each do |target|
+        Interaction.announce "Deploy #{target}"
+        Util.system! "bundle exec cap #{target} #{deploy}", show_cmd: true
+      end
+
+      Interaction.prompt('Is the application still running on all other stages and the logs are okay?', 'y', /y|yes/) || Interaction.fail('Please fix the application immediately!')
+    end
 
     Interaction.success 'Successfully pushed and deployed security update'
     puts

@@ -54,6 +54,11 @@ Commit using a story title from Pivotal Tracker.
 
 Example: `geordi commit`
 
+Any extra arguments are forwarded to `git commit -m <message>`.
+
+If there are no staged changes, prints a warning but will continue to create
+an empty commit.
+
 On the first execution we ask for your Pivotal Tracker API token. It will be
 stored in `~/.gitpt`.
 
@@ -255,10 +260,30 @@ Support for performing security updates.
 
 Preparation for security update: `geordi security-update`
 
+Checks out production and pulls.
+
 After performing the update: `geordi security-update finish`
 
 Switches branches, pulls, pushes and deploys as required by our workflow. Tells
-what it will do before it does it.
+what it will do before it does it. In detail:
+
+1. Asks user, if tests are green
+
+2. Pushes production
+
+3. Checks out master and pulls
+
+4. Merges production and pushes in master
+
+5. Deploys staging first, if there is a staging environment
+
+6. Asks user, if deployment log is okay and application is still running on staging
+
+7. Deploys other stages
+
+8. Asks user, if deployment log is okay and application is still running on all other stages
+
+9. Informs user about the next steps
 
 
 ### `geordi server [PORT]`
