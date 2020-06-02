@@ -6,6 +6,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
+- Improvement #43: `--select-server` option on `geordi shell` and `geordi console` can take the number of the server to connect to it directly and to skip the menu.
+
 ### Compatible changes
 
 ### Breaking changes
