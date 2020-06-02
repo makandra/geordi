@@ -3,10 +3,18 @@ long_desc <<-LONGDESC
 Open a local Rails console: `geordi console`
 
 Open a Rails console on `staging`: `geordi console staging`
+
+Lets you select the server to connect to from a menu when called with `--select-server` or the alias `-s`:
+
+    geordi console staging -s
+
+If you already know the number of the server you want to connect to, just pass it along:
+
+    geordi console staging -s2
 LONGDESC
 
 
-option :select_server, default: false, type: :boolean, aliases: '-s'
+option :select_server, type: :string, aliases: '-s'
 
 def console(target = 'development', *_args)
   require 'geordi/remote'

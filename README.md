@@ -71,6 +71,14 @@ Open a local Rails console: `geordi console`
 
 Open a Rails console on `staging`: `geordi console staging`
 
+Lets you select the server to connect to from a menu when called with `--select-server` or the alias `-s`:
+
+    geordi console staging -s
+
+If you already know the number of the server you want to connect to, just pass it along:
+
+    geordi console staging -s2
+
 
 ### `geordi cucumber [FILES and OPTIONS]`
 
@@ -326,9 +334,13 @@ Open a shell on a Capistrano deploy target.
 
 Example: `geordi shell production`
 
-Lets you select the server to connect to when called with `--select-server`:
+Lets you select the server to connect to from a menu when called with `--select-server` or the alias `-s`:
 
     geordi shell production -s
+
+If you already know the number of the server you want to connect to, just pass it along:
+
+    geordi shell production -s2
 
 
 ### `geordi tests`

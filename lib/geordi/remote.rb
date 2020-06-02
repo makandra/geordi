@@ -56,7 +56,20 @@ module Geordi
     end
 
     def shell(options = {})
-      server = options[:select_server] ? select_server : @config.primary_server
+      server_option = options[:select_server]
+      server_number = server_option.to_i
+
+      server =  if server_option == 'select_server'
+        select_server
+      elsif server_number != 0 && server_number <= @config.servers.count
+        server_index = server_number - 1
+        @config.servers[server_index]
+      elsif server_option.nil?
+        @config.primary_server
+      else
+        Interaction.warn "Invalid server number: #{server_option}"
+        select_server
+      end
 
       remote_command = "cd #{@config.remote_root} && #{@config.shell}"
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
