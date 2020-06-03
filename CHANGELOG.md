@@ -8,6 +8,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+### Breaking changes
+
+
+## 3.1.0 2020-06-03
+
+### Compatible changes
+
 - Update security-update for improved workflow (#89): Deploy staging first and ask user, if application is still running. Then deploy other stages.
 
 ### Breaking changes
