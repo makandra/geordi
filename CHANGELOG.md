@@ -8,14 +8,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+### Breaking changes
+
+## 3.2.0 2020-06-24
+
+### Compatible changes
+
 - Add a `.geordi.yml` file to change multiple settings in the project and  `~/.config/geordi/global.yml` for global settings.
 - Add #91: Now there is an option to start cucumber without a VNC session. This is configured by the .geordi.yml file.
 - Deprecated the `.pt_project_id` file in favor of `.geordi.yml`.
 - Deprecated the `~/.gitpt` file in favor of `~/.config/geordi/global.yml`.
 - Fixed `git#staged_changes?` detection on Ruby < 2.5.
-
-
-### Breaking changes
 
 
 ## 3.1.0 2020-06-03
