@@ -60,7 +60,7 @@ If there are no staged changes, prints a warning but will continue to create
 an empty commit.
 
 On the first execution we ask for your Pivotal Tracker API token. It will be
-stored in `~/.gitpt`.
+stored in `~/.config/geordi/global.yml`.
 
 
 ### `geordi console [TARGET]`
@@ -91,6 +91,12 @@ or `-d`.
 
 - *Options:* Any unknown option will be passed through to Cucumber,
 e.g. `--format pretty`.
+
+- *VNC:* By default, test browsers will run in a VNC session. When using a
+headless test browser anyway, you can disable VNC by putting the following
+config into `.geordi.yml` in the project root:
+
+    use_vnc: false
 
 
 ### `geordi delete-dumps [DIRECTORY]`
