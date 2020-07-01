@@ -93,7 +93,7 @@ module Geordi
           ENV['GEORDI_TESTING_STAGED_CHANGES'] == 'true'
         else
           statuses = `git status --porcelain`.split("\n")
-          statuses.any? { |l| l.start_with? /[A-Z]/i }
+          statuses.any? { |l| /^[A-Z]/i =~ l }
         end
       end
 
