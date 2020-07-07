@@ -34,7 +34,6 @@ module Geordi
       # Generate dump on the server
       shell options.merge({
         remote_command: "dumple #{@config.env} --for_download",
-        select_server: nil, # Dump must be generated on the primary server
       })
 
       destination_directory = File.join(@config.root, 'tmp')

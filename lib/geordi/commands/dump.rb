@@ -21,7 +21,6 @@ dump into the development database after downloading it.
 DESC
 
 option :load, aliases: ['-l'], type: :string, desc: 'Load a dump'
-option :select_server, type: :string, aliases: '-s'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'
