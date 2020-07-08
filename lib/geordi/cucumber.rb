@@ -5,6 +5,7 @@ require 'tempfile'
 # version of Geordi.
 require File.expand_path('interaction', __dir__)
 require File.expand_path('firefox_for_selenium', __dir__)
+require File.expand_path('settings', __dir__)
 
 module Geordi
   class Cucumber
@@ -16,10 +17,11 @@ module Geordi
 
     def run(files, cucumber_options, options = {})
       self.argv = files + cucumber_options.map { |option| option.split('=') }.flatten
+      self.settings = Geordi::Settings.new
 
       consolidate_rerun_txt_files
       show_features_to_run
-      setup_vnc
+      setup_vnc if settings.use_vnc?
 
       command = use_parallel_tests?(options) ? parallel_execution_command : serial_execution_command
       Interaction.note_cmd(command) if options[:verbose]
@@ -65,7 +67,7 @@ module Geordi
 
     private
 
-    attr_accessor :argv
+    attr_accessor :argv, :settings
 
     def serial_execution_command
       format_args = []

@@ -3,12 +3,14 @@ class Gitpt
   require 'highline'
   require 'tracker_api'
 
-  SETTINGS_FILE_NAME = '.gitpt'.freeze
-  PROJECT_IDS_FILE_NAME = '.pt_project_id'.freeze
+  # This require-style is to prevent Ruby from loading files of a different
+  # version of Geordi.
+  require File.expand_path('settings', __dir__)
 
   def initialize
     self.highline = HighLine.new
-    self.client = build_client(read_settings)
+    self.settings = Geordi::Settings.new
+    self.client = build_client
   end
 
   def run(git_args)
@@ -24,55 +26,15 @@ No staged changes. Will create an empty commit.
 
   private
 
-  attr_accessor :highline, :client
+  attr_accessor :highline, :client, :settings
 
-  def read_settings
-    file_path = File.join(ENV['HOME'], SETTINGS_FILE_NAME)
-
-    unless File.exist?(file_path)
-      highline.say HighLine::RESET
-      highline.say "Welcome to #{bold 'gitpt'}.\n\n"
-
-      highline.say highlight('Your settings are missing or invalid.')
-      highline.say "Please configure your Pivotal Tracker access.\n\n"
-      token = highline.ask bold('Your API key:') + ' '
-      highline.say "\n"
-
-      settings = { token: token }
-      File.open(file_path, 'w') do |file|
-        file.write settings.to_yaml
-      end
-    end
-
-    YAML.load_file(file_path)
-  end
-
-  def build_client(settings)
-    TrackerApi::Client.new(token: settings.fetch(:token))
+  def build_client
+    TrackerApi::Client.new(token: settings.pivotal_tracker_api_key)
   end
 
   def load_projects
-    project_ids = read_project_ids
+    project_ids = settings.pivotal_tracker_project_ids
     project_ids.collect { |project_id| client.project(project_id) }
-  end
-
-  def read_project_ids
-    file_path = PROJECT_IDS_FILE_NAME
-
-    if File.exist?(file_path)
-      project_ids = File.read('.pt_project_id').split(/[\s]+/).map(&:to_i)
-    end
-
-    if project_ids && (project_ids.size > 0)
-      project_ids
-    else
-      Geordi::Interaction.warn "Sorry, I could not find a project ID in #{file_path} :("
-      puts
-
-      puts "Please put at least one Pivotal Tracker project id into #{file_path} in this directory."
-      puts 'You may add multiple IDs, separated using white space.'
-      exit 1
-    end
   end
 
   def applicable_stories
@@ -132,10 +94,6 @@ No staged changes. Will create an empty commit.
 
   def bold(string)
     HighLine::BOLD + string + HighLine::RESET
-  end
-
-  def highlight(string)
-    bold HighLine::BLUE + string
   end
 
 end

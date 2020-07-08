@@ -3,6 +3,5 @@
 .idea
 pkg/*
 .DS_Store
-.pt_project_id
 tmp
 .byebug_history

@@ -15,6 +15,13 @@ or `-d`.
 
 - *Options:* Any unknown option will be passed through to Cucumber,
 e.g. `--format pretty`.
+
+- *VNC:* By default, test browsers will run in a VNC session. When using a
+headless test browser anyway, you can disable VNC by putting the following
+config into `.geordi.yml` in the project root:
+
+    use_vnc: false
+
 LONGDESC
 
 option :modified, aliases: '-m', type: :boolean,

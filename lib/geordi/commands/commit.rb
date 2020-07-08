@@ -9,7 +9,7 @@ If there are no staged changes, prints a warning but will continue to create
 an empty commit.
 
 On the first execution we ask for your Pivotal Tracker API token. It will be
-stored in `~/.gitpt`.
+stored in `~/.config/geordi/global.yml`.
 LONGDESC
 
 def commit(*git_args)
