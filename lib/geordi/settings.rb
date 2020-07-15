@@ -114,7 +114,7 @@ module Geordi
     # deprecated
     def gitpt_api_key_old
       file_path = File.join(ENV['HOME'], '.gitpt')
-      if File.exist?(file_path)
+      if File.exist?(file_path) && !Util.testing?
         token = YAML.load_file(file_path).fetch :token
         self.pivotal_tracker_api_key = token
 

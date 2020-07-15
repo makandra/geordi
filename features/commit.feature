@@ -1,5 +1,7 @@
 @ruby>=2.1
 Feature: Creating a git commit from a Pivotal Tracker story
+  Background:
+    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key"
 
   Scenario: Extra arguments are forwarded to "git commit"
     Given I have staged changes
@@ -15,3 +17,10 @@ Feature: Creating a git commit from a Pivotal Tracker story
       # No optional message
       And I type ""
     Then the output should contain "> No staged changes. Will create an empty commit."
+
+  Scenario: Without a global config file, the user is prompted for their PT API key
+    Given I remove the file "tmp/global_settings.yml"
+    When I run `geordi commit` interactively
+      And I type "my_api_key"
+      And I type "optional message"
+    Then the file "tmp/global_settings.yml" should contain "pivotal_tracker_api_key: my_api_key"
