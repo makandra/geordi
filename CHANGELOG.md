@@ -1,4 +1,5 @@
 # Changelog
+
 All notable changes to this project will be documented in this file.
 
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
@@ -6,44 +7,37 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
-- Improvement #43: `--select-server` option on `geordi shell` and `geordi console` can take the number of the server to connect to it directly and to skip the menu.
-
 ### Compatible changes
-
 ### Breaking changes
 
-## 3.2.0 2020-06-24
+
+## 3.2.0 2020-07-15
 
 ### Compatible changes
-
+- Improvement #43: `--select-server` option on `geordi shell` and `geordi console` can take the number of the server to connect to it directly and to skip the menu.
 - Add a `.geordi.yml` file to change multiple settings in the project and  `~/.config/geordi/global.yml` for global settings.
-- Add #91: Now there is an option to start cucumber without a VNC session. This is configured by the .geordi.yml file.
 - Deprecated the `.pt_project_id` file in favor of `.geordi.yml`.
 - Deprecated the `~/.gitpt` file in favor of `~/.config/geordi/global.yml`.
+- Add #91: Now there is an option to start cucumber without a VNC session. This is configured by the .geordi.yml file.
 - Fixed `git#staged_changes?` detection on Ruby < 2.5.
 
 
 ## 3.1.0 2020-06-03
 
 ### Compatible changes
-
 - Update security-update for improved workflow (#89): Deploy staging first and ask user, if application is still running. Then deploy other stages.
 
 
 ## 3.0.3 2020-05-27
 
 ### Compatible changes
-
 - Fix #98: Changing the `config/database.yml` reader from `YAML.load` to `YAML.safe_load` dropped the support for aliases. We now allow aliases and the classes `Time` and `Symbol`. If we encounter further issues with this approach a revert to `YAML.load` would be an option, too.
 
 
 ## 3.0.2 2020-05-18
 
 ### Compatible changes
-
 - Fix #95: Method change from `! *.include?` to `*.exclude?` was not valid as we do not have active support in Geordi. Affected commands were `geordi cucumber` and `geordi deploy`.
-
-### Breaking changes
 
 
 ## 3.0.1 2020-05-13
@@ -54,8 +48,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 
 ## 3.0.0 2020-05-04
-
-### Compatible changes
 
 ### Breaking changes
 - Remove support for Ruby 1.8.7 and Ruby 1.9.3. Bug fixes might still be backported to 2.x, but we will not add any features to 2.x anymore. Please consider to upgrade the Ruby version of your project.
