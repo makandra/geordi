@@ -133,7 +133,9 @@ Feature: The cucumber command
     """
 
     When I run `geordi cucumber features/sub`
-    Then the output should contain "> Only: features/sub/two.feature, features/sub/one.feature"
+    # File order is non-deterministic
+    Then the output should match /> Only:.* features.sub.one\.feature/
+      And the output should match /> Only:.* features.sub.two\.feature/
       And the output should contain "> Using parallel_tests"
 
 
