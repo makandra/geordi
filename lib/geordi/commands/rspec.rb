@@ -2,8 +2,7 @@ desc 'rspec [FILES]', 'Run RSpec'
 long_desc <<-LONGDESC
 Example: `geordi rspec spec/models/user_spec.rb:13`
 
-Runs RSpec as you want: with RSpec 1/2 detection, `bundle exec`, rspec_spinner
-detection, etc.
+Runs RSpec with RSpec 1/2 detection and `bundle exec`
 LONGDESC
 
 def rspec(*files)

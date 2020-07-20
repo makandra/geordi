@@ -2,26 +2,24 @@ desc 'cucumber [FILES and OPTIONS]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber as you want: with `bundle exec`, using parallel tests, with
-a VNC session holding Selenium test browsers, support for using a dedicated
-testing firefox and beta support for rerunning failed scenarios.
+Runs Cucumber with `bundle exec`, using parallel tests, with a VNC session
+holding Selenium test browsers, support for using a dedicated testing browser
+and beta support for re-running failed scenarios.
 
 - *@solo:* Generally, features are run in parallel. However, scenarios tagged
-with @solo are excluded and will be run sequentially, _after_ the parallel run.
+with @solo are excluded from the parallel run and executed sequentially instead.
 
-- *Debugging:* Sometimes, the dot-printing Cucumber formatter does not show
-errors. In case a feature fails without a message, try running it with `--debug`
-or `-d`.
+- *Debugging:* In some cases, the dot-printing Cucumber formatter swallows
+errors. In case a feature fails without an error message, try running it with
+`--debug` or `-d`.
 
 - *Options:* Any unknown option will be passed through to Cucumber,
-e.g. `--format pretty`.
+e.g. `--format=pretty`. Make sure to connect option and value with an equals
+sign, i.e. have each option a contiguous string.
 
 - *VNC:* By default, test browsers will run in a VNC session. When using a
-headless test browser anyway, you can disable VNC by putting the following
-config into `.geordi.yml` in the project root:
-
-    use_vnc: false
-
+headless test browser anyway, you can disable VNC by setting `use_vnc: false`
+in `.geordi.yml` in the project root:
 LONGDESC
 
 option :modified, aliases: '-m', type: :boolean,
@@ -29,9 +27,9 @@ option :modified, aliases: '-m', type: :boolean,
 option :containing, aliases: '-c', banner: 'STRING',
   desc: 'Run all features that contain STRING'
 option :verbose, aliases: '-v', type: :boolean,
-  desc: 'Print the testrun command'
+  desc: 'Show the test run command'
 option :debug, aliases: '-d', type: :boolean,
-  desc: 'Run with `-f pretty -b` which helps hunting down bugs'
+  desc: 'Run with `-f pretty -b`, which helps hunting down bugs'
 option :rerun, aliases: '-r', type: :numeric, default: 0,
   desc: 'Rerun features up to N times while failing'
 

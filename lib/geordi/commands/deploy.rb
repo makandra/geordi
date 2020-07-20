@@ -5,18 +5,18 @@ Example: `geordi deploy` or `geordi deploy p[roduction]` or `geordi deploy --cur
 Merge, push and deploy with a single command! **It always tells what it will do
 before it does it.** There are different scenarios where this command is handy:
 
-1) *Production deploy:* From the master branch, run `geordi deploy production`.
-   This will merge `master` to `production`, push and deploy to production.
+- *Production deploy:* From the master branch, run `geordi deploy production`.
+  This will merge `master` to `production`, push and deploy to production.
 
-2) *Feature branch deploy:* From a feature branch, run `geordi deploy staging`.
-   This will merge the feature branch to `master`, push and deploy to staging.
+- *Feature branch deploy:* From a feature branch, run `geordi deploy staging`.
+  This will merge the feature branch to `master`, push and deploy to staging.
 
-   To deploy a feature branch directly without merging, run
-   `geordi deploy --current-branch`. This feature depends on the environment
-   variable `DEPLOY_BRANCH` to be picked up in the respective deploy file.
+  To deploy a feature branch directly without merging, run
+  `geordi deploy --current-branch`. This feature depends on the environment
+  variable `DEPLOY_BRANCH` to be picked up in the respective deploy file.
 
-3) *Simple deploy:* If the source branch matches the target branch, merging will
-   be skipped.
+- *Simple deploy:* If the source branch matches the target branch, merging will
+  be skipped.
 
 Calling the command without arguments will infer the target stage from the
 current branch and fall back to master/staging.

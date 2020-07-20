@@ -2,16 +2,13 @@ desc 'shell TARGET', 'Open a shell on a Capistrano deploy target'
 long_desc <<-LONGDESC
 Example: `geordi shell production`
 
-Lets you select the server to connect to from a menu when called with `--select-server` or the alias `-s`:
-
-    geordi shell production -s
-
-If you already know the number of the server you want to connect to, just pass it along:
-
-    geordi shell production -s2
+Selecting the server: `geordi shell staging -s` shows a menu with all available
+servers. When passed a number, directly connects to the selected server.
 LONGDESC
 
-option :select_server, type: :string, aliases: '-s'
+# This option is duplicated in console.rb
+option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
+  desc: 'Select a server to connect to'
 
 # This method has a triple 'l' because :shell is a Thor reserved word. However,
 # it can still be called with `geordi shell` :)

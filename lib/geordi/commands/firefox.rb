@@ -3,11 +3,8 @@ long_desc <<-LONGDESC
 Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
 
 Useful when you need Firefox for Selenium or the VNC set up, but can't use the
-`geordi cucumber` command.
-
-*Install* a special Firefox by calling with `--setup <version>`.
-
-This command is aliased `chrome` for users running Selenium in Chrome.
+`geordi cucumber` command. This command is aliased `chrome` for users running
+Selenium in Chrome.
 LONGDESC
 
 option :setup, banner: 'FIREFOX_VERSION',

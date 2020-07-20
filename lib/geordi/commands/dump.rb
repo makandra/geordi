@@ -1,26 +1,18 @@
-desc 'dump [TARGET]', 'Handle dumps (see `geordi help dump` for details)'
+desc 'dump [TARGET]', 'Handle (remote) database dumps'
 long_desc <<-DESC
-When called without arguments, dumps the development database with `dumple`.
+`geordi dump` (without arguments) dumps the development database with `dumple`.
 
-    geordi dump
+`geordi dump -l tmp/staging.dump` (with the `--load` option) sources the
+specified dump file into the development database.
 
-When called with the `--load` option, sources the specified dump into the
-development database.
+`geordi dump staging` (with a Capistrano deploy target) remotely dumps the
+specified target's database and downloads it to `tmp/`.
 
-    geordi dump -l tmp/staging.dump
-
-When called with a capistrano deploy target (e.g. `staging`), remotely dumps
-the specified target's database and downloads it to `tmp/`.
-
-    geordi dump staging
-
-When called with a capistrano deploy target and the `--load` option, sources the
-dump into the development database after downloading it.
-
-    geordi dump staging -l
+`geordi dump staging -l` (with a Capistrano deploy target and the `--load`
+option) sources the dump into the development database after downloading it.
 DESC
 
-option :load, aliases: ['-l'], type: :string, desc: 'Load a dump'
+option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[LOAD]'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'

@@ -12,7 +12,9 @@ Detailed description with anything the user needs to know.
 
 Short and long description are printed on the console AND included in the README
 by `rake update_readme`. Thus, please format descriptions in a way that's reader
-friendly both in Markdown and the console.
+friendly both in Markdown and the console. In particular, note that simple line
+breaks (\n) will be squished. Only paragraphs (\n\n) will work both on the bash
+and in Markdown.
 LONGDESC
 
 option :opt, type: :boolean, aliases: '-o', banner: 'VALUE_NAME', desc: 'If set, VALUE_NAME will be used for something'

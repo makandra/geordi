@@ -1,31 +1,30 @@
 desc 'security-update [STEP]', 'Support for performing security updates'
 long_desc <<-LONGDESC
-Preparation for security update: `geordi security-update`
+Preparation for security update: `geordi security-update`. Checks out production
+and pulls.
 
-Checks out production and pulls.
+After performing the update: `geordi security-update finish`. Switches branches,
+pulls, pushes and deploys as required by our workflow.
 
-After performing the update: `geordi security-update finish`
+This command tells what it will do before it does it. In detail:
 
-Switches branches, pulls, pushes and deploys as required by our workflow. Tells
-what it will do before it does it. In detail:
+1. Ask user if tests are green
 
-1. Asks user, if tests are green
+2. Push production
 
-2. Pushes production
+3. Check out master and pull
 
-3. Checks out master and pulls
+4. Merge production and push in master
 
-4. Merges production and pushes in master
+5. Deploy staging, if there is a staging environment
 
-5. Deploys staging first, if there is a staging environment
+6. Ask user if deployment log is okay and staging application is still running
 
-6. Asks user, if deployment log is okay and application is still running on staging
+7. Deploy other stages
 
-7. Deploys other stages
+8. Ask user if deployment log is okay and application is still running on all stages
 
-8. Asks user, if deployment log is okay and application is still running on all other stages
-
-9. Informs user about the next steps
+9. Inform user about the next (manual) steps
 LONGDESC
 
 def security_update(step = 'prepare')

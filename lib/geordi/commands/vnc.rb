@@ -4,11 +4,9 @@ Example: `geordi vnc` or `geordi vnc --setup`
 
 Launch a VNC session to the hidden screen where `geordi cucumber` runs Selenium
 tests.
-
-When called with `--setup`, will guide through the setup of VNC.
 LONGDESC
 
-option :setup, type: :boolean
+option :setup, type: :boolean, desc: 'Guide through the setup of VNC'
 
 def vnc
   if options.setup

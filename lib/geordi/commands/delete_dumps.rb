@@ -7,7 +7,6 @@ no argument is given, two default directories are searched for dump files: the
 current working directory and `~/dumps` (for dumps created with geordi).
 
 Geordi will ask for confirmation before actually deleting files.
-
 LONGDESC
 
 def delete_dumps(dump_directory = nil)

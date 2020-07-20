@@ -1,20 +1,16 @@
 desc 'console [TARGET]', 'Open a Rails console locally or on a Capistrano deploy target'
 long_desc <<-LONGDESC
-Open a local Rails console: `geordi console`
+Local (development): `geordi console`
 
-Open a Rails console on `staging`: `geordi console staging`
+Remote: `geordi console staging`
 
-Lets you select the server to connect to from a menu when called with `--select-server` or the alias `-s`:
-
-    geordi console staging -s
-
-If you already know the number of the server you want to connect to, just pass it along:
-
-    geordi console staging -s2
+Selecting the server: `geordi console staging -s` shows a menu with all available
+servers. When passed a number, directly connects to the selected server.
 LONGDESC
 
-
-option :select_server, type: :string, aliases: '-s'
+# This option is duplicated in shelll.rb
+option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
+  desc: 'Select a server to connect to'
 
 def console(target = 'development', *_args)
   require 'geordi/remote'

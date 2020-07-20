@@ -32,21 +32,31 @@ You may abbreviate commands by typing only their first letters, e.g. `geordi
 con` will boot a development console, `geordi set -t` will setup a project and
 run tests afterwards.
 
-For details on commands, e.g. supported options, you may always run
-`geordi help <command>`.
-
+You can always run `geordi help <command>` to quickly look up command help.
   TEXT
 
   Geordi::CLI.all_commands.sort.each do |_, command|
-    unless command.hidden?
-      geordi_section << "### `geordi #{command.usage}`\n\n"
-      geordi_section << "#{command.description.sub /(\.)?$/, '.'}\n\n"
-      geordi_section << "#{command.long_description.strip}\n\n" if command.long_description
+    next if command.hidden?
+
+    geordi_section << "\n### `geordi #{command.usage}`\n"
+    geordi_section << "#{command.description.sub /(\.)?$/, '.'}\n\n"
+    geordi_section << "#{command.long_description.strip}\n\n" if command.long_description
+
+    if command.options.any?
+      geordi_section << "**Options**\n"
+      # Taken from thor-1.0.1/lib/thor/base.rb:557
+      command.options.values.each do |option|
+        next if option.hide
+
+        geordi_section << "- `#{option.usage}`"
+        geordi_section << ": #{option.description}" if option.description
+        geordi_section << "\n"
+      end
       geordi_section << "\n"
     end
   end
 
   updated_readme = readme.sub(geordi_section_regex, geordi_section)
   File.open('README.md', 'w') { |f| f.puts updated_readme.strip }
-  puts 'README.me updated.'
+  puts 'README.md updated.'
 end

@@ -7,12 +7,6 @@ and offer to delete them. Excluded are databases that are whitelisted. This come
 in handy when you're keeping your currently active projects in the whitelist files
 and perform regular housekeeping with Geordi.
 
-When called with `-P` or `-M` options, only handles Postgres resp. MySQL/MariaDB.
-
-When called with `--postgres <port or local socket>` or `--mysql <port or local socket>`,
-will instruct the underlying management commands to use those connection methods
-instead of the defaults. This is useful when running multiple installations.
-
 Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
 LONGDESC
