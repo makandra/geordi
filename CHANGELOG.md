@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 - Fix #90: `geordi console`, `geordi deploy`, `geordi rake` and `geordi shell` now work correctly if the project hasn't been bundled before
 
 ### Breaking changes
+- Removed deprecated executables
 
 
 ## 3.2.0 2020-07-15

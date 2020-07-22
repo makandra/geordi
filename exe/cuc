@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-
-puts 'DEPRECATED: Use `geordi cu[cumber]` instead'
-exec 'geordi', 'cucumber', *ARGV
