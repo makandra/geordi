@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 - Improved documentation; README now includes command options.
+- Fix #90: `geordi console`, `geordi deploy`, `geordi rake` and `geordi shell` now work correctly if the project hasn't been bundled before
 
 ### Breaking changes
 

@@ -94,6 +94,8 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     git_call << "git merge #{source_branch}" if merge_needed
     git_call << 'git push' if push_needed
 
+    invoke_cmd 'bundle_install'
+
     capistrano_call = "cap #{target_stage} deploy"
     capistrano_call << ':migrations' unless Util.gem_major_version('capistrano') == 3 || options.no_migrations
     capistrano_call = "bundle exec #{capistrano_call}" if Util.file_containing?('Gemfile', /capistrano/)
@@ -102,8 +104,6 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     if git_call.any?
       Util.system! git_call.join(' && '), show_cmd: true
     end
-
-    invoke_cmd 'bundle_install'
 
     Util.system! capistrano_call, show_cmd: true
 
