@@ -66,7 +66,7 @@ module Geordi
         binstub_file = "bin/#{executable}"
 
         command = 'bundle exec '
-        command << File.exists?(binstub_file) ? binstub_file : executable
+        command << (File.exists?(binstub_file) ? binstub_file : executable)
         command << ' ' + arguments
       end
 

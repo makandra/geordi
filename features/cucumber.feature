@@ -261,4 +261,4 @@ Feature: The cucumber command
     """
 
     When I run `geordi cucumber features/single.feature --format=pretty --verbose`
-    Then the output should contain "b cucumber features/single.feature --format pretty"
+    Then the output should contain "bundle exec cucumber  features/single.feature --format pretty"
