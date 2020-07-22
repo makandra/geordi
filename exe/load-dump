@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-
-puts 'DEPRECATED: Use `geordi du[mp] -l` instead'
-exec 'geordi', 'dump', '-l', *ARGV

@@ -1,4 +1,0 @@
-#!/usr/bin/env ruby
-
-puts 'DEPRECATED: Use `geordi rs[pec]` instead'
-exec 'geordi', 'rspec', *ARGV

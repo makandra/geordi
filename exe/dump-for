@@ -1,8 +1,0 @@
-#!/usr/bin/env ruby
-
-if (i = ARGV.index '-s')
-  ARGV[i] = '-l'
-end
-
-puts 'DEPRECATED: Use `geordi du[mp]` instead'
-exec 'geordi', 'dump', *ARGV
