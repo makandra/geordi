@@ -12,6 +12,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 - Removed deprecated executables
+- Removed `eurest` command
 
 
 ## 3.2.0 2020-07-15
