@@ -66,7 +66,8 @@ module Geordi
         binstub_file = "bin/#{executable}"
 
         command = File.exists?(binstub_file) ? [binstub_file] : ['bundle exec', executable]
-        command.append(*arguments).join(' ')
+        command.push(*arguments)
+        command.join(' ')
       end
 
       def console_command(environment)

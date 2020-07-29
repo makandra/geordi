@@ -263,16 +263,12 @@ Feature: The cucumber command
     When I run `geordi cucumber features/single.feature --format=pretty --verbose`
     Then the output should contain "bundle exec cucumber features/single.feature --format pretty"
 
-  Scenario: When a bin/cucumber file exists, it is executed
-    Given an empty file named "bin/cucumber"
-    Given a file named "features/single.feature" with:
-    """
-    @solo
-    Feature: Some feature
-      Scenario: Some scenario
-    """
+  Scenario: A cucumber binstub is used if present
+    Given a file named "bin/cucumber" with "binstub"
+    Given a file named "features/single.feature" with "Feature: Test"
 
-    When I run `geordi cucumber --verbose `
+    # Force geordi to ignore parallel testing by giv
+    When I run `geordi cucumber --verbose single.feature:1`
     Then the output should contain "> bin/cucumber"
 
 

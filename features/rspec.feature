@@ -1,17 +1,17 @@
 Feature: The rspec command
 
   Background:
-    Given an empty file named "spec/spec_helper.rb"
+    Given a file named "spec/spec_helper.rb" with "enable rspec"
 
-  Scenario: When a bin/rspec file exists, it is executed
-    Given an empty file named "bin/rspec"
+  Scenario: A rspec binstub is used if present
+    Given a file named "bin/rspec" with "binstub"
 
-    When I run `geordi rspec` interactively
-    Then the output should contain "Util.system! bundle exec bin/rspec"
+    When I run `geordi rspec`
+    Then the output should contain "Util.system! bin/rspec"
 
-  Scenario: When a bin/rake file exists, it is used to run parallel tests
-    Given an empty file named "bin/rake"
-      And a file named "Gemfile" with "gem parallel_tests"
+  Scenario: A rake binstub is used to run parallel tests if present
+    Given a file named "bin/rake" with "binstub"
+      And a file named "Gemfile" with "gem 'parallel_tests'"
 
-    When I run `geordi rspec` interactively
+    When I run `geordi rspec`
     Then the output should contain "Util.system! bin/rake, parallel:spec"

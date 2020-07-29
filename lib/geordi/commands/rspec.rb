@@ -25,13 +25,10 @@ def rspec(*files)
         Interaction.note 'Only: ' + files.join(', ')
       end
 
-      command = ['bundle exec']
-      command << if File.exist?('script/spec')
-        'spec -c' # RSpec 1
-      elsif File.exist?('bin/rspec')
-        'bin/rspec'
+      command = if File.exist?('script/spec')
+        ['bundle exec spec -c'] # RSpec 1
       else
-        'rspec'
+        [Util.binstub('rspec')]
       end
       command << '-r rspec_spinner -f RspecSpinner::Bar' if Util.file_containing?('Gemfile', /rspec_spinner/)
       command << files.join(' ')
