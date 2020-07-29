@@ -14,6 +14,7 @@ option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
 
 def console(target = 'development', *_args)
   require 'geordi/remote'
+  invoke_cmd 'bundle_install'
 
   if target == 'development'
     invoke_cmd 'yarn_install'

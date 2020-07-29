@@ -15,6 +15,8 @@ option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
 def shelll(target, *_args)
   require 'geordi/remote'
 
+  invoke_cmd 'bundle_install'
+
   Interaction.announce 'Opening a shell on ' + target
   Geordi::Remote.new(target).shell(options)
 end
