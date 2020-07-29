@@ -17,7 +17,7 @@ def migrate
       Interaction.note 'Development and parallel test databases'
       puts
 
-      Util.system! 'bundle exec rake db:migrate parallel:prepare'
+      Util.system! Util.binstub('rake'), 'db:migrate parallel:prepare'
     else
       invoke_cmd 'rake', 'db:migrate'
     end

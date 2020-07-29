@@ -6,7 +6,8 @@ def create_databases
   Interaction.announce 'Creating databases'
 
   if File.exist?('config/database.yml')
-    command = 'bundle exec rake db:create:all'
+    command = Util.binstub 'rake'
+    command << ' db:create:all'
     command << ' parallel:create' if Util.file_containing?('Gemfile', /parallel_tests/)
 
     Util.system! command

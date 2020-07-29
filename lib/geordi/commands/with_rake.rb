@@ -5,7 +5,7 @@ def with_rake
     invoke_cmd 'yarn_install'
 
     Interaction.announce 'Running tests with `rake`'
-    Util.system! 'rake'
+    Util.system! Util.binstub('rake')
   else
     Interaction.note '`rake` does not run tests.'
     :did_not_perform

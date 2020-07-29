@@ -74,7 +74,7 @@ module Geordi
       unless argv.include?('--format') || argv.include?('-f')
         format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
       end
-      [use_firefox_for_selenium, 'b', 'cucumber', format_args, escape_shell_args(argv)].flatten.compact.join(' ')
+      [use_firefox_for_selenium, Util.binstub('cucumber'), format_args, escape_shell_args(argv)].flatten.compact.join(' ')
     end
 
     def parallel_execution_command
@@ -87,7 +87,7 @@ module Geordi
 
       [
         use_firefox_for_selenium,
-        'b parallel_test -t ' + type_arg,
+        'bundle exec parallel_test -t ' + type_arg,
         %(-o '#{command_line_options.join(' ')} --tags "#{not_tag('@solo')}"'),
         "-- #{features.join(' ')}",
       ].compact.join(' ')

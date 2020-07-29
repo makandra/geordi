@@ -14,7 +14,7 @@ def rspec(*files)
 
     if Util.file_containing?('Gemfile', /parallel_tests/) && files.empty?
       Interaction.note 'All specs at once (using parallel_tests)'
-      Util.system! 'bundle exec rake parallel:spec', fail_message: 'Specs failed.'
+      Util.system! Util.binstub('rake'), 'parallel:spec', fail_message: 'Specs failed.'
 
     else
       # tell which specs will be run
@@ -25,13 +25,10 @@ def rspec(*files)
         Interaction.note 'Only: ' + files.join(', ')
       end
 
-      command = ['bundle exec']
-      command << if File.exist?('script/spec')
-        'spec -c' # RSpec 1
-      elsif File.exist?('bin/rspec')
-        'bin/rspec'
+      command = if File.exist?('script/spec')
+        ['bundle exec spec -c'] # RSpec 1
       else
-        'rspec'
+        [Util.binstub('rspec')]
       end
       command << '-r rspec_spinner -f RspecSpinner::Bar' if Util.file_containing?('Gemfile', /rspec_spinner/)
       command << files.join(' ')
