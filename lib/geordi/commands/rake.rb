@@ -12,7 +12,7 @@ LONGDESC
 def rake(*args)
   %w[development test cucumber].each do |env| # update long_desc when changing this
     if File.exist? "config/environments/#{env}.rb"
-      call = Util.binstub('rake') + args + ["RAILS_ENV=#{env}"]
+      call = [Util.binstub('rake')] + args + ["RAILS_ENV=#{env}"]
       Interaction.note_cmd call.join(' ')
 
       Util.system! *call

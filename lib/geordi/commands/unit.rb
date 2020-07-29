@@ -5,7 +5,7 @@ def unit
     invoke_cmd 'yarn_install'
 
     Interaction.announce 'Running Test::Unit'
-    Util.system! Util.binstub('rake', 'test')
+    Util.system! Util.binstub('rake'), 'test'
   else
     Interaction.note 'Test::Unit not employed.'
   end

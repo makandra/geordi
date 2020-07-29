@@ -62,21 +62,20 @@ module Geordi
         end
       end
 
-      def binstub(executable, arguments='')
+      def binstub(executable, *arguments)
         binstub_file = "bin/#{executable}"
 
-        command = 'bundle exec '
-        command << (File.exists?(binstub_file) ? binstub_file : executable)
-        command << ' ' + arguments
+        command = File.exists?(binstub_file) ? [binstub_file] : ['bundle exec', executable]
+        command.append(*arguments).join(' ')
       end
 
       def console_command(environment)
         if gem_major_version('rails') == 2
           'script/console ' + environment
         elsif gem_major_version('rails') == 3
-          binstub 'rails', "console #{environment}"
+          binstub 'rails', 'console', environment
         else
-          binstub 'rails', "console -e #{environment}"
+          binstub 'rails', 'console -e', environment
         end
       end
 
