@@ -9,6 +9,7 @@ Feature: The rspec command
     When I run `geordi rspec`
     Then the output should contain "Util.system! bin/rspec"
 
+
   Scenario: A rake binstub is used to run parallel tests if present
     Given a file named "bin/rake" with "binstub"
       And a file named "Gemfile" with "gem 'parallel_tests'"

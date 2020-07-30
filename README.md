@@ -62,8 +62,8 @@ Local (development): `geordi console`
 
 Remote: `geordi console staging`
 
-Selecting aserver: `geordi console staging -s` shows a menu with all available
-servers. When passing a number, directly connects to the selected server.
+Selecting the server: `geordi console staging -s` shows a menu with all available
+servers. When passed a number, directly connects to the selected server.
 
 **Options**
 - `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to
@@ -91,13 +91,13 @@ sign, i.e. have each option a contiguous string.
 
 - *VNC:* By default, test browsers will run in a VNC session. When using a
 headless test browser anyway, you can disable VNC by setting `use_vnc: false`
-in `.geordi.yml` in the project root:
+in `.geordi.yml` in the project root.
 
 **Options**
 - `-m, [--modified], [--no-modified]`: Run all modified features
 - `-c, [--containing=STRING]`: Run all features that contain STRING
 - `-v, [--verbose], [--no-verbose]`: Show the test run command
-- `-d, [--debug], [--no-debug]`: Run with `-f pretty -b`, which helps hunting down bugs
+- `-d, [--debug], [--no-debug]`: Run Cucumber with `-f pretty -b`, which helps hunting down bugs
 - `-r, [--rerun=N]`: Rerun features up to N times while failing
 
 
@@ -185,7 +185,7 @@ specified target's database and downloads it to `tmp/`.
 option) sources the dump into the development database after downloading it.
 
 **Options**
-- `-l, [--load=[LOAD]]`: Load a dump
+- `-l, [--load=[DUMP_FILE]]`: Load a dump
 
 
 ### `geordi firefox COMMAND`
@@ -246,7 +246,7 @@ Run RSpec.
 
 Example: `geordi rspec spec/models/user_spec.rb:13`
 
-Runs RSpec with RSpec 1/2 detection and `bundle exec`
+Runs RSpec with RSpec 1/2 support, parallel_tests detection and `bundle exec`.
 
 
 ### `geordi security-update [STEP]`
@@ -284,7 +284,7 @@ Start a development server.
 
 **Options**
 - `-p, [--port=PORT]`: Choose a port
-- `-P, [--public], [--no-public]`: Make the server accessible in the local network
+- `-P, [--public], [--no-public]`: Make the server accessible from the local network
 
 
 ### `geordi setup`
@@ -310,7 +310,7 @@ Open a shell on a Capistrano deploy target.
 Example: `geordi shell production`
 
 Selecting the server: `geordi shell staging -s` shows a menu with all available
-servers. When passing a number, directly connects to the selected server.
+servers. When passed a number, directly connects to the selected server.
 
 **Options**
 - `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to

@@ -19,7 +19,7 @@ sign, i.e. have each option a contiguous string.
 
 - *VNC:* By default, test browsers will run in a VNC session. When using a
 headless test browser anyway, you can disable VNC by setting `use_vnc: false`
-in `.geordi.yml` in the project root:
+in `.geordi.yml` in the project root.
 LONGDESC
 
 option :modified, aliases: '-m', type: :boolean,
@@ -29,7 +29,7 @@ option :containing, aliases: '-c', banner: 'STRING',
 option :verbose, aliases: '-v', type: :boolean,
   desc: 'Show the test run command'
 option :debug, aliases: '-d', type: :boolean,
-  desc: 'Run with `-f pretty -b`, which helps hunting down bugs'
+  desc: 'Run Cucumber with `-f pretty -b`, which helps hunting down bugs'
 option :rerun, aliases: '-r', type: :numeric, default: 0,
   desc: 'Rerun features up to N times while failing'
 

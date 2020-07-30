@@ -12,7 +12,7 @@ specified target's database and downloads it to `tmp/`.
 option) sources the dump into the development database after downloading it.
 DESC
 
-option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[LOAD]'
+option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[DUMP_FILE]'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'
