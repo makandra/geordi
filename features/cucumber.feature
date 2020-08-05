@@ -63,14 +63,14 @@ Feature: The cucumber command
       And the exit status should be 1
       And the output should contain "Features failed."
 
-  # We skip this test for Ruby 2.1 as the backtrace looks different than in any following Ruby versions
-  @ruby>=2.1
+
+  # https://github.com/makandra/geordi/issues/27
   Scenario: A rerun should only consider the specified file
     Note that we need a cucumber.yml to write the rerun.txt and read the rerun.txt for the reruns.
 
     Given a file named "features/step_definitions/test_steps.rb" with:
     """
-    Given /^this test fails$/ do
+    Given /^this step fails$/ do
       raise
     end
 
@@ -78,15 +78,15 @@ Feature: The cucumber command
       puts(ann)
     end
     """
-      And a file named "features/some.feature" with:
+      And a file named "features/failing.feature" with:
       """
       Feature: Failing feature
         Scenario: Passing scenario
-          And I use puts with text "Running passing Feature"
+          And I use puts with text "passing feature"
 
         Scenario: Failing scenario
-          And I use puts with text "Running failing Feature"
-          And this test fails
+          And I use puts with text "failing feature"
+          And this step fails
       """
       And an empty file named "tmp/rerun.txt"
       And a file named "cucumber.yml" with:
@@ -100,25 +100,24 @@ Feature: The cucumber command
       rerun: <%= rerun_failures %> <%= log_failures %>
       """
 
-    When I run `geordi cucumber --rerun=1 features/some.feature`
+    When I run `geordi cucumber --rerun=1 features/failing.feature`
+    # The command output includes both the first and the second run ("rerun").
+    # Checking output of the first run ...
     Then the output should contain:
     """
-    # Rerun #1 of 1
-    > Rerunning failed scenarios
-    > Run `geordi vnc` to view the Selenium test browsers
-
+    passing feature
+    .
+    failing feature
+    .F
+    """
+    # ... and of the rerun. Only seeing "failing feature" here => passing
+    # feature was not rerun.
+    Then the output should contain:
+    """
     Using the rerun profile...
 
-    Running failing Feature
+    failing feature
     .F
-
-    (::) failed steps (::)
-
-     (RuntimeError)
-    features/some.feature:7:in `And this test fails'
-
-    Failing Scenarios:
-    cucumber -p rerun features/some.feature:5 # Scenario: Failing scenario
     """
 
 
