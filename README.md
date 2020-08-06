@@ -382,10 +382,18 @@ browser, as opposed to opening it within the VNC window.
 Contributing
 ============
 
-* Run the tests for the oldest supported ruby version with `bundle exec rake`. Ensure that all other ruby versions in the `travis.yml` pass as well after pushing your feature branch and triggering the travis build.
-* Update this `README`. The whole `geordi` section is auto-generated from command
-  descriptions when running `rake readme`.
-* Document your changes in the `CHANGELOG.md` file.
+When making changes to Geordi, please make sure your code is tested. Not all,
+but most features of Geordi can be tested. See other tests for inspiration.
+
+Once you have completed your modifications, please update CHANGELOG and README
+as needed. Use `rake readme` to regenerate the Geordi section of the README from
+the command documentations.
+
+Make sure tests are green in the default Ruby *plus* in the oldest Ruby > 1.8
+that you have installed on your system (1.8.7 support has been dropped).
+
+Before releasing your changes, wait for the Travis results to see that tests
+passed in all Ruby versions.
 
 
 Adding a new command
