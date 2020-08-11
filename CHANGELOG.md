@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+
+* Fix `geordi migrate` command, that fails with:
+
+```
+Don't know how to build task 'db:migrate parallel:prepare'
+```
+
 ### Breaking changes
 
 
