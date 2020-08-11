@@ -25,6 +25,7 @@ Don't know how to build task 'db:migrate parallel:prepare'
 ### Breaking changes
 - Removed deprecated executables
 - Removed `eurest` command
+- Respect binstubs if available, otherwise fallback to geordi's previous behaviour. Note that this might cause failures, when your binstubs are not working. Please have a look at #109 for how a failure might look like and how you can fix it.
 
 
 ## 3.2.0 2020-07-15
