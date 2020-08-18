@@ -6,11 +6,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
-- Added dumple option `--compress` to compress after dumping
 ### Breaking changes
 
 
+## 4.1.0 2020-08-18
+
+### Compatible changes
+
+- Added dumple option `--compress` to compress after dumping
+
 ## 4.0.1 2020-08-11
+
 ### Compatible changes
 
 - Fix `geordi migrate` command, that fails with:
