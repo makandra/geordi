@@ -3,6 +3,7 @@
 require 'erb'
 
 fail_gently = ARGV.include?("--fail-gently")
+compress = ARGV.include?("--compress")
 
 if ARGV.include?("-i")
   puts "*******************************************************"
@@ -95,6 +96,15 @@ begin
   success or raise "Creating the dump failed"
 
   system "chmod 600 #{dump_path}"
+
+  if compress
+    puts "> Compressing the dump ..."
+
+    # gzip compresses in place
+    compress_success = system("gzip #{dump_path}")
+    compress_success or raise "Compressing the dump failed"
+    dump_path << ".gz"
+  end
 
   dump_size_kb = (File.size(dump_path) / 1024).round
 
