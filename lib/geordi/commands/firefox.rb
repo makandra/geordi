@@ -25,7 +25,7 @@ def firefox(*command)
 
     puts
     Interaction.note_cmd command.join(' ')
-    system *command # Util.system! would reset the Firefox PATH
+    system *command # Util.run! would reset the Firefox PATH
   end
 end
 

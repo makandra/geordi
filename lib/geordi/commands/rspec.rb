@@ -14,7 +14,7 @@ def rspec(*files)
 
     if Util.file_containing?('Gemfile', /parallel_tests/) && files.empty?
       Interaction.note 'All specs at once (using parallel_tests)'
-      Util.system! Util.binstub('rake'), 'parallel:spec', fail_message: 'Specs failed.'
+      Util.run! Util.binstub('rake'), 'parallel:spec', fail_message: 'Specs failed.'
 
     else
       # tell which specs will be run
@@ -34,7 +34,7 @@ def rspec(*files)
       command << files.join(' ')
 
       puts
-      Util.system! command.join(' '), fail_message: 'Specs failed.'
+      Util.run! command.join(' '), fail_message: 'Specs failed.'
     end
   else
     Interaction.note 'RSpec not employed.'

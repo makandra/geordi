@@ -17,12 +17,12 @@ Feature: The security-update command
       """
       And the output should contain:
       """
-      Util.system! git checkout production
+      Util.run! git checkout production
       """
       And the output should contain:
       """
       > git pull
-      Util.system! git pull
+      Util.run! git pull
 
       > Successfully prepared for security update
 
@@ -50,7 +50,7 @@ Feature: The security-update command
       And I type "yes"
     Then the output should contain:
       """
-      Util.system! git status --porcelain
+      Util.run! git status --porcelain
 
       # Finishing security update
       > Working directory clean.
@@ -64,15 +64,15 @@ Feature: The security-update command
       And the output should contain:
       """
       > git push
-      Util.system! git push
+      Util.run! git push
       > git checkout master
-      Util.system! git checkout master
+      Util.run! git checkout master
       > git pull
-      Util.system! git pull
+      Util.run! git pull
       > git merge production
-      Util.system! git merge production
+      Util.run! git merge production
       > git push
-      Util.system! git push
+      Util.run! git push
 
       # Deployment
       > There is a staging environment.
@@ -82,7 +82,7 @@ Feature: The security-update command
       """
       # Deploy staging
       > bundle exec cap staging deploy:migrations
-      Util.system! bundle exec cap staging deploy:migrations
+      Util.run! bundle exec cap staging deploy:migrations
       Is the deployment log okay and the application is still running on staging? [y]
       """
       And the output should contain:
@@ -96,7 +96,7 @@ Feature: The security-update command
       """
       # Deploy production
       > bundle exec cap production deploy:migrations
-      Util.system! bundle exec cap production deploy:migrations
+      Util.run! bundle exec cap production deploy:migrations
       Is the application still running on all other stages and the logs are okay? [y]
       """
       And the output should contain:
@@ -115,7 +115,7 @@ Feature: The security-update command
       And I type "yes"
     Then the output should contain:
       """
-      Util.system! git status --porcelain
+      Util.run! git status --porcelain
 
       # Finishing security update
       > Working directory clean.
@@ -129,15 +129,15 @@ Feature: The security-update command
     And the output should contain:
       """
       > git push
-      Util.system! git push
+      Util.run! git push
       > git checkout master
-      Util.system! git checkout master
+      Util.run! git checkout master
       > git pull
-      Util.system! git pull
+      Util.run! git pull
       > git merge production
-      Util.system! git merge production
+      Util.run! git merge production
       > git push
-      Util.system! git push
+      Util.run! git push
 
       # Deployment
 
@@ -191,7 +191,7 @@ Feature: The security-update command
       """
       # Deploy staging
       > bundle exec cap staging deploy:migrations
-      Util.system! bundle exec cap staging deploy:migrations
+      Util.run! bundle exec cap staging deploy:migrations
       Is the deployment log okay and the application is still running on staging? [y]
       """
       And the output should contain:

@@ -7,4 +7,4 @@ Feature: The rake command
     Given a file named "bin/rake" with "binstub"
 
     When I run `geordi rake`
-    Then the output should contain "Util.system! bin/rake"
+    Then the output should contain "Util.run! bin/rake"

@@ -3,7 +3,7 @@ Feature: The dump command
 
   Scenario: Creating a dump of the development database
     When I run `geordi dump`
-    Then the output should contain "Util.system! dumple development"
+    Then the output should contain "Util.run! dumple development"
       And the output should contain "Successfully dumped the development database"
 
 
@@ -24,11 +24,11 @@ Feature: The dump command
     When I run `geordi dump staging`
     Then the output should contain "# Dumping the database of staging"
       And the output should contain "> Connecting to www.example.com"
-      And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
       And the output should contain "> Downloading remote dump to tmp/staging.dump"
       # Omitting the absolute path in this regex (.*)
       And the output should match:
       """
-      Util\.system! scp -C user@www\.example\.com:~\/dumps\/dump_for_download.dump .*?\/tmp\/aruba\/tmp\/staging.dump
+      Util\.run! scp -C user@www\.example\.com:~\/dumps\/dump_for_download.dump .*?\/tmp\/aruba\/tmp\/staging.dump
       """
       And the output should contain "> Dumped the staging database to tmp/staging.dump"

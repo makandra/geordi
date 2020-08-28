@@ -19,7 +19,7 @@ def setup
     Interaction.announce 'Running bin/setup'
     Interaction.note "Geordi's own setup routine is skipped"
 
-    Util.system! 'bin/setup'
+    Util.run! 'bin/setup'
   else
     invoke_geordi 'create_databases'
     invoke_geordi 'migrate'

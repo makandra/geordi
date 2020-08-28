@@ -10,7 +10,7 @@ def create_databases
     command << ' db:create:all'
     command << ' parallel:create' if Util.file_containing?('Gemfile', /parallel_tests/)
 
-    Util.system! command
+    Util.run! command
   else
     puts 'config/database.yml does not exist. Nothing to do.'
   end

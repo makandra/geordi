@@ -66,7 +66,7 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
   push_needed = false if Util.testing? # Hard to test
 
   Interaction.announce "Checking whether your #{source_branch} branch is ready" ############
-  Util.system! "git checkout #{source_branch}"
+  Util.run! "git checkout #{source_branch}"
   if (`git status -s | wc -l`.strip != '0') && !Util.testing?
     Interaction.warn "Your #{source_branch} branch holds uncommitted changes."
     Interaction.prompt('Continue anyway?', 'n', /y|yes/) || raise('Cancelled.')
@@ -76,14 +76,14 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
 
   if merge_needed
     Interaction.announce "Checking what's in your #{target_branch} branch right now" #######
-    Util.system! "git checkout #{target_branch} && git pull"
+    Util.run! "git checkout #{target_branch} && git pull"
   end
 
   Interaction.announce 'You are about to:' #################################################
   Interaction.note "Merge branch #{source_branch} into #{target_branch}" if merge_needed
   if push_needed
     Interaction.note 'Push these commits:' if push_needed
-    Util.system! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
+    Util.run! "git --no-pager log origin/#{target_branch}..#{source_branch} --oneline"
   end
   Interaction.note "Deploy to #{target_stage}"
   Interaction.note "From current branch #{source_branch}" if options.current_branch
@@ -102,14 +102,14 @@ set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     capistrano_call = "DEPLOY_BRANCH=#{source_branch} #{capistrano_call}" if options.current_branch
 
     if git_call.any?
-      Util.system! git_call.join(' && '), show_cmd: true
+      Util.run! git_call.join(' && '), show_cmd: true
     end
 
-    Util.system! capistrano_call, show_cmd: true
+    Util.run! capistrano_call, show_cmd: true
 
     Interaction.success 'Deployment complete.'
   else
-    Util.system! "git checkout #{source_branch}"
+    Util.run! "git checkout #{source_branch}"
     Interaction.fail 'Deployment cancelled.'
   end
 end

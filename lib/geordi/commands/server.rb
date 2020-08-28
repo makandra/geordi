@@ -18,7 +18,7 @@ def server(port = nil)
   command = Util.server_command
   command << ' -b 0.0.0.0' if options.public
   command << ' -p ' << port
-  Util.system! command
+  Util.run! command
 end
 
 map 'devserver' => 'server'

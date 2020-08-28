@@ -17,6 +17,6 @@ def capistrano(*args)
     command = "bundle exec cap #{stage} " + args.join(' ')
     Interaction.note_cmd command
 
-    Util.system!(command, fail_message: 'Capistrano failed. Have a look!')
+    Util.run!(command, fail_message: 'Capistrano failed. Have a look!')
   end
 end

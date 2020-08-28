@@ -15,7 +15,7 @@ Feature: The deploy command
     Then the output should contain:
       """
       # Checking whether your master branch is ready
-      Util.system! git checkout master
+      Util.run! git checkout master
       > All good.
 
       # You are about to:
@@ -25,7 +25,7 @@ Feature: The deploy command
       And the output should contain:
       """
       > cap staging deploy:migrations
-      Util.system! cap staging deploy:migrations
+      Util.run! cap staging deploy:migrations
 
       > Deployment complete.
       """

@@ -24,7 +24,7 @@ module Geordi
     end
 
     # Like `note`, but pink. Use to print (bash) commands.
-    # Also see Util.system!
+    # Also see Util.run!
     def note_cmd(text)
       message = "> #{text}"
       puts "\e[35m#{message}\e[0m" # pink

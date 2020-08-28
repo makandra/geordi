@@ -21,7 +21,7 @@ module Geordi
         # install missing gem
         Interaction.warn 'Probably missing gem: ' + gem_name
         Interaction.prompt('Install it now?', 'y', /y|yes/) || Interaction.fail('Missing Gems.')
-        system! install_command, show_cmd: true
+        Util.run! install_command, show_cmd: true
 
         # retry
         Gem.clear_paths
@@ -36,7 +36,7 @@ module Geordi
       # @option show_cmd: Whether to print the command
       # @option confirm: Whether to ask for confirmation before running it
       # @option fail_message: The text to print on command failure
-      def system!(*commands)
+      def run!(*commands)
         options = commands.last.is_a?(Hash) ? commands.pop : {}
         Interaction.note_cmd commands.join(' ') if options[:show_cmd]
 
@@ -45,7 +45,7 @@ module Geordi
         end
 
         if testing?
-          puts "Util.system! #{commands.join ', '}"
+          puts "Util.run! #{commands.join ', '}"
         else
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)

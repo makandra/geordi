@@ -15,7 +15,7 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi`
-    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
   Scenario: It opens a menu to select the server to connect to when the select server option is given
     Given a file named "config/deploy.rb" with "deploy.rb exists"
@@ -31,7 +31,7 @@ Feature: The shell command
       # Answer prompt "Connect to? [1]"
       And I type "2"
     Then the output should contain "# Opening a shell on geordi"
-    Then the output should contain "Util.system! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
 
 
   Scenario: It opens a remote shell on the selected server
@@ -45,10 +45,10 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi --select-server 1`
-    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
     When I run `geordi shell geordi -s2`
-    Then the output should contain "Util.system! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
 
 
   Scenario: It prints a warning and opens a menu to select the server to connect to when the server number is invalid
@@ -65,13 +65,13 @@ Feature: The shell command
       # Answer prompt "Connect to? [1]"
       And I type "2"
     Then the output should contain "> Invalid server number: foo"
-    Then the output should contain "Util.system! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@second.example.com, -t, cd /var/www/example.com/current && bash --login"
 
     When I run `geordi shell geordi -s5` interactively
       # Answer prompt "Connect to? [1]"
       And I type "1"
     Then the output should contain "> Invalid server number: 5"
-    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
 
   Scenario: It understands Capistrano 3 syntax
@@ -83,7 +83,7 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi`
-    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
   Scenario: It allows multiline capistrano server definitions
     Given a file named "config/deploy.rb" with "deploy.rb exists"
@@ -95,7 +95,7 @@ Feature: The shell command
     """
 
     When I run `geordi shell geordi`
-    Then the output should contain "Util.system! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
+    Then the output should contain "Util.run! ssh, deploy@first.example.com, -t, cd /var/www/example.com/current && bash --login"
 
 
   Scenario: It prefers stage settings over general config
@@ -114,7 +114,7 @@ Feature: The shell command
     """
 
     When I run `geordi shell staging`
-    Then the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current"
+    Then the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current"
 
 
   Scenario: It allows whitespaces in the config
@@ -131,4 +131,4 @@ Feature: The shell command
     """
 
     When I run `geordi shell staging`
-    Then the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current"
+    Then the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current"

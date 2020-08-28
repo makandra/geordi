@@ -27,7 +27,7 @@ module Geordi
       Interaction.note_cmd(command) if options[:verbose]
 
       puts # Make newline
-      system command # Util.system! would reset the Firefox PATH
+      system command # Util.run! would reset the Firefox PATH
     end
 
     def launch_vnc_viewer

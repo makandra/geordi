@@ -17,7 +17,7 @@ def migrate
       Interaction.note 'Development and parallel test databases'
       puts
 
-      Util.system! Util.binstub('rake'), 'db:migrate', 'parallel:prepare'
+      Util.run! Util.binstub('rake'), 'db:migrate', 'parallel:prepare'
     else
       invoke_geordi 'rake', 'db:migrate'
     end

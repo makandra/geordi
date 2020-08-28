@@ -7,7 +7,7 @@ Feature: The rspec command
     Given a file named "bin/rspec" with "binstub"
 
     When I run `geordi rspec`
-    Then the output should contain "Util.system! bin/rspec"
+    Then the output should contain "Util.run! bin/rspec"
 
 
   Scenario: A rake binstub is used to run parallel tests if present
@@ -15,4 +15,4 @@ Feature: The rspec command
       And a file named "Gemfile" with "gem 'parallel_tests'"
 
     When I run `geordi rspec`
-    Then the output should contain "Util.system! bin/rake, parallel:spec"
+    Then the output should contain "Util.run! bin/rake, parallel:spec"

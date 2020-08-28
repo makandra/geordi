@@ -9,7 +9,7 @@ Feature: Creating a git commit from a Pivotal Tracker story
     When I run `geordi commit --extra-option` interactively
       # No optional message
       And I type ""
-    Then the output should contain "Util.system! git, commit, --allow-empty, -m, [#12] Test Story, --extra-option"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story, --extra-option"
 
 
   Scenario: With no staged changes, a warning is printed

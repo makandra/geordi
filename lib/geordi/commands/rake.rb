@@ -17,7 +17,7 @@ def rake(*args)
       call = [Util.binstub('rake')] + args + ["RAILS_ENV=#{env}"]
       Interaction.note_cmd call.join(' ')
 
-      Util.system! *call
+      Util.run! *call
     end
   end
 end

@@ -8,4 +8,4 @@ Feature: The migrate command
       And a file named "Gemfile" with "gem parallel_tests"
 
     When I run `geordi migrate`
-    Then the output should contain "Util.system! bin/rake, db:migrate, parallel:prepare"
+    Then the output should contain "Util.run! bin/rake, db:migrate, parallel:prepare"
