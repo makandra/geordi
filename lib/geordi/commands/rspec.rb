@@ -7,8 +7,8 @@ LONGDESC
 
 def rspec(*files)
   if File.exist?('spec/spec_helper.rb')
-    invoke_cmd 'bundle_install'
-    invoke_cmd 'yarn_install'
+    invoke_geordi 'bundle_install'
+    invoke_geordi 'yarn_install'
 
     Interaction.announce 'Running specs'
 

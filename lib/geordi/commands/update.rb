@@ -13,10 +13,10 @@ def update
   Interaction.announce 'Updating repository'
   Util.system! 'git pull', show_cmd: true
 
-  invoke_cmd 'migrate'
+  invoke_geordi 'migrate'
 
   Interaction.success 'Successfully updated the project.'
 
-  invoke_cmd 'dump', options.dump, load: true if options.dump
-  invoke_cmd 'tests' if options.test
+  invoke_geordi 'dump', options.dump, load: true if options.dump
+  invoke_geordi 'tests' if options.test
 end

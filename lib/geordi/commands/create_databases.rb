@@ -1,7 +1,7 @@
 desc 'create-databases', 'Create all databases', hide: true
 def create_databases
-  invoke_cmd 'create_database_yml'
-  invoke_cmd 'bundle_install'
+  invoke_geordi 'create_database_yml'
+  invoke_geordi 'bundle_install'
 
   Interaction.announce 'Creating databases'
 

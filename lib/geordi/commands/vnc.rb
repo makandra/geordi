@@ -10,7 +10,7 @@ option :setup, type: :boolean, desc: 'Guide through the setup of VNC'
 
 def vnc
   if options.setup
-    invoke_cmd :_setup_vnc
+    invoke_geordi :_setup_vnc
   else
     require 'geordi/cucumber'
     Geordi::Cucumber.new.launch_vnc_viewer

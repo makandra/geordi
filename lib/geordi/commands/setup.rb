@@ -21,12 +21,12 @@ def setup
 
     Util.system! 'bin/setup'
   else
-    invoke_cmd 'create_databases'
-    invoke_cmd 'migrate'
+    invoke_geordi 'create_databases'
+    invoke_geordi 'migrate'
   end
 
   Interaction.success 'Successfully set up the project.'
 
-  invoke_cmd 'dump', options.dump, load: true if options.dump
-  invoke_cmd 'tests' if options.test
+  invoke_geordi 'dump', options.dump, load: true if options.dump
+  invoke_geordi 'tests' if options.test
 end

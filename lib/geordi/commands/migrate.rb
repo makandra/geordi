@@ -8,8 +8,8 @@ with `db:migrate`.
 LONGDESC
 
 def migrate
-  invoke_cmd 'bundle_install'
-  invoke_cmd 'yarn_install'
+  invoke_geordi 'bundle_install'
+  invoke_geordi 'yarn_install'
   Interaction.announce 'Migrating'
 
   if File.directory?('db/migrate')
@@ -19,7 +19,7 @@ def migrate
 
       Util.system! Util.binstub('rake'), 'db:migrate', 'parallel:prepare'
     else
-      invoke_cmd 'rake', 'db:migrate'
+      invoke_geordi 'rake', 'db:migrate'
     end
   else
     Interaction.note 'No migrations directory found.'

@@ -21,7 +21,7 @@ option :opt, type: :boolean, aliases: '-o', banner: 'VALUE_NAME', desc: 'If set,
 
 def example
   # Invoke other commands like this:
-  invoke_cmd 'other_command', 'argument', an: 'option'
+  invoke_geordi 'other_command', 'argument', an: 'option'
 
   Interaction.fail 'Option missing' unless options.opt?
 
