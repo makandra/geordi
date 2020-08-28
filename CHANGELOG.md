@@ -6,6 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+### Breaking changes
+
+
+## 4.1.1 2020-08-28
+### Compatible changes
 
 * Fixed: System calls are not executed properly if no bin stub is present. This resulted in errors like:
 
@@ -28,8 +33,6 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
   x Something went wrong.
   ```
-
-### Breaking changes
 
 
 ## 4.1.0 2020-08-18
