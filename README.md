@@ -25,6 +25,15 @@ You can always run `geordi help <command>` to quickly look up command help.
 Enable the given virtual host, disabling all others.
 
 
+### `geordi branch`
+Check out a feature branch based on a story from Pivotal Tracker.
+
+Example: `geordi branch`
+
+On the first execution we ask for your Pivotal Tracker API token. It will be
+stored in `~/.config/geordi/global.yml`.
+
+
 ### `geordi capistrano COMMAND`
 Run a capistrano command on all deploy targets.
 
