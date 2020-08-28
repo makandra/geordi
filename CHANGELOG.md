@@ -6,6 +6,29 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 ### Compatible changes
+
+* Fixed: System calls are not executed properly if no bin stub is present. This resulted in errors like:
+
+  ```
+  % geordi rspec
+
+  # Running specs
+  > All specs at once (using parallel_tests)
+
+  x Specs failed.
+  ```
+
+  or
+
+  ```
+  % geordi migrate
+
+  # Migrating
+  > Development and parallel test databases
+
+  x Something went wrong.
+  ```
+
 ### Breaking changes
 
 

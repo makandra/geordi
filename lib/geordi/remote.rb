@@ -43,7 +43,7 @@ module Geordi
 
       Interaction.note "Downloading remote dump to #{relative_destination} ..."
       server = @config.primary_server
-      Util.run! "scp -C #{@config.user(server)}@#{server}:#{REMOTE_DUMP_PATH} #{destination_path}"
+      Util.run!("scp -C #{@config.user(server)}@#{server}:#{REMOTE_DUMP_PATH} #{destination_path}")
 
       Interaction.success "Dumped the #{@stage} database to #{relative_destination}."
 
@@ -74,7 +74,7 @@ module Geordi
       remote_command << " -c '#{options[:remote_command]}'" if options[:remote_command]
 
       Interaction.note 'Connecting to ' + server.to_s
-      Util.run! 'ssh', "#{@config.user(server)}@#{server}", '-t', remote_command
+      Util.run!(['ssh', "#{@config.user(server)}@#{server}", '-t', remote_command])
     end
 
   end

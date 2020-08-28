@@ -89,7 +89,7 @@ No staged changes. Will create an empty commit.
     extra = highline.ask("\nAdd an optional message").strip
     message << ' - ' << extra if extra != ''
 
-    Geordi::Util.run! 'git', 'commit', '--allow-empty', '-m', message, *git_args
+    Geordi::Util.run!(['git', 'commit', '--allow-empty', '-m', message, *git_args])
   end
 
   def bold(string)

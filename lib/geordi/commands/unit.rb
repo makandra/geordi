@@ -5,7 +5,7 @@ def unit
     invoke_geordi 'yarn_install'
 
     Interaction.announce 'Running Test::Unit'
-    Util.run! Util.binstub('rake'), 'test'
+    Util.run!([Util.binstub_or_fallback('rake'), 'test'])
   else
     Interaction.note 'Test::Unit not employed.'
   end

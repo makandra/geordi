@@ -5,7 +5,7 @@ def with_rake
     invoke_geordi 'yarn_install'
 
     Interaction.announce 'Running tests with `rake`'
-    Util.run! Util.binstub('rake')
+    Util.run!(Util.binstub_or_fallback('rake'))
   else
     Interaction.note '`rake` does not run tests.'
     :did_not_perform

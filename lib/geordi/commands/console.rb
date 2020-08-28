@@ -21,7 +21,8 @@ def console(target = 'development', *_args)
 
     Interaction.announce 'Opening a local Rails console'
 
-    Util.run! Util.console_command(target)
+    command = Util.console_command(target)
+    Util.run!(command)
   else
     Interaction.announce 'Opening a Rails console on ' + target
 

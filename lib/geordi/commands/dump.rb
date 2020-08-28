@@ -33,7 +33,7 @@ def dump(target = nil, *_args)
 
     else
       Interaction.announce 'Dumping the development database'
-      Util.run! 'dumple development'
+      Util.run!('dumple development')
       Interaction.success 'Successfully dumped the development database.'
     end
 

@@ -11,7 +11,7 @@ option :test, type: :boolean, aliases: '-t', desc: 'After updating, run tests'
 
 def update
   Interaction.announce 'Updating repository'
-  Util.run! 'git pull', show_cmd: true
+  Util.run!('git pull', show_cmd: true)
 
   invoke_geordi 'migrate'
 

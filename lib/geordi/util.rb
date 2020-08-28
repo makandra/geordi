@@ -21,7 +21,7 @@ module Geordi
         # install missing gem
         Interaction.warn 'Probably missing gem: ' + gem_name
         Interaction.prompt('Install it now?', 'y', /y|yes/) || Interaction.fail('Missing Gems.')
-        Util.run! install_command, show_cmd: true
+        Util.run!(install_command, show_cmd: true)
 
         # retry
         Gem.clear_paths
@@ -33,50 +33,60 @@ module Geordi
       # Run a command with a clean environment.
       # Print an error message and exit if the command fails.
       #
-      # @option show_cmd: Whether to print the command
-      # @option confirm: Whether to ask for confirmation before running it
-      # @option fail_message: The text to print on command failure
-      def run!(*commands)
-        options = commands.last.is_a?(Hash) ? commands.pop : {}
-        Interaction.note_cmd commands.join(' ') if options[:show_cmd]
+      # show_cmd: Whether to print the command
+      # confirm: Whether to ask for confirmation before running it
+      # fail_message: The text to print on command failure
+      def run!(command, show_cmd: false, confirm: false, fail_message: 'Something went wrong.')
+        # Disable shell features for arrays https://stackoverflow.com/questions/13338147/ruby-system-method-arguments
+        # Conversion: ['ls *', 'some arg'] => ['ls', '*', 'some arg']
+        # If you need shell features, you need to pass in a String instead of an array.
+        if command.is_a?(Array)
+          real_command, *arguments = *command
+          command = [real_command.split(' '), arguments].flatten
+          printable_command = command.join(', ')
+        else
+          printable_command = command
+        end
 
-        if options[:confirm]
+        if show_cmd
+          Interaction.note_cmd printable_command
+        end
+
+        if confirm
           Interaction.prompt('Run this now?', 'n', /y|yes/) or Interaction.fail('Cancelled.')
         end
 
         if testing?
-          puts "Util.run! #{commands.join ', '}"
+          puts "Util.run! #{printable_command}"
         else
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)
-            system(*commands)
+            system(*command)
           elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('2.1.2')
             Bundler.with_original_env do
-              system(*commands)
+              system(*command)
             end
           else
-            Bundler.clean_system(*commands)
+            Bundler.clean_system(*command)
           end
 
-          success || Interaction.fail(options[:fail_message] || 'Something went wrong.')
+          success || Interaction.fail(fail_message)
         end
       end
 
-      def binstub(executable, *arguments)
+      def binstub_or_fallback(executable)
         binstub_file = "bin/#{executable}"
 
-        command = File.exists?(binstub_file) ? [binstub_file] : ['bundle exec', executable]
-        command.push(*arguments)
-        command.join(' ')
+        File.exists?(binstub_file) ? binstub_file : "bundle exec #{executable}"
       end
 
       def console_command(environment)
         if gem_major_version('rails') == 2
           'script/console ' + environment
         elsif gem_major_version('rails') == 3
-          binstub 'rails', 'console', environment
+          "#{binstub_or_fallback('rails')} console #{environment}"
         else
-          binstub 'rails', 'console -e', environment
+          "#{binstub_or_fallback('rails')} console -e #{environment}"
         end
       end
 
@@ -84,7 +94,7 @@ module Geordi
         if gem_major_version('rails') == 2
           'script/server ""'
         else
-          binstub 'rails', 'server'
+          "#{binstub_or_fallback('rails')} server"
         end
       end
 
