@@ -10,5 +10,5 @@ LONGDESC
 
 def commit(*git_args)
   require 'geordi/gitpt'
-  Gitpt.new.run(git_args)
+  Gitpt.new.run_commit(git_args)
 end

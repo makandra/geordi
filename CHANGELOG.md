@@ -1,15 +1,21 @@
 # Changelog
 
 All notable changes to this project will be documented in this file.
-
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
+
 
 ## Unreleased
 
 ### Compatible changes
-* Fixes missing require for `Fileutils` in the dump load command (#145)
-
 ### Breaking changes
+
+
+## 5.4.0 2021-02-01
+
+### Compatible changes
+* Add `geordi branch` command that checks out a feature branch based on a story from Pivotal Tracker
+* Fix missing require for `Fileutils` in the dump load command (#145)
+
 
 ## 5.3.0 2021-02-01
 
