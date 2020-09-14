@@ -169,9 +169,17 @@ offer to edit the whitelist instead.
 - `[--postgres=PORT_OR_SOCKET]`: Use Postgres port or socket
 - `[--mysql=PORT_OR_SOCKET]`: Use MySQL/MariaDB port or socket
 
-
 ### `geordi dump [TARGET]`
 Handle (remote) database dumps.
+
+If you are using multiple databases per environment, pass the database name like this:
+
+    geordi dump -d primary
+
+Loading a dump into one of multiple local databases is not supported yet.
+
+When called with the `--load` option, sources the specified dump into the
+development database.
 
 `geordi dump` (without arguments) dumps the development database with `dumple`.
 
@@ -407,7 +415,7 @@ To try Geordi locally, call it like this:
 
     # -I means "add the following directory to load path"
     ruby -Ilib exe/geordi
-    
+
     # From another directory
     ruby -I ../geordi/lib ../geordi/exe/geordi
 

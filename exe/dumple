@@ -45,9 +45,10 @@ begin
   end
 
   config = YAML::load(ERB.new(File.read(config_path)).result)
-
-  environment = ARGV.reject{ |arg| arg[0].chr == '-' }.first || 'production'
-  config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT"
+  environment, database = ARGV.reject{ |arg| arg[0].chr == '-' }
+  environment ||= 'production'
+  config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
+  config = config[database] if database
 
   dump_dir = "#{ENV['HOME']}/dumps"
   unless File.directory?(dump_dir)

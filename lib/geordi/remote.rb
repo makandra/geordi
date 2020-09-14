@@ -31,9 +31,10 @@ module Geordi
     end
 
     def dump(options = {})
+      database = options[:database] ? " #{options[:database]}" : ''
       # Generate dump on the server
       shell options.merge({
-        remote_command: "dumple #{@config.env} --for_download",
+        remote_command: "dumple #{@config.env}#{database} --for_download",
       })
 
       destination_directory = File.join(@config.root, 'tmp')
@@ -45,7 +46,7 @@ module Geordi
       server = @config.primary_server
       Util.run!("scp -C #{@config.user(server)}@#{server}:#{REMOTE_DUMP_PATH} #{destination_path}")
 
-      Interaction.success "Dumped the #{@stage} database to #{relative_destination}."
+      Interaction.success "Dumped the#{database} #{@stage} database to #{relative_destination}."
 
       destination_path
     end
