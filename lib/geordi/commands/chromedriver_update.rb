@@ -6,8 +6,11 @@ This command will find and install the matching chromedriver for the currently
 installed Chrome.
 LONGDESC
 
+option :quiet_if_matching, type: :boolean, default: false,
+  desc: 'Suppress notification if chromedriver and chrome versions match'
+
 def chromedriver_update
   require 'geordi/chromedriver_updater'
 
-  ChromedriverUpdater.new.run
+  ChromedriverUpdater.new.run(options)
 end

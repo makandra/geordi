@@ -5,12 +5,12 @@ require 'tempfile'
 module Geordi
   class ChromedriverUpdater
 
-    def run
+    def run(options)
       chrome_version = determine_chrome_version
       chromedriver_version = determine_chromedriver_version
 
       if skip_update?(chrome_version, chromedriver_version)
-        Interaction.warn("No update required, you are using for both executables the same version #{chrome_version}!")
+        Interaction.note("No update required, you are using for both executables the same version #{chrome_version}!") unless options[:quiet_if_matching]
       else
         chromedriver_zip = download_chromedriver(chrome_version)
         unzip(chromedriver_zip, File.expand_path('~/bin'))
