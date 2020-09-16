@@ -5,6 +5,13 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+
+- Fixed #115: `geordi cucumber --modified` command, that corrupts filenames like:
+  ```
+  No such file or directory tures/pages.feature
+  ```
+  Also required the `English` gem, for correct usage of global variables
+
 ### Compatible changes
 ### Breaking changes
 
