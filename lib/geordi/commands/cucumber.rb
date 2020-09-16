@@ -37,7 +37,7 @@ def cucumber(*args)
   if args.empty?
     # This is not testable as there is no way to stub `git` :(
     if options.modified?
-      modified_features = `git status --short`.split($INPUT_RECORD_SEPARATOR).map do |line|
+      modified_features = `git status --short`.split("\n").map do |line|
         indicators = line.slice!(0..2) # Remove leading indicators
         line if line.include?('.feature') && !indicators.include?('D')
       end.compact
@@ -45,7 +45,7 @@ def cucumber(*args)
     end
 
     if options.containing
-      matching_features = `grep -lri '#{options.containing}' --include=*.feature features/`.split($INPUT_RECORD_SEPARATOR)
+      matching_features = `grep -lri '#{options.containing}' --include=*.feature features/`.split("\n")
       args = matching_features.uniq
     end
   end
