@@ -129,7 +129,7 @@ module Geordi
     def inquire_pt_api_key
       Geordi::Interaction.warn 'Your settings are missing or invalid.'
       Geordi::Interaction.warn "Please configure your Pivotal Tracker access."
-      token = Geordi::Interaction.prompt 'Your API key:'
+      token = Geordi::Interaction.prompt('Your API key:').to_s # Just be sure
       self.pivotal_tracker_api_key = token
       puts
 
