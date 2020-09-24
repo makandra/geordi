@@ -8,7 +8,7 @@ module Geordi
     GLOBAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/global_settings.yml'.freeze : File.join(ENV['HOME'], '.config/geordi/global.yml').freeze
     LOCAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/local_settings.yml'.freeze : './.geordi.yml'.freeze
 
-    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key ].freeze
+    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver ].freeze
     ALLOWED_LOCAL_SETTINGS = %w[ use_vnc pivotal_tracker_project_ids ].freeze
 
     def initialize
@@ -22,6 +22,15 @@ module Geordi
 
     def pivotal_tracker_api_key=(value)
       @global_settings['pivotal_tracker_api_key'] = value
+      save_global_settings
+    end
+
+    def auto_update_chromedriver
+      @global_settings["auto_update_chromedriver"] || false
+    end
+
+    def auto_update_chromedriver=(value)
+      @global_settings['auto_update_chromedriver'] = value
       save_global_settings
     end
 

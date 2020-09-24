@@ -55,7 +55,9 @@ def cucumber(*args)
 
     invoke_geordi 'bundle_install'
     invoke_geordi 'yarn_install'
-    invoke_geordi 'chromedriver_update', quiet_if_matching: true
+    if settings.auto_update_chromedriver
+      invoke_geordi 'chromedriver_update', quiet_if_matching: true
+    end
 
     cmd_opts, files = args.partition { |f| f.start_with? '-' }
     cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug

@@ -12,6 +12,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
   ```
 
 ### Compatible changes
+
+* added `auto_update_chromedriver` as global setting option to automatically update chromedriver before cucumber 
+  tests, if Chrome and chromedriver versions don't match. 
 ### Breaking changes
 
 
