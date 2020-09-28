@@ -8,17 +8,14 @@ specified dump file into the development database.
 `geordi dump staging` (with a Capistrano deploy target) remotely dumps the
 specified target's database and downloads it to `tmp/`.
 
+`geordi dump staging -l` (with a Capistrano deploy target and the `--load`
+option) sources the dump into the development database after downloading it.
+
 If you are using multiple databases per environment, pass the database name like this:
 
     geordi dump -d primary
 
 Loading a dump into one of multiple local databases is not supported yet.
-
-When called with the `--load` option, sources the specified dump into the
-development database.
-
-`geordi dump staging -l` (with a Capistrano deploy target and the `--load`
-option) sources the dump into the development database after downloading it.
 DESC
 
 option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[DUMP_FILE]'
