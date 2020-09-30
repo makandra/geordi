@@ -53,6 +53,8 @@ def cucumber(*args)
   if File.directory?('features')
     require 'geordi/cucumber'
 
+    settings = Geordi::Settings.new
+
     invoke_geordi 'bundle_install'
     invoke_geordi 'yarn_install'
     if settings.auto_update_chromedriver
