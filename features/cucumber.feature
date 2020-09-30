@@ -3,7 +3,7 @@ Feature: The cucumber command
   Background:
     Given a file named "config/cucumber.yml" with:
     """
-    default: features --publish-quiet
+    default: features
     rerun: features
     """
 
