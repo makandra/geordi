@@ -90,7 +90,7 @@ begin
     command << " --port=#{port}" if port
     command
   else
-    raise "Adapter \"#{config['adapter']} is not supported"
+    raise "Adapter \"#{config['adapter']}\" is not supported"
   end
   success = system(dump_command)
   success or raise "Creating the dump failed"
