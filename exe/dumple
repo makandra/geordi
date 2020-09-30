@@ -65,7 +65,8 @@ begin
     dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
   end
 
-  puts "> Dumping \"#{config['database'] + ' '}\"database for \"#{environment}\" environment ..."
+  given_database = database ? %(#{database} ) : ""
+  puts "> Dumping #{given_database}database for \"#{environment}\" environment ..."
 
   host = config['host']
   port = config['port']
