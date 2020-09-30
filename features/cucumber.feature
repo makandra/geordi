@@ -3,7 +3,7 @@ Feature: The cucumber command
   Background:
     Given a file named "config/cucumber.yml" with:
     """
-    default: features
+    default: features --publish-quiet
     rerun: features
     """
 
@@ -160,7 +160,7 @@ Feature: The cucumber command
     Then the output should contain "# Running @solo features"
       And the output should match /^> .*cucumber .*--tags @solo/
       And the output should contain "# Running features"
-      And the output should match /^> .*cucumber .*--tags \"~@solo\"/
+      And the output should match /^> .*cucumber .*--tags \"not @solo\"/
 
 
   Scenario: When there are no scenarios tagged @solo, the extra run is skipped
@@ -183,7 +183,7 @@ Feature: The cucumber command
 
     When I run `geordi cucumber features/no_solo --verbose`
     Then the output should contain "# Running features"
-      And the output should match /^> .*features .*--tags \"~@solo\"/
+      And the output should match /^> .*--tags \"not @solo\"/
     But the output should not contain "# Running @solo features"
 
 
