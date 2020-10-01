@@ -72,12 +72,21 @@ module Geordi
     def serial_execution_command
       format_args = []
       unless argv.include?('--format') || argv.include?('-f')
-        format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
+        format_args = if spinner_available?
+          ['--format', 'CucumberSpinner::CuriousProgressBarFormatter']
+        else
+          ['--format', 'progress']
+        end
       end
-      [use_firefox_for_selenium, Util.binstub_or_fallback('cucumber'), format_args, escape_shell_args(argv)].flatten.compact.join(' ')
+      [
+        use_firefox_for_selenium,
+        Util.binstub_or_fallback('cucumber'),
+        format_args,
+        escape_shell_args(argv)
+      ].flatten.compact.join(' ')
     end
 
-    def parallel_execution_command
+    def parallel_execution_command(options)
       Interaction.note 'Using parallel_tests'
       self.argv = argv - command_line_features
 
@@ -85,10 +94,15 @@ module Geordi
       features = features_to_run
       features = find_all_features_recursively('features') if features.empty?
 
+      solo_options = if options[:solo]
+        '--tags @solo'
+      else
+        "--tags \"#{not_tag('@solo')}\""
+      end
       [
         use_firefox_for_selenium,
         'bundle exec parallel_test -t ' + type_arg,
-        %(-o '#{command_line_options.join(' ')} --tags "#{not_tag('@solo')}"'),
+        %(-o '#{command_line_options.join(' ')} #{solo_options}),
         "-- #{features.join(' ')}",
       ].compact.join(' ')
     end
@@ -115,7 +129,7 @@ module Geordi
     end
 
     def show_features_to_run
-      if command_line_options.include? '@solo'
+      if command_line_options.include? '@solo' #todo
         Interaction.note 'All features tagged with @solo'
       elsif command_line_options.include? 'rerun'
         Interaction.note 'Rerunning failed scenarios'

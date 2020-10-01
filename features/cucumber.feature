@@ -207,6 +207,28 @@ Feature: The cucumber command
       And the output should not contain "No such file or directory"
 
 
+  Scenario: When called with a single file, scenarios tagged with @solo are run first - and not again sequentially (BUGFIX)
+    Given a file named "features/mixed.feature" with:
+    """
+    Feature: Mixed tests
+      @solo
+      Scenario: This scenario should run alone before the rest
+
+      Scenario: ONLY this scenario should run sequentially
+    """
+
+    When I run `geordi cucumber --verbose features/mixed.feature`
+    Then the output should contain:
+      """
+      # Running @solo features
+      > All features tagged with @solo
+      > bundle exec cucumber --format progress features/mixed.feature --tags @solo
+
+      # Running features
+      > Only: features/mixed.feature
+      > bundle exec cucumber --format progress features/mixed.feature --tags "not @solo"
+      """
+
   Scenario: It does not start the full test run when the @solo run fails
     Given a file named "features/step_definitions/test_steps.rb" with:
     """

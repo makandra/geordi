@@ -81,14 +81,14 @@ def cucumber(*args)
         solo_cmd_opts << '--tags' << '@solo'
 
         Interaction.announce 'Running @solo features'
-        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, verbose: options.verbose, parallel: false
+        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, verbose: options.verbose, parallel: false, solo: true
         solo_success || Interaction.fail('Features failed.')
       end
     end
 
     # Parallel run of all given features + reruns ##############################
     Interaction.announce 'Running features'
-    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, verbose: options.verbose)
+    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, verbose: options.verbose, solo: false)
 
     unless normal_run_successful
       cmd_opts << '--profile' << 'rerun'
