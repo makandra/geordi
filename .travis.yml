@@ -15,6 +15,8 @@ gemfile:
 
 dist: trusty
 
+before_install:
+  - sudo apt-get install -y vnc4server
 install:
   - gem install bundler:1.17.3
   # Replace default Travis CI bundler script with a version that doesn't
