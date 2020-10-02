@@ -236,11 +236,13 @@ Feature: The cucumber command
     """
     And a file named ".firefox-version" with:
     """
-    24.0
+    13.37
     """
 
     When I run `geordi cucumber --verbose`
-    Then the output should match /^> PATH=.*24.0:\$PATH.* features/
+    # Just checking the file was processed. Seeing the specified version in use
+    # would require to install it, which would be overkill.
+    Then the output should contain "Firefox 13.37 not found"
 
 
   Scenario: Running all cucumber features matching a given string
