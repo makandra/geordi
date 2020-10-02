@@ -6,16 +6,22 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ## Unreleased
 
-- Fixed #115: `geordi cucumber --modified` command, that corrupts filenames like:
+### Compatible changes
+### Breaking changes
+
+
+## 4.2.0 2020-10-02
+
+### Compatible changes
+* Add `auto_update_chromedriver` as global setting option to automatically update chromedriver before cucumber 
+  tests, if Chrome and chromedriver versions don't match.
+* Dump command: Add support for multiple databases (#103 by @kajatiger)
+* Add Ruby 2.7 to list of supported Ruby versions
+* Fix #115: `geordi cucumber --modified` command, that corrupted filenames like:
   ```
   No such file or directory tures/pages.feature
   ```
-
-### Compatible changes
-
-* added `auto_update_chromedriver` as global setting option to automatically update chromedriver before cucumber 
-  tests, if Chrome and chromedriver versions don't match. 
-### Breaking changes
+* Avoid writing an instance of HighLine::String to Geordi config files (closes #114)
 
 
 ## 4.1.1 2020-08-28
