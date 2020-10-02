@@ -8,7 +8,7 @@ Feature: The dump command
 
   Scenario: Creating a dump of the development database with multiple databases
     When I run `geordi dump -d primary`
-    Then the output should contain "Util.system! dumple development primary"
+    Then the output should contain "Util.run! dumple development primary"
       And the output should contain "Successfully dumped the primary development database"
 
   Scenario: Creating a dump of a remote database
@@ -57,7 +57,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --load`
       Then the output should contain "# Dumping the database of staging"
-        And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
+        And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
         And the output should contain "> Dumped the staging database to tmp/staging.dump"
 
         # Loading the dump
@@ -78,7 +78,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --database primary`
     Then the output should contain "# Dumping the database of staging (primary database)"
-      And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
       And the output should contain "> Dumped the primary staging database to tmp/staging.dump"
 
   Scenario: Creating a dump of one of multiple remote databases and loading it locally
@@ -101,7 +101,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --database primary --load`
       Then the output should contain "# Dumping the database of staging (primary database)"
-        And the output should contain "Util.system! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
+        And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
         And the output should contain "> Dumped the primary staging database to tmp/staging.dump"
 
         # Loading the dump
