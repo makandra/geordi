@@ -23,25 +23,23 @@ def _setup_vnc
     Interaction.success 'It appears you already have a VNC server installed. Good job!'
   else
     puts 'Please run:'
-    Interaction.note_cmd 'sudo apt-get install vnc4server'
+    Interaction.note_cmd 'sudo apt-get install tightvncserver'
+    puts 'In case this package is not available, you may try vnc4server instead.'
     Interaction.prompt 'Continue ...'
 
     puts
+
     Interaction.note 'We will now set a password for your VNC server.'
     puts Util.strip_heredoc <<-TEXT
-      When running our cucumber script, you will not actually need this
-      password, and there is no security risk. However, if you start a vncserver
-      without our cucumber script, a user with your password can connect to
-      your machine.
+      When running our cucumber script, this password will be used while also
+      restricting access to the local machine. However, if you start a vncserver
+      without our cucumber script, keep in mind that a user with this password
+      can connect to your machine.
 
     TEXT
     puts 'Please run:'
-    Interaction.note_cmd 'vncserver :20'
+    Interaction.note_cmd 'vncpasswd'
     Interaction.warn 'Enter a secure password!'
-    Interaction.prompt 'Continue ...'
-
-    puts 'Now stop the server again. Please run:'
-    Interaction.note_cmd 'vncserver -kill :20'
     Interaction.prompt 'Continue ...'
   end
 

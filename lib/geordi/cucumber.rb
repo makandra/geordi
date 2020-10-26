@@ -11,8 +11,9 @@ module Geordi
   class Cucumber
 
     VNC_DISPLAY = ':17'.freeze
-    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024".freeze
-    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}".freeze
+    VNC_PASSWORD_FILE = File.absolute_path('~/.vnc/passwd').freeze # default for "vncpasswd"
+    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -geometry 1280x1024 -rfbauth #{VNC_PASSWORD_FILE}".freeze
+    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY} -passwd #{VNC_PASSWORD_FILE}".freeze
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER].freeze
 
     def run(files, cucumber_options, options = {})

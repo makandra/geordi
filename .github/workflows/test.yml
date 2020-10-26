@@ -36,7 +36,7 @@ jobs:
     - name: Install vncserver
       run: |
         sudo apt-get update
-        sudo apt-get install -y vnc4server
+        sudo apt-get install -y tightvncserver
         # Fake required password for vncserver
         mkdir ~/.vnc && touch ~/.vnc/passwd && chmod 700 ~/.vnc/passwd
     - name: Bundle
