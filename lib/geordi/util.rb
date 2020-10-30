@@ -43,13 +43,14 @@ module Geordi
         if command.is_a?(Array)
           real_command, *arguments = *command
           command = [real_command.split(' '), arguments].flatten
-          printable_command = command.join(', ')
+          show_command = command
         else
-          printable_command = command
+          show_command = [command]
         end
 
         if show_cmd
-          Interaction.note_cmd printable_command
+          # Join with spaces for better readability and copy-pasting
+          Interaction.note_cmd show_command.join(' ')
         end
 
         if confirm
@@ -57,7 +58,8 @@ module Geordi
         end
 
         if testing?
-          puts "Util.run! #{printable_command}"
+          # Join with commas for precise argument distinction
+          puts "Util.run! #{show_command.join(', ')}"
         else
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)
