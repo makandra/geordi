@@ -3,9 +3,9 @@ module Geordi
 
     attr_accessor :root
 
-    def initialize(stage)
+    def initialize(stage, root = nil)
       self.stage = stage
-      self.root = find_project_root!
+      self.root = root || find_project_root!
       load_deploy_info
     end
 
