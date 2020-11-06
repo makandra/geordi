@@ -7,7 +7,7 @@ def create_database_yml
     Interaction.announce 'Creating ' + real_yml
 
     sample = File.read(sample_yml)
-    adapter = sample.match(/adapter: (\w+)\n/).captures.first
+    adapter = sample.match(/adapter: (\w+)/).captures.first
 
     print "Please enter your #{adapter} password: "
     db_password = STDIN.gets.strip
