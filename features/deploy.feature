@@ -14,15 +14,11 @@ Feature: The deploy command
       And I type "yes"
     Then the output should contain:
       """
-      # Checking whether your master branch is ready
-      Util.run! git checkout master
-      > All good.
-
       # You are about to:
       > Deploy to staging
       Go ahead with the deployment? [n]
       """
-      And the output should contain:
+    And the output should contain:
       """
       > cap staging deploy:migrations
       Util.run! cap staging deploy:migrations
