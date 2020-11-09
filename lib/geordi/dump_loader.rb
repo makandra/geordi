@@ -15,7 +15,7 @@ module Geordi
 
       evaluated_config_file = ERB.new(File.read('config/database.yml')).result
       # Allow aliases and a special set of classes like symbols and time objects
-      @config ||= YAML.safe_load(evaluated_config_file, [Symbol, Time], [], true)
+      @config ||= YAML.load(evaluated_config_file)
       @config['development']
     end
     alias_method :config, :development_database_config
