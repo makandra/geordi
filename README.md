@@ -384,7 +384,9 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 
     dumple development
 
-See http://makandracards.com/makandra/1008-dump-your-database-with-dumple
+**Options**
+- `-i`: Print disk usage of `~/dumps`
+- `--compress`: After dumping, run gzip to compress the dump in place
 
 
 launchy_browser
