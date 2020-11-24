@@ -1,0 +1,47 @@
+name: Tests
+on:
+  push:
+    branches:
+    - master
+  pull_request:
+    branches:
+    - master
+jobs:
+  test:
+    runs-on: ubuntu-18.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+        - ruby: 2.2.10
+          gemfile: Gemfile
+        - ruby: 2.3.8
+          gemfile: Gemfile
+        - ruby: 2.4.10
+          gemfile: Gemfile
+        - ruby: 2.5.8
+          gemfile: Gemfile
+        - ruby: 2.6.6
+          gemfile: Gemfile
+        - ruby: 2.7.2
+          gemfile: Gemfile
+    env:
+      BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
+    steps:
+    - uses: actions/checkout@v2
+    - name: Install ruby
+      uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: "${{ matrix.ruby }}"
+    - name: Install vncserver
+      run: |
+        sudo apt-get install -y vnc4server
+        # Fake required password for vncserver
+        mkdir ~/.vnc && touch ~/.vnc/passwd && chmod 700 ~/.vnc/passwd
+    - name: Bundle
+      run: |
+        gem install bundler:1.17.3
+        bundle install --no-deployment
+    - name: Run tests
+      run: bundle exec rake
+    
