@@ -8,6 +8,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 ### Breaking changes
+
+
+## 5.0.0 2020-11-25
+
+### Breaking changes
 * Remove support for Ruby 2.0 and 2.1
 
 
