@@ -1,4 +1,3 @@
-@ruby>=2.1
 Feature: Creating a git commit from a Pivotal Tracker story
   Background:
     Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key"

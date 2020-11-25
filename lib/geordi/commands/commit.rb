@@ -9,10 +9,6 @@ stored in `~/.config/geordi/global.yml`.
 LONGDESC
 
 def commit(*git_args)
-  raise <<-TEXT if Gem::Version.new(RUBY_VERSION) < Gem::Version.new('2.1')
-Unsupported Ruby Version #{RUBY_VERSION}. `geordi commit` requires Ruby 2.1+.
-  TEXT
-
   require 'geordi/gitpt'
   Gitpt.new.run(git_args)
 end

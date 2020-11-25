@@ -79,12 +79,12 @@ module Geordi
       local_path = LOCAL_SETTINGS_FILE_NAME
 
       if File.exists?(global_path)
-        global_settings = YAML.load(File.read(global_path))
+        global_settings = YAML.safe_load(File.read(global_path))
         check_for_invalid_keys(global_settings, ALLOWED_GLOBAL_SETTINGS, global_path)
       end
 
       if File.exists?(local_path)
-        local_settings = YAML.load(File.read(local_path))
+        local_settings = YAML.safe_load(File.read(local_path))
         check_for_invalid_keys(local_settings, ALLOWED_LOCAL_SETTINGS, local_path)
       end
 

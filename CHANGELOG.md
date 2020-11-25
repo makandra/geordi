@@ -7,9 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Fixed: Changed `Psych#safe_load` back to `Psych#load`, as it is not supported by Ruby 2.0.
-
 ### Breaking changes
+* Remove support for Ruby 2.0 and 2.1
 
 
 ## 4.2.0 2020-10-02
