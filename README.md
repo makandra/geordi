@@ -156,6 +156,24 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 - `-M, [--no-migrations], [--no-no-migrations]`: Run cap deploy instead of cap deploy:migrations
 - `-c, [--current-branch], [--no-current-branch]`: Set DEPLOY_BRANCH to the current branch during deploy
 
+### `geordi docker`
+
+Manage docker containers for the current project.
+
+Manage docker containers to run your project dockerized.
+
+It expects a docker-compose file that specifies all services, and a service
+named "main" that opens a shell for the project.
+
+There are two subcommands:
+
+- geordi docker setup
+  Builds all docker containers.
+- geordi docker shell
+  Runs the docker service named 'main'.
+
+
+### `geordi drop-databases`
 
 ### `geordi drop-databases`
 Interactively delete local databases.
