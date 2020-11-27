@@ -64,7 +64,7 @@ module Geordi
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)
             system(*command)
-          elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('2.1.2')
+          elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('1.17.3')
             Bundler.with_original_env do
               system(*command)
             end
