@@ -4,6 +4,7 @@ source 'http://rubygems.org'
 gemspec
 
 gem 'aruba'
+gem 'contracts', '=0.9'
 gem 'rspec-mocks'
 gem 'highline'
 gem 'parallel_tests'

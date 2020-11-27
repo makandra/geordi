@@ -1,4 +1,5 @@
-require 'aruba/cucumber'
+require 'cucumber/rspec/doubles'
+
 
 if Gem::Version.new(RUBY_VERSION) > Gem::Version.new('1.8.7')
   require 'pry'
