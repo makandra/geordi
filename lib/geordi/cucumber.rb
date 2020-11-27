@@ -11,7 +11,8 @@ module Geordi
     include Geordi::Interaction
 
     VNC_DISPLAY = ':17'
-    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} -localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024"
+    VNC_SERVER_DEFAULT_OPTIONS = '-localhost -nolisten tcp -SecurityTypes None -geometry 1280x1024'
+    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} #{ENV.fetch('GEORDI_VNC_OPTIONS', VNC_SERVER_DEFAULT_OPTIONS)}"
     VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY}"
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER]
 
