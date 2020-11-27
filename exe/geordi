@@ -1,5 +1,7 @@
 #!/usr/bin/env ruby
 
+$LOAD_PATH.unshift File.expand_path('../../lib', __FILE__)
+
 require 'geordi/util'
 
 Geordi::Util.installing_missing_gems do
