@@ -1,4 +1,4 @@
-Geordi [![Build Status](https://travis-ci.org/makandra/geordi.svg?branch=master)](https://travis-ci.org/makandra/geordi)
+Geordi [![Tests](https://github.com/makandra/geordi/workflows/Tests/badge.svg)](https://github.com/makandra/geordi/actions)
 ======
 
 Geordi is a collection of command line tools we use in our daily work with
