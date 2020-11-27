@@ -19,4 +19,18 @@ class DockerCLI < Thor
 end
 
 desc 'docker', 'Manage docker containers for the current project.'
+long_desc <<-LONGDESC
+Manage docker containers to run your project dockerized.
+
+It expects a docker-compose file that specifies all services, and a service
+named "main" that opens a shell for the project.
+
+There are two subcommands:
+
+- geordi docker setup
+  Builds all docker containers.
+- geordi docker shell
+  Runs the docker service named 'main'.
+
+LONGDESC
 subcommand 'docker', DockerCLI

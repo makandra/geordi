@@ -157,6 +157,22 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 - `-c, [--current-branch], [--no-current-branch]`: Set DEPLOY_BRANCH to the current branch during deploy
 
 
+### `geordi docker`
+Manage docker containers for the current project.
+
+Manage docker containers to run your project dockerized.
+
+It expects a docker-compose file that specifies all services, and a service
+named "main" that opens a shell for the project.
+
+There are two subcommands:
+
+- geordi docker setup
+  Builds all docker containers.
+- geordi docker shell
+  Runs the docker service named 'main'.
+
+
 ### `geordi drop-databases`
 Interactively delete local databases.
 
@@ -176,17 +192,9 @@ offer to edit the whitelist instead.
 - `[--postgres=PORT_OR_SOCKET]`: Use Postgres port or socket
 - `[--mysql=PORT_OR_SOCKET]`: Use MySQL/MariaDB port or socket
 
+
 ### `geordi dump [TARGET]`
 Handle (remote) database dumps.
-
-If you are using multiple databases per environment, pass the database name like this:
-
-    geordi dump -d primary
-
-Loading a dump into one of multiple local databases is not supported yet.
-
-When called with the `--load` option, sources the specified dump into the
-development database.
 
 `geordi dump` (without arguments) dumps the development database with `dumple`.
 
@@ -199,8 +207,15 @@ specified target's database and downloads it to `tmp/`.
 `geordi dump staging -l` (with a Capistrano deploy target and the `--load`
 option) sources the dump into the development database after downloading it.
 
+If you are using multiple databases per environment, pass the database name like this:
+
+    geordi dump -d primary
+
+Loading a dump into one of multiple local databases is not supported yet.
+
 **Options**
 - `-l, [--load=[DUMP_FILE]]`: Load a dump
+- `-d, [--database=NAME]`: Database name, if there are multiple databases
 
 
 ### `geordi firefox COMMAND`
