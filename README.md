@@ -54,6 +54,11 @@ Commit using a story title from Pivotal Tracker.
 
 Example: `geordi commit`
 
+Any extra arguments are forwarded to `git commit -m <message>`.
+
+If there are no staged changes, prints a warning but will continue to create
+an empty commit.
+
 On the first execution we ask for your Pivotal Tracker API token. It will be
 stored in `~/.gitpt`.
 
@@ -133,6 +138,23 @@ is a file config/deploy/makandra.rb.
 When your project is running Capistrano 3, deployment will use `cap deploy`
 instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
+
+
+### `geordi docker`
+
+Manage docker containers for the current project.
+
+Manage docker containers to run your project dockerized.
+
+It expects a docker-compose file that specifies all services, and a service
+named "main" that opens a shell for the project.
+
+There are two subcommands:
+
+- geordi docker setup
+  Builds all docker containers.
+- geordi docker shell
+  Runs the docker service named 'main'.
 
 
 ### `geordi drop-databases`
