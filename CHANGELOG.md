@@ -7,9 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Switch to tightvncserver to be compatible with Ubuntu 20.04. vnc4server is still supported.
+* Geordi update will exit with a warning when Ruby version changes during pull.
 
 ### Breaking changes
+
+
+## 5.1.0 2020-12-04
+
+### Compatible changes
+* Switch to tightvncserver to be compatible with Ubuntu 20.04. vnc4server is still supported.
 
 
 ## 5.0.0 2020-11-25
