@@ -25,8 +25,6 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'thor', '~> 1'
 
-  spec.post_install_message = <<-ATTENTION
-* Binary `geordi` installed
-* Geordi 4 has removed its deprecated executables. If you want to invoke these commands like before, you may create aliases on your machine. For the alias mapping, please refer to https://github.com/makandra/geordi/commit/68fa92acb146ebde3acb92d7b9556bd4eaa2b4ff
-  ATTENTION
+  #spec.post_install_message = <<-ATTENTION
+  #ATTENTION
 end
