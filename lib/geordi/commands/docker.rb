@@ -5,7 +5,7 @@ class DockerCLI < Thor
   end
 
   desc 'shell', 'Open a shell in the main docker container for the current project.'
-  option :secondary, default: false, :type => :boolean
+  option :secondary, :default => false, :type => :boolean
   map 'shell' => '_shell'
   def _shell
     docker.shell(:secondary => options[:secondary])
