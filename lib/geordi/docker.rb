@@ -18,12 +18,13 @@ module Geordi
       end
     end
 
-    def shell
+    def shell(options = {})
       check_installation_and_config
-      command = [:exec, 'docker-compose', 'run', '--service-ports']
-      command += ssh_agent_forward
-      command += ['main']
-      execute(*command)
+      if options[:secondary]
+        attach_to_running_shell
+      else
+        run_shell
+      end
     end
 
     def vnc
@@ -32,10 +33,32 @@ module Geordi
 
     private
 
+    def attach_to_running_shell
+      running_containers = execute(:`, 'docker-compose ps').split("\n")
+      if (main_container_line = running_containers.grep(/_main_run/).first)
+        container_name = main_container_line.split(' ').first
+        execute(:system, 'docker', 'exec', '-it', container_name, 'bash')
+      else
+        fail('Could not find a running shell. Start without --secondary first.')
+      end
+    end
+
+    def run_shell
+      command = [:system, 'docker-compose', 'run', '--service-ports']
+      command += ssh_agent_forward
+      command += ['main']
+      execute(*command)
+      execute(:system, 'docker-compose', 'stop')
+    end
+
     def execute(kind, *args)
       if ENV['GEORDI_TESTING']
         puts "Stubbed run #{args.join(' ')}"
-        mock_run(*args)
+        if kind == :`
+          mock_parse(*args)
+        else
+          mock_run(*args)
+        end
       else
         send(kind, *args)
       end
@@ -44,6 +67,11 @@ module Geordi
     def mock_run(*args)
       # exists just to be stubbed in tests
       true
+    end
+
+    def mock_parse(*args)
+      # exists just to be stubbed in tests
+      'command output'
     end
 
     def check_installation_and_config

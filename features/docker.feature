@@ -48,7 +48,7 @@ Feature: The docker command
       And the output should contain "x You need to install docker first"
 
 
-  Scenario: Shell runs docker-compose run main
+  Scenario: Shell runs docker-compose run main, and docker-compose stop
     Given a file named "docker-compose.yml" with:
     """
     services:
@@ -60,3 +60,27 @@ Feature: The docker command
 
     When I run `geordi docker shell`
     Then the output should contain "docker-compose run --service-ports -v /path/to/sock:/path/to/sock -e SSH_AUTH_SOCK=/path/to/sock/ssh main"
+    Then the output should contain "docker-compose stop"
+
+
+  Scenario: One can attach to a running shell
+    Given the docker command finds a running shell "project_main_run_foo"
+      And a file named "docker-compose.yml" with:
+    """
+    services:
+      main: foo
+    """
+
+    When I run `geordi docker shell --secondary`
+    Then the output should contain "Could not find a running shell"
+
+
+  Scenario: Attaching fails if no shell is running
+    Given a file named "docker-compose.yml" with:
+    """
+    services:
+      main: foo
+    """
+
+    When I run `geordi docker shell --secondary`
+    Then the output should contain "Could not find a running shell"
