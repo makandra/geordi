@@ -6,9 +6,13 @@ Feature: The deploy command
     answer prompts blindly, and check the output afterwards.
 
     When I run `geordi deploy` interactively
+    Then I should see a prompt "Deployment stage: [staging] "
+    When I type "staging" and continue
+    Then I should see a prompt "Source branch: [master] "
+    When I type "master" and continue
       # Answer three prompts
-      And I type "staging"
-      And I type "master"
+#      And I type "staging"
+#      And I type "master"
       And I type ""
       # Confirm deployment
       And I type "yes"
