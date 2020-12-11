@@ -37,7 +37,7 @@ module Geordi
       running_containers = execute(:`, 'docker-compose ps').split("\n")
       if (main_container_line = running_containers.grep(/_main_run/).first)
         container_name = main_container_line.split(' ').first
-        execute(:system, 'docker', 'exec', '-it', container_name, 'bash')
+        execute(:exec, 'docker', 'exec', '-it', container_name, 'bash')
       else
         fail('Could not find a running shell. Start without --secondary first.')
       end
