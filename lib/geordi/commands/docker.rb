@@ -10,6 +10,11 @@ class DockerCLI < Thor
     docker.shell
   end
 
+  desc 'vnc', 'Open a vnc viewer connecting to the docker container.'
+  def vnc
+    docker.vnc
+  end
+
   private
 
   def docker

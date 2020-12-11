@@ -14,7 +14,7 @@ module Geordi
     VNC_PASSWORD_FILE = File.absolute_path('~/.vnc/passwd').freeze # default for "vncpasswd"
     VNC_SERVER_DEFAULT_OPTIONS = "-localhost -nolisten tcp -geometry 1280x1024 -rfbauth #{VNC_PASSWORD_FILE}".freeze
     VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} #{ENV.fetch('GEORDI_VNC_OPTIONS', VNC_SERVER_DEFAULT_OPTIONS)}".freeze
-    VNC_VIEWER_COMMAND = "vncviewer #{VNC_DISPLAY} -passwd #{VNC_PASSWORD_FILE}".freeze
+    VNC_VIEWER_COMMAND = "vncviewer -passwd #{VNC_PASSWORD_FILE}".freeze
     VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER].freeze
 
     def run(files, cucumber_options, options = {})
@@ -32,10 +32,10 @@ module Geordi
       system command # Util.run! would reset the Firefox PATH
     end
 
-    def launch_vnc_viewer
+    def launch_vnc_viewer(source = VNC_DISPLAY)
       fork do
         error = capture_stderr do
-          system(VNC_VIEWER_COMMAND)
+          system("#{VNC_VIEWER_COMMAND} #{source}")
         end
         unless $?.success?
           if $?.exitstatus == 127

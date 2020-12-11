@@ -30,7 +30,7 @@ Feature: The docker command
     Then the output should contain "x Your project does not seem to be properly set up."
 
 
-  Scenario: Setup runs docker-compose build
+  Scenario: Setup runs docker-compose pull
     Given a file named "docker-compose.yml" with:
     """
     services:
@@ -38,7 +38,7 @@ Feature: The docker command
     """
 
     When I run `geordi docker setup`
-    Then the output should contain "docker-compose build"
+    Then the output should contain "docker-compose pull"
 
 
   Scenario: Shell checks for existence of docker
@@ -48,12 +48,15 @@ Feature: The docker command
       And the output should contain "x You need to install docker first"
 
 
-  Scenario: Shell runs docker-compose run maiun
+  Scenario: Shell runs docker-compose run main
     Given a file named "docker-compose.yml" with:
     """
     services:
       main: foo
     """
+      And I set the environment variables to:
+        | variable      | value             |
+        | SSH_AUTH_SOCK | /path/to/sock/ssh |
 
     When I run `geordi docker shell`
-    Then the output should contain "docker-compose run --service-ports main"
+    Then the output should contain "docker-compose run --service-ports -v /path/to/sock:/path/to/sock -e SSH_AUTH_SOCK=/path/to/sock/ssh main"
