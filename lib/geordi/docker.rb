@@ -1,4 +1,5 @@
 require 'geordi/interaction'
+require 'geordi/cucumber'
 require 'yaml'
 
 module Geordi
@@ -10,7 +11,7 @@ module Geordi
     def setup
       check_installation_and_config
       announce('Building containers...')
-      if execute(:system, 'docker-compose', 'build')
+      if execute(:system, 'docker-compose', 'pull')
         success('Build successful.')
       else
         fail('Build failed.')
@@ -19,7 +20,14 @@ module Geordi
 
     def shell
       check_installation_and_config
-      execute(:exec, 'docker-compose', 'run', '--service-ports', 'main')
+      command = [:exec, 'docker-compose', 'run', '--service-ports']
+      command += ssh_agent_forward
+      command += ['main']
+      execute(*command)
+    end
+
+    def vnc
+      Cucumber.new.launch_vnc_viewer('::5967')
     end
 
     private
@@ -66,6 +74,15 @@ module Geordi
       end
     rescue
       false
+    end
+
+    def ssh_agent_forward
+      if (auth_sock = ENV['SSH_AUTH_SOCK'])
+        dirname = File.dirname(auth_sock)
+        ['-v', "#{dirname}:#{dirname}", '-e', "SSH_AUTH_SOCK=#{auth_sock}"]
+      else
+        []
+      end
     end
   end
 end
