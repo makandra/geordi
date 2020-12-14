@@ -168,7 +168,7 @@ named "main" that opens a shell for the project.
 There are three subcommands:
 
 - `geordi docker setup`
-  Builds all docker containers.
+  Fetches all docker containers.
 - `geordi docker shell`
   Runs the docker service named 'main'.
 - `geordi docker vnc`

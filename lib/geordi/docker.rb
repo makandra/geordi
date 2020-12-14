@@ -10,11 +10,11 @@ module Geordi
 
     def setup
       check_installation_and_config
-      announce('Building containers...')
+      announce('Fetching containers...')
       if execute(:system, 'docker-compose', 'pull')
-        success('Build successful.')
+        success('Fetch successful.')
       else
-        fail('Build failed.')
+        fail('Fetch failed.')
       end
     end
 

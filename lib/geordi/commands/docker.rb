@@ -1,5 +1,5 @@
 class DockerCLI < Thor
-  desc 'setup', 'Setup docker and build required docker-container for the current project.'
+  desc 'setup', 'Setup docker and fetch required docker-container for the current project.'
   def setup
     docker.setup
   end
@@ -34,7 +34,7 @@ named "main" that opens a shell for the project.
 There are three subcommands:
 
 - `geordi docker setup`
-  Builds all docker containers.
+  Fetches all docker containers.
 - `geordi docker shell`
   Runs the docker service named 'main'.
 - `geordi docker vnc`
