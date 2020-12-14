@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 * Geordi update will exit with a warning when Ruby version changes during pull.
+* Add `geordi docker` command with support for opening a shell for dockerized dev environments.
 
 ### Breaking changes
 
@@ -134,6 +135,9 @@ Don't know how to build task 'db:migrate parallel:prepare'
 ### Breaking changes
 - Remove support for Ruby 1.8.7 and Ruby 1.9.3. Bug fixes might still be backported to 2.x, but we will not add any features to 2.x anymore. Please consider to upgrade the Ruby version of your project.
 
+## 2.12.3
+
+* Add `geordi docker` command with support for opening a shell for dockerized dev environments.
 
 ## 2.11.0 2020-05-04
 

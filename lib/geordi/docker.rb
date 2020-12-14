@@ -93,7 +93,7 @@ module Geordi
     end
 
     def docker_compose_config
-      if File.exists?(DOCKER_COMPOSE_FILE)
+      @docker_compose_config ||= if File.exists?(DOCKER_COMPOSE_FILE)
         if YAML.respond_to?(:safe_load)
           YAML.safe_load(File.read(DOCKER_COMPOSE_FILE))
         else

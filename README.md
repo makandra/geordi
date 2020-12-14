@@ -162,16 +162,16 @@ Manage docker containers for the current project.
 
 Manage docker containers to run your project dockerized.
 
-It expects a docker-compose file that specifies all services, and a service
+It expects a `docker-compose.yml` file that specifies all services, and a service
 named "main" that opens a shell for the project.
 
-There are two subcommands:
+There are three subcommands:
 
-- geordi docker setup
+- `geordi docker setup`
   Builds all docker containers.
-- geordi docker shell
+- `geordi docker shell`
   Runs the docker service named 'main'.
-- geordi docker vnc
+- `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
 
 
