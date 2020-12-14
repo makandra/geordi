@@ -72,7 +72,7 @@ Feature: The docker command
     """
 
     When I run `geordi docker shell --secondary`
-    Then the output should contain "Could not find a running shell"
+    Then the output should contain "docker exec -it project_main_run_foo bash"
 
 
   Scenario: Attaching fails if no shell is running

@@ -54,7 +54,3 @@ end
 Before('@same-process') do
   aruba.config.command_launcher = :in_process
 end
-
-Before do
-  @aruba_timeout_seconds = 5
-end
