@@ -7,10 +7,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Geordi update will exit with a warning when Ruby version changes during pull.
-* Add `geordi docker` command with support for opening a shell for dockerized dev environments.
 
 ### Breaking changes
+
+
+## 5.2.0 2020-12-14
+
+### Compatible changes
+
+* Geordi update will exit with a warning when Ruby version changes during pull.
+* Add `geordi docker` command with support for opening a shell for dockerized dev environments.
 
 
 ## 5.1.0 2020-12-04
