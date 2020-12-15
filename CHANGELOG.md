@@ -10,6 +10,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+## 5.2.1 2020-12-15
+
+### Compatible changes
+
+* Fix a bug regarding `geordi vnc` which was introduced in 5.1.0
 
 ## 5.2.0 2020-12-14
 
