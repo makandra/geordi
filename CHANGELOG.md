@@ -8,9 +8,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+### Breaking changes
+
+
+## 5.2.2 2020-12-17
+
+### Compatible changes
+
 * Ignore ACL settings when loading a PostgreSQL dump
 
-### Breaking changes
 
 ## 5.2.1 2020-12-15
 
