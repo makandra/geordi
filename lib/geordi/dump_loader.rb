@@ -34,7 +34,7 @@ module Geordi
 
     def postgresql_command
       ENV['PGPASSWORD'] = config['password']
-      command = 'pg_restore --no-owner --clean'
+      command = 'pg_restore --no-owner --clean --no-acl'
       command << ' --username=' << config['username'].to_s if config['username']
       command << ' --port=' << config['port'].to_s if config['port']
       command << ' --host=' << config['host'].to_s if config['host']

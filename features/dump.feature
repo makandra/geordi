@@ -107,3 +107,33 @@ Feature: The dump command
         # Loading the dump
         And the output should contain "Sourcing dump into the test db"
         And the output should contain "Your test database has now the data of staging (primary database)."
+
+  Scenario: Sourcing a dump with mysql
+    Given a file named "tmp/production.dump" with "some content"
+    And a file named "config/database.yml" with:
+      """
+      development:
+        database: test
+        adapter: mysql
+      """
+
+    When I run `geordi dump -l tmp/production.dump`
+    Then the output should contain "Sourcing dump into the test db"
+    And the output should contain "Source file: tmp/production.dump"
+    And the output should contain "Util.run! mysql --silent --default-character-set=utf8 test < tmp/production.dump"
+    And the output should contain "Your test database has now the data of tmp/production.dump."
+
+  Scenario: Sourcing a dump with postgres
+    Given a file named "tmp/production.dump" with "some content"
+      And a file named "config/database.yml" with:
+      """
+      development:
+        database: test
+        adapter: postgresql
+      """
+
+    When I run `geordi dump -l tmp/production.dump`
+    Then the output should contain "Sourcing dump into the test db"
+      And the output should contain "Source file: tmp/production.dump"
+      And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test tmp/production.dump"
+      And the output should contain "Your test database has now the data of tmp/production.dump."
