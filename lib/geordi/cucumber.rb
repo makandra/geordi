@@ -60,7 +60,7 @@ module Geordi
         VNC_ENV_VARIABLES.each do |variable|
           ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
         end
-        ENV['BROWSER'] = ENV['LAUNCHY_BROWSER'] = File.expand_path('../../bin/launchy_browser', __dir__)
+        ENV['BROWSER'] = ENV['LAUNCHY_BROWSER'] = File.expand_path('../../exe/launchy_browser', __dir__)
         ENV['DISPLAY'] = VNC_DISPLAY
 
         Interaction.note 'Run `geordi vnc` to view the Selenium test browsers'
