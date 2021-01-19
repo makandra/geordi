@@ -1,5 +1,6 @@
 require 'geordi/interaction'
 require 'socket'
+require 'bundler'
 
 module Geordi
   class Util
@@ -167,15 +168,10 @@ module Geordi
       # Get the version for the given gem by parsing Gemfile.lock.
       # Returns nil if the gem is not used.
       def gem_version(gem)
-        # Lines look like `* will_paginate (2.3.15)` or `railslts-version (2.3.18.16 7f51cc7)`
-        bundle_list.split("\n").each do |line|
-          matches = line.match(/\* #{gem} \(([\d\.]+)/)
-          next if matches.nil? || matches[1].nil?
+        lock_file = Bundler::LockfileParser.new(Bundler.read_file(Bundler.default_lockfile))
+        spec = lock_file.specs.detect { |spec| spec.name == gem }
 
-          return Gem::Version.new(matches[1])
-        end
-
-        nil
+        spec && spec.version
       end
 
       def file_containing?(file, regex)
@@ -190,12 +186,6 @@ module Geordi
         leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
         string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
         string
-      end
-
-      private
-
-      def bundle_list
-        @bundle_list ||= `bundle list`
       end
 
     end
