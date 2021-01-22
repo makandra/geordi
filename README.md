@@ -171,6 +171,7 @@ There are three subcommands:
   Fetches all docker containers.
 - `geordi docker shell`
   Runs the docker service named 'main'.
+  Append `--secondary` to open a second shell in a already running container.
 - `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
 
