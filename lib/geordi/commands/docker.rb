@@ -1,17 +1,17 @@
 class DockerCLI < Thor
-  desc 'setup', 'Setup docker and fetch required docker-container for the current project.'
+  desc 'setup', 'Setup docker and fetch required docker-container for the current project'
   def setup
     docker.setup
   end
 
-  desc 'shell', 'Open a shell in the main docker container for the current project.'
+  desc 'shell', 'Open a shell in the main docker container for the current project'
   option :secondary, default: false, type: :boolean
   map 'shell' => '_shell'
   def _shell
     docker.shell(:secondary => options[:secondary])
   end
 
-  desc 'vnc', 'Open a vnc viewer connecting to the docker container.'
+  desc 'vnc', 'Open a vnc viewer connecting to the docker container'
   def vnc
     docker.vnc
   end
@@ -24,7 +24,7 @@ class DockerCLI < Thor
   end
 end
 
-desc 'docker', 'Manage docker containers for the current project.'
+desc 'docker', 'Manage docker containers for the current project'
 long_desc <<-LONGDESC
 Manage docker containers to run your project dockerized.
 
@@ -35,11 +35,12 @@ There are three subcommands:
 
 - `geordi docker setup`
   Fetches all docker containers.
+
 - `geordi docker shell`
   Runs the docker service named 'main'.
-  Append `--secondary` to open a second shell in a already running container.
+  Append `--secondary` to open a second shell in an already running container.
+
 - `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
-
 LONGDESC
 subcommand 'docker', DockerCLI
