@@ -111,13 +111,13 @@ in `.geordi.yml` in the project root.
 ### `geordi delete-dumps [DIRECTORY]`
 Delete database dump files (*.dump).
 
-Example: `geordi delete_dumps` or `geordi delete_dumps ~/tmp/dumps`
+Example: `geordi delete-dumps` or `geordi delete-dumps ~/tmp/dumps`
 
-Recursively search for files ending in `*.dump` and offer to delete those. When
+Recursively searches for files ending in `.dump` and offers to delete them. When
 no argument is given, two default directories are searched for dump files: the
 current working directory and `~/dumps` (for dumps created with geordi).
 
-Geordi will ask for confirmation before actually deleting files.
+Will ask for confirmation before actually deleting files.
 
 
 ### `geordi deploy [STAGE]`
@@ -169,9 +169,11 @@ There are three subcommands:
 
 - `geordi docker setup`
   Fetches all docker containers.
+
 - `geordi docker shell`
   Runs the docker service named 'main'.
-  Append `--secondary` to open a second shell in a already running container.
+  Append `--secondary` to open a second shell in an already running container.
+
 - `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
 
@@ -424,11 +426,9 @@ Once you have completed your modifications, please update CHANGELOG and README
 as needed. Use `rake readme` to regenerate the Geordi section of the README from
 the command documentations.
 
-Make sure tests are green in the default Ruby *plus* in the oldest Ruby > 1.8
-that you have installed on your system (1.8.7 support has been dropped).
-
-Before releasing your changes, wait for the Travis results to see that tests
-passed in all Ruby versions.
+Make sure tests are green in the oldest supported Ruby version. Before releasing
+a new gem version, wait for the CI results to see that tests are green in all
+Ruby versions.
 
 
 Adding a new command

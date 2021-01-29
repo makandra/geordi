@@ -1,43 +1,41 @@
 desc 'delete-dumps [DIRECTORY]', 'Delete database dump files (*.dump)'
 long_desc <<-LONGDESC
-Example: `geordi delete_dumps` or `geordi delete_dumps ~/tmp/dumps`
+Example: `geordi delete-dumps` or `geordi delete-dumps ~/tmp/dumps`
 
-Recursively search for files ending in `*.dump` and offer to delete those. When
+Recursively searches for files ending in `.dump` and offers to delete them. When
 no argument is given, two default directories are searched for dump files: the
 current working directory and `~/dumps` (for dumps created with geordi).
 
-Geordi will ask for confirmation before actually deleting files.
+Will ask for confirmation before actually deleting files.
 LONGDESC
 
-def delete_dumps(dump_directory = nil)
-  deletable_dumps = []
-  dump_directories = if dump_directory.nil?
-    [
-      File.join(Dir.home, 'dumps'),
-      Dir.pwd,
-    ]
-  else
-    [dump_directory]
+def delete_dumps(*locations)
+  Interaction.announce 'Retrieving dump files'
+
+  dump_files = []
+  if locations.empty?
+    locations = [ File.join(Dir.home, 'dumps'), Dir.pwd ]
   end
-  Interaction.announce 'Looking for *.dump in ' << dump_directories.join(',')
-  dump_directories.each do |d|
-    d_2 = File.expand_path(d)
-    unless File.directory? File.realdirpath(d_2)
-      Interaction.warn "Directory #{d_2} does not exist"
+  locations.map! &File.method(:expand_path)
+
+  Interaction.note "Looking in #{locations.join(', ')}"
+  locations.each do |dir|
+    directory = File.expand_path(dir)
+    unless File.directory? File.realdirpath(directory)
+      Interaction.warn "Directory #{directory} does not exist. Skipping."
       next
     end
-    deletable_dumps.concat(Dir.glob("#{d_2}/**/*.dump"))
+    dump_files.concat Dir.glob("#{directory}/**/*.dump")
   end
+  deletable_dumps = dump_files.flatten.uniq.sort.select &File.method(:file?)
+
   if deletable_dumps.empty?
-    Interaction.success 'No dumps to delete' if deletable_dumps.empty?
-    exit 0
-  end
-  deletable_dumps.uniq!.sort!
-  Interaction.note 'The following dumps can be deleted:'
-  puts
-  puts deletable_dumps
-  Interaction.prompt('Delete those dumps', 'n', /y|yes/) || raise('Cancelled.')
-  deletable_dumps.each do |dump|
-    File.delete dump unless File.directory? dump
+    Interaction.note 'No dump files found'
+  else
+    puts deletable_dumps
+    Interaction.prompt('Delete these files?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
+
+    deletable_dumps.each &File.method(:delete)
+    Interaction.success 'Done.'
   end
 end

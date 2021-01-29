@@ -10,6 +10,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
+## 5.2.4 2021-01-29
+
+### Compatible changes
+* Fix and improve delete-dumps command (now supporting multiple arguments)
+
+
 ## 5.2.3 2021-01-27
 
 ### Compatible changes
