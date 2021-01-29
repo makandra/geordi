@@ -8,7 +8,7 @@ module Geordi
     GLOBAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/global_settings.yml'.freeze : File.join(ENV['HOME'], '.config/geordi/global.yml').freeze
     LOCAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/local_settings.yml'.freeze : './.geordi.yml'.freeze
 
-    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver ].freeze
+    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver pivotal_tracker_project_ids ].freeze
     ALLOWED_LOCAL_SETTINGS = %w[ use_vnc pivotal_tracker_project_ids ].freeze
 
     def initialize
@@ -42,18 +42,13 @@ module Geordi
     end
 
     def pivotal_tracker_project_ids
-      project_ids = @local_settings['pivotal_tracker_project_ids'] || pt_project_ids_old
+      local_project_ids = @local_settings['pivotal_tracker_project_ids'] || pt_project_ids_old
+      global_project_ids = @global_settings['pivotal_tracker_project_ids']
 
-      case project_ids
-      when Array
-        # nothing to do
-      when String
-        project_ids = project_ids.split(/[\s]+/).map(&:to_i)
-      when Integer
-        project_ids = [project_ids]
-      else
-        project_ids = []
-      end
+      local_project_ids = array_wrap_project_ids(local_project_ids)
+      global_project_ids = array_wrap_project_ids(global_project_ids)
+
+      project_ids = local_project_ids | global_project_ids
 
       if project_ids.empty?
         puts
@@ -157,6 +152,19 @@ module Geordi
         INSTRUCTIONS
 
         project_ids
+      end
+    end
+
+    def array_wrap_project_ids(project_ids)
+      case project_ids
+      when Array
+        project_ids
+      when String
+        project_ids.split(/[\s]+/).map(&:to_i)
+      when Integer
+        [project_ids]
+      else
+        []
       end
     end
 

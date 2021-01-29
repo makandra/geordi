@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+
 ### Breaking changes
 
 
@@ -14,6 +15,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 * Add `geordi branch` command that checks out a feature branch based on a story from Pivotal Tracker
+* Allow pivotal tracker ids in the global config file
+* Faster MySQL dumping with [`--single-transaction` and `--quick`](https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html#option_mysqldump_single-transaction)
 * Fix missing require for `Fileutils` in the dump load command (#145)
 * Document `PARALLEL_TEST_PROCESSORS`
 
