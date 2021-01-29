@@ -10,11 +10,11 @@ describe Geordi::CapistranoConfig, type: :aruba do
       deploy_file = 'config/deploy.rb'
       staging_deploy_file = 'config/deploy/staging.rb'
 
-      write_file(deploy_file, <<~TEXT)
+      write_file(deploy_file, <<-TEXT)
         set :deploy_to, 'var/www.foobar.com'
       TEXT
 
-      write_file(staging_deploy_file, <<~TEXT)
+      write_file(staging_deploy_file, <<-TEXT)
         set :rails_env, 'staging'
         set :deploy_to, '/var/www/example.com'
         set :user, 'user'
@@ -26,7 +26,7 @@ describe Geordi::CapistranoConfig, type: :aruba do
       expect(staging_deploy_file).to be_an_existing_file
       deploy_info = subject.send(:load_deploy_info)
 
-      expect(deploy_info).to eq(<<~TEXT)
+      expect(deploy_info).to eq(<<-TEXT)
         set :rails_env, 'staging'
         set :deploy_to, '/var/www/example.com'
         set :user, 'user'
@@ -43,21 +43,21 @@ describe Geordi::CapistranoConfig, type: :aruba do
     before { allow_any_instance_of(Geordi::CapistranoConfig).to receive(:load_deploy_info) }
 
     it 'returns the user variable from the deploy info for the Capistrano 2 syntax' do
-      expect(subject).to receive(:deploy_info).and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).and_return <<-TEXT
         set :user, 'example_user'
       TEXT
       expect(subject.user('')).to eq('example_user')
     end
 
     it 'returns the user variable from the deploy info for the Capistrano 3 syntax, if a server is given' do
-      expect(subject).to receive(:deploy_info).twice.and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).twice.and_return <<-TEXT
         server 'www.example-server-one.de', user: 'example_user'
       TEXT
       expect(subject.user('www.example-server-one.de')).to eq('example_user')
     end
 
     it 'prefers the Caistrano 2 Syntax over the Capistrano 3 Syntax' do
-      expect(subject).to receive(:deploy_info).and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).and_return <<-TEXT
         server 'www.example-server-one.de', user: 'example_user_one'
         set :user, 'example_user_two'
       TEXT
@@ -76,7 +76,7 @@ describe Geordi::CapistranoConfig, type: :aruba do
     before { allow_any_instance_of(Geordi::CapistranoConfig).to receive(:load_deploy_info) }
 
     it 'scans the deploy info for servers and returns them as an array' do
-      expect(subject).to receive(:deploy_info).and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).and_return <<-TEXT
         server 'www.example-server-one.de', :app, :web, :db
         server 'www.example-server-two.de', :app, :web
       TEXT
@@ -94,7 +94,7 @@ describe Geordi::CapistranoConfig, type: :aruba do
     before { allow_any_instance_of(Geordi::CapistranoConfig).to receive(:load_deploy_info) }
 
     it 'returns "current" concatenated to the deploy_to variable from the deploy info' do
-      expect(subject).to receive(:deploy_info).and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).and_return <<-TEXT
         set :deploy_to, 'var/www/example_server'
       TEXT
       expect(subject.remote_root).to eq('var/www/example_server/current')
@@ -111,7 +111,7 @@ describe Geordi::CapistranoConfig, type: :aruba do
     before { allow_any_instance_of(Geordi::CapistranoConfig).to receive(:load_deploy_info) }
 
     it 'returns the first found rails_env variable in the deploy info' do
-      expect(subject).to receive(:deploy_info).and_return <<~TEXT
+      expect(subject).to receive(:deploy_info).and_return <<-TEXT
         set :rails_env, 'staging'
         set :rails_env, 'production'
       TEXT
