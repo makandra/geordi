@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* Changed: Dumping and loading a database will not keep the database dump in `tmp/` but delete it once the operation finishes successfully. Example: `geordi dump staging -l` will remove the file `tmp/staging.dump` after it loaded the dump.
+
 ### Breaking changes
 
 

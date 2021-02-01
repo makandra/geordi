@@ -5,6 +5,7 @@ Feature: The dump command
     When I run `geordi dump`
     Then the output should contain "Util.run! dumple development"
       And the output should contain "Successfully dumped the development database"
+      And the output should not contain "Clean up"
 
   Scenario: Creating a dump of the development database with multiple databases
     When I run `geordi dump -d primary`
@@ -36,6 +37,7 @@ Feature: The dump command
       Util\.run! scp -C user@www\.example\.com:~\/dumps\/dump_for_download.dump .*?\/tmp\/aruba\/tmp\/staging.dump
       """
       And the output should contain "> Dumped the staging database to tmp/staging.dump"
+      And the output should not contain "Clean up"
 
   Scenario: Creating a dump of a remote database and loading it locally
     Given a file named "Capfile" with "Capfile exists"
@@ -121,6 +123,9 @@ Feature: The dump command
     Then the output should contain "Sourcing dump into the test db"
     And the output should contain "Source file: tmp/production.dump"
     And the output should contain "Util.run! mysql --silent --default-character-set=utf8 test < tmp/production.dump"
+    And the output should contain "Clean up"
+    And the output should contain "Removing: tmp/production.dump"
+    And the output should contain "Util.run! rm tmp/production.dump"
     And the output should contain "Your test database has now the data of tmp/production.dump."
 
   Scenario: Sourcing a dump with postgres
@@ -136,4 +141,7 @@ Feature: The dump command
     Then the output should contain "Sourcing dump into the test db"
       And the output should contain "Source file: tmp/production.dump"
       And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test tmp/production.dump"
+      And the output should contain "Clean up"
+      And the output should contain "Removing: tmp/production.dump"
+      And the output should contain "Util.run! rm tmp/production.dump"
       And the output should contain "Your test database has now the data of tmp/production.dump."

@@ -59,7 +59,7 @@ module Geordi
       server_option = options[:select_server]
       server_number = server_option.to_i
 
-      server =  if server_option == 'select_server'
+      server = if server_option == 'select_server'
         select_server
       elsif server_number != 0 && server_number <= @config.servers.count
         server_index = server_number - 1
