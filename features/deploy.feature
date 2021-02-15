@@ -5,16 +5,20 @@ Feature: The deploy command
     Unfortunately, Aruba cannot run commands truly interactively. We need to
     answer prompts blindly, and check the output afterwards.
 
-    When I run `geordi deploy` in interactive mode
-    Then I should see a prompt "Deployment stage: [staging]"
-    When I type "staging" and continue
-    Then I should see a prompt "Source branch: [master]"
-    When I type "master" and continue
-    Then I should see a prompt "Deploy branch: [master]"
-    When I type "master" and continue
-    Then I should see a prompt "Go ahead with the deployment? [n]"
-    When I type "yes" and continue
+    When I run `geordi deploy` interactively
+      # Answer three prompts
+      And I type "staging"
+      And I type "master"
+      And I type ""
+      # Confirm deployment
+      And I type "yes"
     Then the output should contain:
+      """
+      # You are about to:
+      > Deploy to staging
+      Go ahead with the deployment? [n]
+      """
+    And the output should contain:
       """
       > cap staging deploy:migrations
       Util.run! cap staging deploy:migrations

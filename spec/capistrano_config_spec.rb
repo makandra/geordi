@@ -1,25 +1,24 @@
-describe Geordi::CapistranoConfig, type: :aruba do
-  subject do
-    Geordi::CapistranoConfig.new('staging', Dir.getwd + '/tmp/aruba')
+RSpec.describe Geordi::CapistranoConfig, type: :aruba  do
+  before do
+    write_file('Capfile', '# Configure your capistrano tasks')
+    ENV['RAILS_ROOT'] = Dir.getwd + '/tmp/aruba'
   end
 
-  describe '#load_deploy_info' do
-    before { write_file('Capfile', '# Configure your capistrano tasks') }
+  subject do
+    Geordi::CapistranoConfig.new('staging')
+  end
 
-    it 'merges te deploy file for the specified stage into the config/deploy.rb file' do
+  describe '#load_deploy_info'do
+    it 'concats the stage config file with config/deploy.rb' do
       deploy_file = 'config/deploy.rb'
       staging_deploy_file = 'config/deploy/staging.rb'
 
       write_file(deploy_file, <<-TEXT)
-        set :deploy_to, 'var/www.foobar.com'
+        content of config/deploy.rb
       TEXT
 
       write_file(staging_deploy_file, <<-TEXT)
-        set :rails_env, 'staging'
-        set :deploy_to, '/var/www/example.com'
-        set :user, 'user'
-
-        server 'www.example.com'
+        content of config/deploy/staging.rb
       TEXT
 
       expect(deploy_file).to be_an_existing_file
@@ -27,16 +26,11 @@ describe Geordi::CapistranoConfig, type: :aruba do
       deploy_info = subject.send(:load_deploy_info)
 
       expect(deploy_info).to eq(<<-TEXT)
-        set :rails_env, 'staging'
-        set :deploy_to, '/var/www/example.com'
-        set :user, 'user'
+        content of config/deploy/staging.rb
 
-        server 'www.example.com'
-
-        set :deploy_to, 'var/www.foobar.com'
+        content of config/deploy.rb
       TEXT
     end
-
   end
 
   describe '#user' do
@@ -68,9 +62,7 @@ describe Geordi::CapistranoConfig, type: :aruba do
       expect(subject).to receive(:deploy_info).twice.and_return ''
       expect(subject.user('')).to be_nil
     end
-
   end
-
 
   describe '#servers' do
     before { allow_any_instance_of(Geordi::CapistranoConfig).to receive(:load_deploy_info) }
@@ -87,7 +79,6 @@ describe Geordi::CapistranoConfig, type: :aruba do
       expect(subject).to receive(:deploy_info).and_return ''
       expect(subject.servers).to match_array([])
     end
-
   end
 
   describe 'remote_root' do
@@ -104,7 +95,6 @@ describe Geordi::CapistranoConfig, type: :aruba do
       expect(subject).to receive(:deploy_info).and_return ''
       expect { subject.remote_root }.to raise_error(TypeError, 'no implicit conversion of nil into String')
     end
-
   end
 
   describe '#env' do
@@ -122,6 +112,5 @@ describe Geordi::CapistranoConfig, type: :aruba do
       expect(subject).to receive(:deploy_info).and_return ''
       expect(subject.env).to be_nil
     end
-
   end
 end
