@@ -64,10 +64,21 @@ No staged changes. Will create an empty commit.
 
     def load_projects
       project_ids = settings.pivotal_tracker_project_ids
-      project_ids.collect { |project_id| client.project(project_id) }
+      project_ids.collect do |project_id|
+        begin
+          client.project(project_id)
+        rescue TrackerApi::Errors::ClientError
+          puts # Start a new line
+          Geordi::Interaction.warn "Could not access project #{project_id}. Skipping."
+        end
+      end.compact
     end
 
     def applicable_stories
+      if Util.testing?
+        return ENV['GEORDI_TESTING_NO_PT_STORIES'] == 'true' ? [] : [OpenStruct.new(id: 12, name: 'Test Story')]
+      end
+
       projects = load_projects
       projects.collect do |project|
         project.stories(filter: 'state:started,finished,rejected')
@@ -75,14 +86,16 @@ No staged changes. Will create an empty commit.
     end
 
     def choose_story
-      if Util.testing?
-        return OpenStruct.new(id: 12, name: 'Test Story')
-      end
-
       loading_message = 'Connecting to Pivotal Tracker ...'
       print(loading_message)
       stories = applicable_stories
       reset_loading_message = "\r#{' ' * (loading_message.length + stories.length)}\r"
+
+      Geordi::Interaction.fail('No stories to offer.') if stories.empty?
+
+      if Util.testing?
+        return stories[0]
+      end
 
       highline.choose do |menu|
         menu.header = 'Choose a story'
