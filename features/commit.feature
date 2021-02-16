@@ -2,6 +2,14 @@ Feature: Creating a git commit from a Pivotal Tracker story
   Background:
     Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key"
 
+
+  Scenario: If there are no stories, the command fails
+    Given there are no stories
+
+    When I run `geordi commit`
+    Then the output should contain "No stories to offer."
+
+
   Scenario: Extra arguments are forwarded to "git commit"
     Given I have staged changes
 
