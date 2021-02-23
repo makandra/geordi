@@ -3,6 +3,7 @@ require 'geordi/interaction'
 require 'geordi/util'
 require 'highline/import'
 require 'pathname'
+require 'fileutils'
 
 module Geordi
   class Remote
