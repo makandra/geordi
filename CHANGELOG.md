@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* Fixes missing require for `Fileutils` in the dump load command (#145)
+
 ### Breaking changes
 
 ## 5.3.0 2021-02-01
