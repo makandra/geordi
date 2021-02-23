@@ -78,6 +78,13 @@ begin
     command << " -p\"#{config['password']}\""
     command << " #{config['database']}"
     command << " -r #{dump_path}"
+    # Using a transaction to allow concurrent request while creating a dump.
+    # This works only reliable for InnoDB tables.
+    # More details: https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html#option_mysqldump_single-transaction
+    command << ' --single-transaction'
+    # Disable buffering in memory to avoid a memory overflow for large tables
+    # More details https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html#option_mysqldump_quick
+    command << ' --quick'
     if port
       command << " -h#{host || '127.0.0.1'} -P#{port}"
     else
