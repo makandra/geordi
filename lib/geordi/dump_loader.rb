@@ -57,11 +57,7 @@ module Geordi
       Interaction.note 'Source file: ' + dump_file
 
       source_command = send("#{config['adapter']}_command")
-      Util.run! source_command, fail_message: "An error occured loading #{File.basename(dump_file)}"
-
-      Interaction.announce 'Clean up'
-      Interaction.note 'Removing: ' + dump_file
-      Util.run!("rm #{dump_file}")
+      Util.run! source_command, fail_message: "An error occurred loading #{File.basename(dump_file)}"
     end
 
   end

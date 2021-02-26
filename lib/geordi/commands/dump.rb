@@ -57,6 +57,9 @@ def dump(target = nil, *_args)
       Interaction.announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
 
+      Util.run! "rm #{dump_path}"
+      Interaction.note "Dump file removed"
+
       Interaction.success "Your #{loader.config['database']} database has now the data of #{target}#{database_label}."
     end
   end
