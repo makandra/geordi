@@ -20,6 +20,9 @@ sign, i.e. have each option a contiguous string.
 - *VNC:* By default, test browsers will run in a VNC session. When using a
 headless test browser anyway, you can disable VNC by setting `use_vnc: false`
 in `.geordi.yml` in the project root.
+
+- In order to limit processes in a parallel run, you can set an environment
+  variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
 LONGDESC
 
 option :modified, aliases: '-m', type: :boolean,

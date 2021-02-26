@@ -15,6 +15,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 * Add `geordi branch` command that checks out a feature branch based on a story from Pivotal Tracker
 * Fix missing require for `Fileutils` in the dump load command (#145)
+* Document `PARALLEL_TEST_PROCESSORS`
 
 
 ## 5.3.0 2021-02-01

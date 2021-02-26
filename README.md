@@ -109,6 +109,9 @@ sign, i.e. have each option a contiguous string.
 headless test browser anyway, you can disable VNC by setting `use_vnc: false`
 in `.geordi.yml` in the project root.
 
+- In order to limit processes in a parallel run, you can set an environment
+  variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
+
 **Options**
 - `-m, [--modified], [--no-modified]`: Run all modified features
 - `-c, [--containing=STRING]`: Run all features that contain STRING
@@ -290,7 +293,10 @@ Run RSpec.
 
 Example: `geordi rspec spec/models/user_spec.rb:13`
 
-Runs RSpec with RSpec 1/2 support, parallel_tests detection and `bundle exec`.
+Runs RSpec with version 1/2 support, parallel_tests detection and `bundle exec`.
+
+In order to limit processes in a parallel run, you can set an environment
+variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi rspec`
 
 
 ### `geordi security-update [STEP]`

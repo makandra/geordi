@@ -2,7 +2,10 @@ desc 'rspec [FILES]', 'Run RSpec'
 long_desc <<-LONGDESC
 Example: `geordi rspec spec/models/user_spec.rb:13`
 
-Runs RSpec with RSpec 1/2 support, parallel_tests detection and `bundle exec`.
+Runs RSpec with version 1/2 support, parallel_tests detection and `bundle exec`.
+
+In order to limit processes in a parallel run, you can set an environment
+variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi rspec`
 LONGDESC
 
 def rspec(*files)
