@@ -90,9 +90,8 @@ Run Cucumber features.
 
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber with `bundle exec`, using parallel tests, with a VNC session
-holding Selenium test browsers, support for using a dedicated testing browser
-and beta support for re-running failed scenarios.
+Runs Cucumber with `bundle exec`, using parallel tests and with support for re-running
+failed scenarios.
 
 - *@solo:* Generally, features are run in parallel. However, scenarios tagged
 with @solo are excluded from the parallel run and executed sequentially instead.
@@ -104,10 +103,6 @@ errors. In case a feature fails without an error message, try running it with
 - *Options:* Any unknown option will be passed through to Cucumber,
 e.g. `--format=pretty`. Make sure to connect option and value with an equals
 sign, i.e. have each option a contiguous string.
-
-- *VNC:* By default, test browsers will run in a VNC session. When using a
-headless test browser anyway, you can disable VNC by setting `use_vnc: false`
-in `.geordi.yml` in the project root.
 
 - In order to limit processes in a parallel run, you can set an environment
   variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
@@ -188,6 +183,7 @@ There are three subcommands:
 
 - `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
+  Append `--setup` to be guided through the setup of VNC viewer.
 
 
 ### `geordi drop-databases`
@@ -233,19 +229,6 @@ Loading a dump into one of multiple local databases is not supported yet.
 **Options**
 - `-l, [--load=[DUMP_FILE]]`: Load a dump
 - `-d, [--database=NAME]`: Database name, if there are multiple databases
-
-
-### `geordi firefox COMMAND`
-Run a command with VNC and test browser set up (alias: chrome).
-
-Example: `geordi firefox b cucumber` or `geordi firefox --setup 24.0`
-
-Useful when you need Firefox for Selenium or the VNC set up, but can't use the
-`geordi cucumber` command. This command is aliased `chrome` for users running
-Selenium in Chrome.
-
-**Options**
-- `[--setup=FIREFOX_VERSION]`: Install a special test runner Firefox with the given version
 
 
 ### `geordi help [COMMAND]`
@@ -389,18 +372,6 @@ Performs: `git pull`, `bundle install` (if necessary) and migrates (if applicabl
 ### `geordi version`
 Print the current version of geordi.
 
-
-### `geordi vnc`
-Show the hidden VNC window.
-
-Example: `geordi vnc` or `geordi vnc --setup`
-
-Launch a VNC session to the hidden screen where `geordi cucumber` runs Selenium
-tests.
-
-**Options**
-- `[--setup], [--no-setup]`: Guide through the setup of VNC
-
 b
 ---
 
@@ -422,13 +393,6 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 **Options**
 - `-i`: Print disk usage of `~/dumps`
 - `--compress`: After dumping, run gzip to compress the dump in place
-
-
-launchy_browser
----------------
-
-Used by the `geordi cucumber` command. Makes launchy open pages in the user's
-browser, as opposed to opening it within the VNC window.
 
 
 Contributing

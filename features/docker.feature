@@ -84,3 +84,31 @@ Feature: The docker command
 
     When I run `geordi docker shell --secondary`
     Then the output should contain "Could not find a running shell"
+
+
+  Scenario: Starting the VNC viewer without setting it up first fails
+    Given the docker command cannot find the "vnc" binary
+      And a file named "docker-compose.yml" with:
+    """
+    services:
+      main: foo
+    """
+
+    When I run `geordi docker vnc`
+    Then the output should contain "VNC viewer not found. Install it with `geordi docker vnc --setup`."
+
+
+  Scenario: One can start the docker VNC viewer setup
+    When I run `geordi docker vnc --setup`
+    Then the output should contain "This script will help you install a VNC viewer."
+
+
+  Scenario: A VNC viewer can connect to the docker container
+    Given a file named "docker-compose.yml" with:
+    """
+    services:
+      main: foo
+    """
+
+    When I run `geordi docker vnc`
+    Then the exit status should be 0

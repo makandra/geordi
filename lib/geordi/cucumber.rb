@@ -4,18 +4,10 @@ require 'tempfile'
 # This require-style is to prevent Ruby from loading files of a different
 # version of Geordi.
 require File.expand_path('interaction', __dir__)
-require File.expand_path('firefox_for_selenium', __dir__)
 require File.expand_path('settings', __dir__)
 
 module Geordi
   class Cucumber
-
-    VNC_DISPLAY = ':17'.freeze
-    VNC_PASSWORD_FILE = File.expand_path('~/.vnc/passwd').freeze # default for "vncpasswd"
-    VNC_SERVER_DEFAULT_OPTIONS = "-localhost -nolisten tcp -geometry 1280x1024 -rfbauth #{VNC_PASSWORD_FILE}".freeze
-    VNC_SERVER_COMMAND = "vncserver #{VNC_DISPLAY} #{ENV.fetch('GEORDI_VNC_OPTIONS', VNC_SERVER_DEFAULT_OPTIONS)}".freeze
-    VNC_VIEWER_COMMAND = "vncviewer -passwd #{VNC_PASSWORD_FILE}".freeze
-    VNC_ENV_VARIABLES = %w[DISPLAY BROWSER LAUNCHY_BROWSER].freeze
 
     def run(files, cucumber_options, options = {})
       self.argv = files + cucumber_options.map { |option| option.split('=') }.flatten
@@ -23,48 +15,12 @@ module Geordi
 
       consolidate_rerun_txt_files
       show_features_to_run
-      setup_vnc if settings.use_vnc?
 
       command = use_parallel_tests?(options) ? parallel_execution_command : serial_execution_command
       Interaction.note_cmd(command) if options[:verbose]
 
       puts # Make newline
-      system command # Util.run! would reset the Firefox PATH
-    end
-
-    def launch_vnc_viewer(source = VNC_DISPLAY)
-      fork do
-        error = capture_stderr do
-          system("#{VNC_VIEWER_COMMAND} #{source}")
-        end
-        unless $?.success?
-          if $?.exitstatus == 127
-            Interaction.fail 'VNC viewer not found. Install it with `geordi vnc --setup`.'
-          else
-            Interaction.note 'VNC viewer could not be opened:'
-            puts error
-            puts
-          end
-        end
-      end
-    end
-
-    def restore_env
-      VNC_ENV_VARIABLES.each do |variable|
-        ENV[variable] = ENV["OUTER_#{variable}"]
-      end
-    end
-
-    def setup_vnc
-      if try_and_start_vnc
-        VNC_ENV_VARIABLES.each do |variable|
-          ENV["OUTER_#{variable}"] = ENV[variable] if ENV[variable]
-        end
-        ENV['BROWSER'] = ENV['LAUNCHY_BROWSER'] = File.expand_path('../../exe/launchy_browser', __dir__)
-        ENV['DISPLAY'] = VNC_DISPLAY
-
-        Interaction.note 'Run `geordi vnc` to view the Selenium test browsers'
-      end
+      system command
     end
 
     private
@@ -76,7 +32,7 @@ module Geordi
       unless argv.include?('--format') || argv.include?('-f')
         format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
       end
-      [use_firefox_for_selenium, Util.binstub_or_fallback('cucumber'), format_args, escape_shell_args(argv)].flatten.compact.join(' ')
+      [ Util.binstub_or_fallback('cucumber'), format_args, escape_shell_args(argv)].flatten.compact.join(' ')
     end
 
     def parallel_execution_command
@@ -88,7 +44,6 @@ module Geordi
       features = find_all_features_recursively('features') if features.empty?
 
       [
-        use_firefox_for_selenium,
         'bundle exec parallel_test -t ' + type_arg,
         %(-o '#{command_line_options.join(' ')} --tags "#{not_tag('@solo')}"'),
         "-- #{features.join(' ')}",
@@ -100,13 +55,6 @@ module Geordi
         "~#{name}"
       else
         "not #{name}"
-      end
-    end
-
-    def use_firefox_for_selenium
-      path = Geordi::FirefoxForSelenium.path_from_config
-      if path
-        "PATH=#{path}:$PATH"
       end
     end
 
@@ -208,40 +156,6 @@ module Geordi
         features_to_run.size != 1 &&
         Util.gem_available?('parallel_tests') &&
         features_to_run.none? { |f| f.include? ':' }
-    end
-
-    def try_and_start_vnc
-      # check if vnc is already running
-      # return true if vnc_server_running?
-      error = capture_stderr do
-        system(VNC_SERVER_COMMAND)
-      end
-      case $?.exitstatus
-      when 0,
-        98 # was already running after all
-        true
-      when 127 # not installed
-        Interaction.warn 'Could not launch VNC server. Install it with `geordi vnc --setup`.'
-        false
-      else
-        Interaction.warn 'Starting VNC failed:'
-        puts error
-        puts
-        false
-      end
-    end
-
-    def capture_stderr
-      old_stderr = $stderr.dup
-      io = Tempfile.new('cuc')
-      $stderr.reopen(io)
-      yield
-      io.rewind
-      io.read
-    ensure
-      io.close
-      io.unlink
-      $stderr.reopen(old_stderr)
     end
 
   end

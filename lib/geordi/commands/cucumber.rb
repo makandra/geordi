@@ -2,9 +2,8 @@ desc 'cucumber [FILES and OPTIONS]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber with `bundle exec`, using parallel tests, with a VNC session
-holding Selenium test browsers, support for using a dedicated testing browser
-and beta support for re-running failed scenarios.
+Runs Cucumber with `bundle exec`, using parallel tests and with support for re-running
+failed scenarios.
 
 - *@solo:* Generally, features are run in parallel. However, scenarios tagged
 with @solo are excluded from the parallel run and executed sequentially instead.
@@ -16,10 +15,6 @@ errors. In case a feature fails without an error message, try running it with
 - *Options:* Any unknown option will be passed through to Cucumber,
 e.g. `--format=pretty`. Make sure to connect option and value with an equals
 sign, i.e. have each option a contiguous string.
-
-- *VNC:* By default, test browsers will run in a VNC session. When using a
-headless test browser anyway, you can disable VNC by setting `use_vnc: false`
-in `.geordi.yml` in the project root.
 
 - In order to limit processes in a parallel run, you can set an environment
   variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`

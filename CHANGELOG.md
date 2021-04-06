@@ -3,6 +3,11 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Compatible changes
+
+### Breaking changes
 
 ## Unreleased
 
@@ -10,7 +15,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 * `geordi commit` will continue even if one of the given projects is inaccessible. It will only fail if no stories could be found at all.
 
 ### Breaking changes
-
+* Removed VNC test browser support for integration tests.
+  * Please use a headless Chrome setup <https://makandracards.com/makandra/492109-capybara-running-tests-with-headless-chrome>. 
+  * You might also want to get rid of your local VNC server `sudo apt remove tightvncserver`.
 
 ## 5.4.0 2021-02-01
 

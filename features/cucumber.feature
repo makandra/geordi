@@ -229,22 +229,6 @@ Feature: The cucumber command
     But the output should not contain "# Running features"
 
 
-  Scenario: Specifying a firefox version to use
-    Given a file named "features/sub/one.feature" with:
-    """
-    Feature: Testfeature
-    """
-    And a file named ".firefox-version" with:
-    """
-    13.37
-    """
-
-    When I run `geordi cucumber --verbose`
-    # Just checking the file was processed. Seeing the specified version in use
-    # would require to install it, which would be overkill.
-    Then the output should contain "Firefox 13.37 not found"
-
-
   Scenario: Running all cucumber features matching a given string
     Given a file named "features/given.feature" with "Feature: given"
     And a file named "features/other.feature" with "Feature: other"

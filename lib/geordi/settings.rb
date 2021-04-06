@@ -9,7 +9,7 @@ module Geordi
     LOCAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/local_settings.yml'.freeze : './.geordi.yml'.freeze
 
     ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver pivotal_tracker_project_ids ].freeze
-    ALLOWED_LOCAL_SETTINGS = %w[ use_vnc pivotal_tracker_project_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ pivotal_tracker_project_ids ].freeze
 
     def initialize
       read_settings
@@ -32,13 +32,6 @@ module Geordi
     def auto_update_chromedriver=(value)
       @global_settings['auto_update_chromedriver'] = value
       save_global_settings
-    end
-
-    # Local settings
-    # They should not be changed by geordi to avoid unexpected diffs, therefore
-    # there are no setters for these settings
-    def use_vnc?
-      @local_settings.fetch('use_vnc', true)
     end
 
     def pivotal_tracker_project_ids
@@ -72,37 +65,49 @@ module Geordi
     def read_settings
       global_path = GLOBAL_SETTINGS_FILE_NAME
       local_path = LOCAL_SETTINGS_FILE_NAME
+      firefox_path = File.expand_path("../../.firefox-version")
 
       if File.exists?(global_path)
-        global_settings = YAML.safe_load(File.read(global_path))
+        global_settings = YAML.safe_load(File.read(global_path)) || {}
         check_for_invalid_keys(global_settings, ALLOWED_GLOBAL_SETTINGS, global_path)
       end
 
       if File.exists?(local_path)
-        local_settings = YAML.safe_load(File.read(local_path))
+        local_settings = YAML.safe_load(File.read(local_path)) || {}
         check_for_invalid_keys(local_settings, ALLOWED_LOCAL_SETTINGS, local_path)
+      end
+
+      if File.exists?(firefox_path)
+        Geordi::Interaction.warn "Unsupported setting \".firefox-version\". Please remove the file in #{firefox_path}."
+        exit 1
       end
 
       @global_settings = global_settings || {}
       @local_settings = local_settings || {}
     end
 
-    def check_for_invalid_keys(settings, allowed_keys, file)
-      invalid_keys = settings.keys - allowed_keys
-      unless invalid_keys.empty?
-        Geordi::Interaction.warn "Geordi detected unknown keys in #{file}.\n"
+    def check_for_invalid_keys(settings = [], allowed_keys, file)
+      unless settings.empty?
+        invalid_keys = settings.keys - allowed_keys
+        unless invalid_keys.empty?
+          Geordi::Interaction.warn "Geordi detected unknown keys in #{file}.\n"
 
-        invalid_keys.sort.each do |key|
-          puts "* #{key}"
+          invalid_keys.sort.each do |key|
+            if key == :use_vnc
+              puts "* use_vnc: Unsupported setting \"use_vnc\". Please remove this setting from #{file}"
+            else
+              puts "* #{key}"
+            end
+          end
+
+          puts "\nAllowed keys are:"
+          allowed_keys.sort.each do |key|
+            puts "* #{key}"
+          end
+          puts
+
+          exit 1
         end
-
-        puts "\nAllowed keys are:"
-        allowed_keys.sort.each do |key|
-          puts "* #{key}"
-        end
-        puts
-
-        exit 1
       end
     end
 

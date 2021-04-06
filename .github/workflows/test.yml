@@ -33,16 +33,14 @@ jobs:
       uses: ruby/setup-ruby@v1
       with:
         ruby-version: "${{ matrix.ruby }}"
-    - name: Install vncserver
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y tightvncserver
-        # Fake required password for vncserver
-        mkdir ~/.vnc && touch ~/.vnc/passwd && chmod 700 ~/.vnc/passwd
     - name: Bundle
       run: |
         gem install bundler:1.17.3
         bundle install --no-deployment
+    - name: Install VNC viewer
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y xtightvncviewer
     - name: Run tests
       run: bundle exec rake
     

@@ -1,6 +1,7 @@
 require 'geordi/interaction'
 require 'geordi/cucumber'
 require 'yaml'
+require 'open3'
 
 module Geordi
   class Docker
@@ -28,13 +29,61 @@ module Geordi
     end
 
     def vnc
-      Cucumber.new.launch_vnc_viewer('::5967')
+      check_installation_and_config
+      launch_vnc_viewer('::5967')
+    end
+
+    def setup_vnc
+      `clear`
+      Interaction.note 'This script will help you install a VNC viewer.'
+      Interaction.note 'Please open a second shell to execute instructions.'
+      Interaction.prompt 'Continue ...'
+
+      Interaction.announce 'Setup VNC viewer'
+      vnc_viewer_installed = system('which vncviewer > /dev/null 2>&1')
+      if vnc_viewer_installed
+        Interaction.success 'It appears you already have a VNC viewer installed. Good job!'
+      else
+        puts 'Please run:'
+        Interaction.note_cmd 'sudo apt-get install xtightvncviewer'
+        Interaction.prompt 'Continue ...'
+      end
+
+      puts
+      puts Util.strip_heredoc <<-TEXT
+    Done. You can view the VNC window with `geordi docker vnc`.
+      TEXT
+
+      Interaction.success 'Happy cuking!'
     end
 
     private
 
+    def launch_vnc_viewer(source)
+      fail('VNC viewer not found. Install it with `geordi docker vnc --setup`.') unless command_exists?('vncviewer')
+
+      fork do
+        error = capture_stderr do
+          system("vncviewer #{source}")
+        end
+        unless $?.success?
+          if $?.exitstatus == 127
+            fail('VNC viewer not found. Install it with `geordi docker vnc --setup`.')
+          else
+            fail("VNC viewer could not be opened: #{error}")
+          end
+        end
+      end
+      exit 0
+    end
+
     def attach_to_running_shell
-      running_containers = execute(:`, 'docker-compose ps').split("\n")
+      # The command line output of docker-compose ps changes depending on the container name length, this is
+      # caused by the varying terminal length and results in the longer outputs, e.g the container name and id
+      # to be cut after x characters and the rest being placed in the line below.
+
+      stdout_str, _error_str = execute(:capture, {'COLUMNS' => '400'}, 'docker-compose ps')
+      running_containers = stdout_str.split("\n")
       if (main_container_line = running_containers.grep(/_main_run/).first)
         container_name = main_container_line.split(' ').first
         execute(:exec, 'docker', 'exec', '-it', container_name, 'bash')
@@ -54,13 +103,17 @@ module Geordi
     def execute(kind, *args)
       if ENV['GEORDI_TESTING']
         puts "Stubbed run #{args.join(' ')}"
-        if kind == :`
+        if kind == :` || kind == :capture
           mock_parse(*args)
         else
           mock_run(*args)
         end
       else
-        send(kind, *args)
+        if kind == :capture
+          Open3.capture2(*args)
+        else
+          send(kind, *args)
+        end
       end
     end
 
@@ -112,5 +165,19 @@ module Geordi
         []
       end
     end
+
+    def capture_stderr
+      old_stderr = $stderr.dup
+      io = Tempfile.new('cuc')
+      $stderr.reopen(io)
+      yield
+      io.rewind
+      io.read
+    ensure
+      io.close
+      io.unlink
+      $stderr.reopen(old_stderr)
+    end
+
   end
 end

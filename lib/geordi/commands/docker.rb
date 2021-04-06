@@ -12,8 +12,13 @@ class DockerCLI < Thor
   end
 
   desc 'vnc', 'Open a vnc viewer connecting to the docker container'
+  option :setup, default: false, type: :boolean, desc: 'Guide through the setup of VNC'
   def vnc
-    docker.vnc
+    if options.setup
+      docker.setup_vnc
+    else
+      docker.vnc
+    end
   end
 
   private
@@ -42,5 +47,6 @@ There are three subcommands:
 
 - `geordi docker vnc`
   Opens a VNC viewer to connect to the VNC server in the container.
+  Append `--setup` to be guided through the setup of VNC viewer.
 LONGDESC
 subcommand 'docker', DockerCLI

@@ -15,12 +15,12 @@ module Geordi
       class_eval File.read(file), file
     end
 
-    private
-
-    # fix weird implementation of #invoke
-    def invoke_geordi(name, *args)
-      options = args.last.is_a?(Hash) ? args.pop : {}
-      invoke(name, args, options)
+    no_commands do
+      # fix weird implementation of #invoke
+      def invoke_geordi(name, *args)
+        options = args.last.is_a?(Hash) ? args.pop : {}
+        invoke(name, args, options)
+      end
     end
 
   end
