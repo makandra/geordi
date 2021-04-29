@@ -45,17 +45,9 @@ module Geordi
 
       [
         'bundle exec parallel_test -t ' + type_arg,
-        %(-o '#{command_line_options.join(' ')} --tags "#{not_tag('@solo')}"'),
+        %(-o '#{command_line_options.join(' ')}'),
         "-- #{features.join(' ')}",
       ].compact.join(' ')
-    end
-
-    def not_tag(name)
-      if Util.gem_major_version('cucumber') < 3
-        "~#{name}"
-      else
-        "not #{name}"
-      end
     end
 
     def escape_shell_args(*args)
@@ -65,9 +57,7 @@ module Geordi
     end
 
     def show_features_to_run
-      if command_line_options.include? '@solo'
-        Interaction.note 'All features tagged with @solo'
-      elsif command_line_options.include? 'rerun'
+      if command_line_options.include? 'rerun'
         Interaction.note 'Rerunning failed scenarios'
       elsif features_to_run.empty?
         Interaction.note 'All features in features/'

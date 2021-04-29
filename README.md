@@ -93,9 +93,6 @@ Example: `geordi cucumber features/authentication_feature:3`
 Runs Cucumber with `bundle exec`, using parallel tests and with support for re-running
 failed scenarios.
 
-- *@solo:* Generally, features are run in parallel. However, scenarios tagged
-with @solo are excluded from the parallel run and executed sequentially instead.
-
 - *Debugging:* In some cases, the dot-printing Cucumber formatter swallows
 errors. In case a feature fails without an error message, try running it with
 `--debug` or `-d`.

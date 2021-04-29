@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* Removed support for serial execution of scenarios tagged with @solo.
 
 ### Breaking changes
 
