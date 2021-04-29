@@ -81,7 +81,7 @@ No staged changes. Will create an empty commit.
 
       projects = load_projects
       projects.collect do |project|
-        project.stories(filter: 'state:started,finished,rejected')
+        project.stories(filter: 'state:started,finished,rejected', fields: ':default,owners(id,name)')
       end.flatten
     end
 
@@ -97,6 +97,8 @@ No staged changes. Will create an empty commit.
         return stories[0]
       end
 
+      my_id = client.me.id
+
       highline.choose do |menu|
         menu.header = 'Choose a story'
 
@@ -105,7 +107,7 @@ No staged changes. Will create an empty commit.
 
           state = story.current_state
           owners = story.owners
-          owner_is_me = owners.collect(&:id).include?(client.me.id)
+          owner_is_me = owners.collect(&:id).include?(my_id)
 
           if state == 'started'
             state = HighLine::GREEN + state + HighLine::RESET
