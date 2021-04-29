@@ -5,9 +5,6 @@ Example: `geordi cucumber features/authentication_feature:3`
 Runs Cucumber with `bundle exec`, using parallel tests and with support for re-running
 failed scenarios.
 
-- *@solo:* Generally, features are run in parallel. However, scenarios tagged
-with @solo are excluded from the parallel run and executed sequentially instead.
-
 - *Debugging:* In some cases, the dot-printing Cucumber formatter swallows
 errors. In case a feature fails without an error message, try running it with
 `--debug` or `-d`.
@@ -61,28 +58,6 @@ def cucumber(*args)
 
     cmd_opts, files = args.partition { |f| f.start_with? '-' }
     cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug
-
-    # Serial run of @solo scenarios ############################################
-    if files.any? { |f| f.include? ':' }
-      Interaction.note '@solo run skipped when called with line numbers' if options.verbose
-    else
-      solo_files = if files.empty?
-        'features' # Proper grepping
-      else
-        files.join(' ')
-      end
-
-      solo_tag_usages = `grep -r '@solo' #{solo_files}`.split("\n")
-
-      if solo_tag_usages.any?
-        solo_cmd_opts = cmd_opts.dup
-        solo_cmd_opts << '--tags' << '@solo'
-
-        Interaction.announce 'Running @solo features'
-        solo_success = Geordi::Cucumber.new.run files, solo_cmd_opts, verbose: options.verbose, parallel: false
-        solo_success || Interaction.fail('Features failed.')
-      end
-    end
 
     # Parallel run of all given features + reruns ##############################
     Interaction.announce 'Running features'
