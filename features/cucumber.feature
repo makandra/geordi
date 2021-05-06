@@ -256,3 +256,47 @@ Feature: The cucumber command
     # Passing a line number activates serial test execution
     When I run `geordi cucumber --verbose single.feature:1`
     Then the output should contain "> bin/cucumber"
+
+
+  Scenario: Invalid config keys are not reported twice in the same geordi command
+    Given a file named "tmp/global_settings.yml" with "use_vnc: false"
+    Given a file named "features/cucumber.feature" with:
+    """
+    Feature: Running multiple features
+      Scenario: A scenario
+      Scenario: Another scenario
+    """
+
+    When I run `geordi cucumber features/cucumber.feature`
+    Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
+      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+
+
+  Scenario: Invalid config keys are reported twice in two consecutive executions of geordi
+    Given a file named "tmp/global_settings.yml" with "use_vnc: false"
+    Given a file named "features/cucumber.feature" with:
+    """
+    Feature: Running multiple features
+      Scenario: A scenario
+      Scenario: Another scenario
+    """
+
+    When I run `geordi cucumber features/cucumber.feature`
+    Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
+      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+
+    When I ignore previous output
+      And I run `geordi cucumber features/cucumber.feature`
+    Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
+      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+
+  Scenario: When running cucumber tests with a .firefox-version in the project root, a warning is issued
+    Given a file named ".firefox-version" with "1.2.3"
+    Given a file named "features/cucumber.feature" with:
+    """
+    Feature: Running multiple features
+      Scenario: A scenario
+    """
+
+    When I run `geordi cucumber features/cucumber.feature`
+    Then the output should contain '> Unsupported config file ".firefox-version". Please remove it.' 1 time
