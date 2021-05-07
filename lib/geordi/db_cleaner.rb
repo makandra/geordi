@@ -180,7 +180,7 @@ HEREDOC
         if @mysql_command.include? '-p'
           puts "Please enter your MySQL/MariaDB account 'root' for: DROP DATABASE #{db}"
         else
-          Interaction.note "Dropping MySQL/MariaDB database #{db}"
+          puts "Dropping MySQL/MariaDB database #{db}"
         end
         `#{@mysql_command} -e 'DROP DATABASE \`#{db}\`;'`
       end
@@ -206,7 +206,7 @@ HEREDOC
       until %w[y n].include? proceed
         deletable_dbs = filter_whitelisted(dbtype, database_list)
         if deletable_dbs.empty?
-          Interaction.note "No #{dbtype} databases found that were not whitelisted"
+          Interaction.note "No #{dbtype} databases found that were not whitelisted."
           if Interaction.prompt('Edit the whitelist? [y]es or [n]o') == 'y'
             proceed = 'e'
           else
@@ -214,11 +214,11 @@ HEREDOC
           end
         end
         if proceed.empty?
-          Interaction.note "The following #{dbtype} databases are not whitelisted and could be deleted:"
+          Interaction.note "The following #{dbtype} databases are not whitelisted and can be deleted:"
           deletable_dbs.sort.each do |db|
             puts db
           end
-          Interaction.note "Those #{dbtype} databases are not whitelisted and could be deleted."
+          Interaction.note "These #{dbtype} databases are not whitelisted and can be deleted."
           proceed = Interaction.prompt('Proceed? [y]es, [n]o or [e]dit whitelist')
         end
         case proceed
@@ -226,7 +226,7 @@ HEREDOC
           proceed = '' # reset user selection
           edit_whitelist dbtype
         when 'n'
-          Interaction.success 'Not deleting anything'
+          Interaction.success 'Nothing deleted.'
           return []
         when 'y'
           return deletable_dbs

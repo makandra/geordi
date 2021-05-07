@@ -11,8 +11,9 @@ module Geordi
       puts "\e[4;34m#{message}\e[0m" # blue underline
     end
 
-    # Any hints, comments, infos or explanations should be `note`d. Please do
-    # not print any output (data, file contents, lists) with `note`.
+    # Any meta information, i.e. hints, comments, infos or explanations should
+    # be printed with `note`.
+    # Please do not use it for command output (data, file contents, lists etc).
     def note(text)
       puts '> ' + text
     end
@@ -38,7 +39,8 @@ module Geordi
       exit(1)
     end
 
-    # When you're done, inform the user with a `success` and a short message
+    # When you're done, inform the user with a `success` and a short message. It
+    # should be a sentence (i.e. ending with [.!?]).
     def success(text)
       message = "\n> #{text}"
       puts "\e[32m#{message}\e[0m" # green

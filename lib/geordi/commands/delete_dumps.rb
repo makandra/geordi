@@ -30,7 +30,7 @@ def delete_dumps(*locations)
   deletable_dumps = dump_files.flatten.uniq.sort.select &File.method(:file?)
 
   if deletable_dumps.empty?
-    Interaction.note 'No dump files found'
+    Interaction.warn 'No dump files found.'
   else
     puts deletable_dumps
     Interaction.prompt('Delete these files?', 'n', /y|yes/) || Interaction.fail('Cancelled.')

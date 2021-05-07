@@ -10,5 +10,6 @@ def remove_executable_flags
     Interaction.note pattern
     `find . -name "#{pattern}" -exec chmod -x {} ';'`
   end
-  puts 'Done.'
+
+  Interaction.success 'Done.'
 end

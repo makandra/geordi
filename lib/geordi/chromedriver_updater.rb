@@ -10,7 +10,7 @@ module Geordi
       chromedriver_version = determine_chromedriver_version
 
       if skip_update?(chrome_version, chromedriver_version)
-        Interaction.note("No update required, you are using for both executables the same version #{chrome_version}!") unless options[:quiet_if_matching]
+        Interaction.success "No update required: both Chrome and chromedriver are on v#{chrome_version}!" unless options[:quiet_if_matching]
       else
         chromedriver_zip = download_chromedriver(chrome_version)
         unzip(chromedriver_zip, File.expand_path('~/bin'))
@@ -18,7 +18,7 @@ module Geordi
         chromedriver_zip.unlink
 
         # We need to determine the version again, as it could be nil in case no chromedriver was installed before
-        Interaction.note "Chromedriver updated to version #{determine_chromedriver_version}"
+        Interaction.success "Chromedriver updated to v#{determine_chromedriver_version}."
       end
     end
 
@@ -31,7 +31,7 @@ module Geordi
       end
 
       if !status.success? || chrome_version.nil?
-        Interaction.fail('Could not determine the current Google Chrome version')
+        Interaction.fail('Could not determine the version of Google Chrome.')
       else
         chrome_version.to_i
       end
@@ -46,7 +46,7 @@ module Geordi
       end
 
       if !status.success? || chromedriver_version.nil?
-        Interaction.fail('Could not determine the current chromedriver version')
+        Interaction.fail('Could not determine the version of chromedriver.')
       else
         chromedriver_version.to_i
       end
@@ -68,7 +68,7 @@ module Geordi
 
         file
       else
-        Interaction.fail("Could not download chromedriver version #{latest_version}")
+        Interaction.fail("Could not download chromedriver v#{latest_version}.")
       end
     end
 
@@ -79,7 +79,7 @@ module Geordi
       if response.is_a?(Net::HTTPSuccess)
         response.body.to_s
       else
-        Interaction.fail("Could not find the latest version for Google Chrome version #{chrome_version}")
+        Interaction.fail("Could not download the chromedriver v#{chrome_version}.")
       end
     end
 
@@ -87,7 +87,7 @@ module Geordi
       _stdout_str, _error_str, status = Open3.capture3('unzip', '-d', output_dir, '-o', zip.path)
 
       unless status.success?
-        Interaction.fail("Could not unzip #{zip.path}")
+        Interaction.fail("Could not unzip #{zip.path}.")
       end
     end
   end
