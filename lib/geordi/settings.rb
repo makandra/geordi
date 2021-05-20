@@ -11,7 +11,7 @@ module Geordi
     ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver pivotal_tracker_project_ids ].freeze
     ALLOWED_LOCAL_SETTINGS = %w[ pivotal_tracker_project_ids ].freeze
 
-    SETTINGS_WARNED = 'false'
+    SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
     def initialize
       read_settings

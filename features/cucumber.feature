@@ -262,9 +262,8 @@ Feature: The cucumber command
     Given a file named "tmp/global_settings.yml" with "use_vnc: false"
     Given a file named "features/cucumber.feature" with:
     """
-    Feature: Running multiple features
+    Feature: Running a single feature
       Scenario: A scenario
-      Scenario: Another scenario
     """
 
     When I run `geordi cucumber features/cucumber.feature`
@@ -276,9 +275,8 @@ Feature: The cucumber command
     Given a file named "tmp/global_settings.yml" with "use_vnc: false"
     Given a file named "features/cucumber.feature" with:
     """
-    Feature: Running multiple features
+    Feature: Running a single feature
       Scenario: A scenario
-      Scenario: Another scenario
     """
 
     When I run `geordi cucumber features/cucumber.feature`
