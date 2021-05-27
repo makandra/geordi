@@ -2,19 +2,15 @@ desc 'cucumber [FILES and OPTIONS]', 'Run Cucumber features'
 long_desc <<-LONGDESC
 Example: `geordi cucumber features/authentication_feature:3`
 
-Runs Cucumber with `bundle exec`, using parallel tests and with support for re-running
-failed scenarios.
+Runs Cucumber with `bundle exec`, using parallel tests and with support for
+re-running failed scenarios.
 
-- *Debugging:* In some cases, the dot-printing Cucumber formatter swallows
-errors. In case a feature fails without an error message, try running it with
-`--debug` or `-d`.
+Any unknown option will be passed through to Cucumber, e.g. `--format=pretty`.
+Make sure to connect option and value with an equals sign, i.e. have each option
+a contiguous string.
 
-- *Options:* Any unknown option will be passed through to Cucumber,
-e.g. `--format=pretty`. Make sure to connect option and value with an equals
-sign, i.e. have each option a contiguous string.
-
-- In order to limit processes in a parallel run, you can set an environment
-  variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
+In order to limit processes in a parallel run, you can set an environment
+variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
 LONGDESC
 
 option :modified, aliases: '-m', type: :boolean,
