@@ -19,7 +19,7 @@ Feature: The cucumber command
     Then the output should contain "# Running features"
       And the output should contain "> Only: features/single.feature"
       And the output should contain "Features green."
-    But the output should not contain "> Using parallel_tests"
+    But the output should not contain "parallel"
 
 
   Scenario: Multiple features are run in parallel
