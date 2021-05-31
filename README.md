@@ -342,8 +342,17 @@ servers. When passed a number, directly connects to the selected server.
 - `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to
 
 
-### `geordi tests`
+### `geordi tests [FILES and OPTIONS]`
 Run all employed tests.
+
+When running `geordi tests` with a test file or a test directory, it will
+invoke either `geordi rspec` or `geordi cucumber` to run the test, depending on
+whether the first argument is a spec or a feature.
+
+Command line arguments are passed to `geordi rspec`/`geordi cucumber` as well.
+
+When running `geordi tests` without any arguments, all unit tests, rspec specs
+and cucumber features will be run.
 
 
 ### `geordi unit`
