@@ -6,19 +6,24 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Removed support for serial execution of scenarios tagged with @solo.
-
 ### Breaking changes
 
-## 6.0.0 2021-04-06
+
+## 6.0.0 2021-06-02
 
 ### Compatible changes
 * `geordi commit` will continue even if one of the given projects is inaccessible. It will only fail if no stories could be found at all.
 
 ### Breaking changes
-* Removed VNC test browser support for integration tests.
+* Removed VNC test browser support for integration tests – Headless Chrome has
+  matured and is almost a drop-in replacement. Also, key binding issues have
+  increased with VNC and recent Linux.
   * Please use a headless Chrome setup <https://makandracards.com/makandra/492109-capybara-running-tests-with-headless-chrome>. 
   * You might also want to get rid of your local VNC server `sudo apt remove tightvncserver`.
+* Removed support for serial execution of scenarios tagged with @solo. Serial
+  execution is not needed with Headless Chrome, as Headless instances cannot
+  interfere (like, stealing focus).
+
 
 ## 5.4.0 2021-02-01
 
