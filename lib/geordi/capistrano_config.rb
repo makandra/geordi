@@ -11,7 +11,7 @@ module Geordi
 
     def user(server)
       cap2user = deploy_info[/^\s*set\s*:user,\s*['"](.*?)['"]/, 1]
-      cap2user || deploy_info[/^\s*server\s*['"]#{server}['"],.*user.{1,4}['"](.*?)['"]/m, 1]
+      cap2user || deploy_info[/^\s*server\s*['"]#{server}['"],.*user.{1,4}['"](.*?)['"]/, 1]
     end
 
     def servers
@@ -42,14 +42,23 @@ module Geordi
     attr_accessor :deploy_info, :stage
 
     def load_deploy_info
+      lines = []
       self.deploy_info = ''
 
       if stage
-        deploy_info << File.read(File.join(root, "config/deploy/#{stage}.rb"))
-        deploy_info << "\n"
+        lines += File.readlines(File.join(root, "config/deploy/#{stage}.rb"))
       end
 
-      deploy_info << File.read(File.join(root, 'config/deploy.rb'))
+      lines += File.readlines(File.join(root, 'config/deploy.rb'))
+
+      lines.each do |line|
+        next if line =~ /^\s*#/ # Omit comment lines
+        line.chomp! if line =~ /[\\,]\s*$/ # Join wrapped lines
+
+        deploy_info << line
+      end
+
+      deploy_info
     end
 
     def find_project_root!
