@@ -13,6 +13,7 @@
 # it.
 
 require 'aruba/rspec'
+require 'byebug'
 ::Dir.glob('./lib/geordi/*.rb').each { |f| require f }
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration
