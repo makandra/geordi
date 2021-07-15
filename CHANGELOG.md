@@ -6,9 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* `geordi tests` can take test files as arguments and passes them to rspec or cucumber.
-
 ### Breaking changes
+
+
+## 6.1.0 2021-07-15
+
+### Compatible changes
+* Improve parsing of Capistrano files ([#162](https://github.com/makandra/geordi/issues/162))
+* `geordi tests` now takes test files as arguments and passes them to either RSpec or Cucumber ([#152](https://github.com/makandra/geordi/issues/152))
 
 
 ## 6.0.0 2021-06-02
