@@ -173,7 +173,7 @@ No staged changes. Will create an empty commit.
         stdout_str.strip.split(' ').map(&:chars).map(&:first).join.downcase
       end
 
-      git_user_initials = Interaction.prompt 'Enter your initals:', git_user_initials
+      git_user_initials = Interaction.prompt 'Enter your initials:', git_user_initials
 
       if git_user_initials.nil?
         Interaction.fail('Could not determine the git user\'s initials.')

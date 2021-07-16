@@ -13,11 +13,11 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
       And the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
 
 
-  Scenario: Checkout a new branch with custom initals
+  Scenario: Checkout a new branch with custom initials
     Given my local git branches are: master
 
     When I run `geordi branch` interactively
-      # I enter my custom initals
+      # I enter my custom initials
       And I type "ab"
     Then the output should contain "Util.run! git, checkout, -b, ab/test-story-12"
 
