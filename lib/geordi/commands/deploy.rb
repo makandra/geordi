@@ -48,11 +48,11 @@ def deploy(target_stage = nil)
   target_stage ||= Interaction.prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
   if options.current_branch
     stage_file = "config/deploy/#{target_stage}.rb"
-    Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || Interaction.fail(<<-ERROR)
-To deploy from the current branch, configure #{stage_file} to respect the
-environment variable DEPLOY_BRANCH. Example:
+    Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || Interaction.fail(<<~ERROR)
+      To deploy from the current branch, configure #{stage_file} to respect the
+      environment variable DEPLOY_BRANCH. Example:
 
-set :branch, ENV['DEPLOY_BRANCH'] || 'master'
+      set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     ERROR
 
     source_branch = target_branch = Util.current_branch

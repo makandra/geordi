@@ -30,15 +30,15 @@ module Geordi
       end
       all_dbs = list_all_dbs(dbtype)
       tmp = Tempfile.open("geordi_whitelist_#{dbtype}")
-      tmp.write <<-HEREDOC
-# Put each whitelisted database on a new line.
-# System databases will never be deleted.
-# When you whitelist foo, foo_development and foo_test\\d* are whitelisted, too.
-# This works even if foo does not exist. Also, you will only see foo in this list.
-#
-# Syntax: keep foo
-#         drop bar
-HEREDOC
+      tmp.write <<~HEREDOC
+        # Put each whitelisted database on a new line.
+        # System databases will never be deleted.
+        # When you whitelist foo, foo_development and foo_test\\d* are whitelisted, too.
+        # This works even if foo does not exist. Also, you will only see foo in this list.
+        #
+        # Syntax: keep foo
+        #         drop bar
+      HEREDOC
       tmpfile_content = Array.new
       all_dbs.each do |db|
         next if is_whitelisted?(dbtype, db)
@@ -65,11 +65,11 @@ HEREDOC
         tmpfile_content.push(['keep', db_name]) unless db_name.empty?
       end
       if warn_manual_whitelist
-        Interaction.warn <<-ERROR_MSG.gsub(/^\s*/, '')
-        Your whitelist #{whitelist} seems to have been generated manually.
-        In that case, make sure to use only one database name per line and omit the 'keep' prefix."
+        Interaction.warn <<~ERROR_MSG
+          Your whitelist #{whitelist} seems to have been generated manually.
+          In that case, make sure to use only one database name per line and omit the 'keep' prefix."
 
-        Launching the editor.
+          Launching the editor.
         ERROR_MSG
       end
       tmpfile_content.sort_by! { |k| k[1] }

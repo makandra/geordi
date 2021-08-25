@@ -182,12 +182,6 @@ module Geordi
         !!ENV['GEORDI_TESTING']
       end
 
-      def strip_heredoc(string)
-        leading_whitespace = (string.match(/\A( +)[^ ]+/) || [])[1]
-        string.gsub! /^#{leading_whitespace}/, '' if leading_whitespace
-        string
-      end
-
     end
   end
 end

@@ -138,7 +138,7 @@ module Geordi
         project_ids = File.read('.pt_project_id')
         puts # Make sure to start on a new line (e.g. when invoked after a #print)
         Geordi::Interaction.warn "The usage of the .pt_project_id file is deprecated."
-        Geordi::Interaction.note Util.strip_heredoc(<<-INSTRUCTIONS)
+        Geordi::Interaction.note(<<~INSTRUCTIONS)
           Please remove this file from your project and add or extend the .geordi.yml file with the following content:
             pivotal_tracker_project_ids: #{project_ids}
         INSTRUCTIONS

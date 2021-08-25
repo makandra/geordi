@@ -13,6 +13,7 @@
 # it.
 
 require 'aruba/rspec'
+require 'pry'
 require 'byebug'
 ::Dir.glob('./lib/geordi/*.rb').each { |f| require f }
 

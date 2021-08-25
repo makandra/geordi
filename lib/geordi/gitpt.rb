@@ -16,8 +16,8 @@ module Geordi
     end
 
     def run_commit(git_args)
-      Interaction.warn <<-WARNING unless Util.staged_changes?
-No staged changes. Will create an empty commit.
+      Interaction.warn <<~WARNING unless Util.staged_changes?
+        No staged changes. Will create an empty commit.
       WARNING
 
       story = choose_story

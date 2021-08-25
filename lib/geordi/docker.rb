@@ -50,8 +50,8 @@ module Geordi
       end
 
       puts
-      puts Util.strip_heredoc <<-TEXT
-    Done. You can view the VNC window with `geordi docker vnc`.
+      puts <<~TEXT
+        Done. You can view the VNC window with `geordi docker vnc`.
       TEXT
 
       Interaction.success 'Happy cuking!'

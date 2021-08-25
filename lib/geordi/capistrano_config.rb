@@ -66,11 +66,11 @@ module Geordi
 
       until File.exist?(File.join(current, 'Capfile'))
         if current == '/' || current == '/home' || !File.directory?(current)
-          raise <<-ERROR
-  Could not locate Capfile.
+          raise <<~ERROR
+            Could not locate Capfile.
 
-  Are you calling me from within a Rails project?
-  Maybe Capistrano is not installed in this project.
+            Are you calling me from within a Rails project?
+            Maybe Capistrano is not installed in this project.
           ERROR
         else
           current = File.dirname(current)
