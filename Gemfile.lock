@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (6.1.0)
+    geordi (7.0.0)
 
 GEM
   remote: http://rubygems.org/
