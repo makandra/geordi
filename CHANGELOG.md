@@ -6,15 +6,17 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Fix missing `thor` dependency
-
 ### Breaking changes
 
+
+## 7.0.1 2021-08-13
+
+### Compatible changes
+* Fix missing `thor` dependency
 
 ## 7.0.0 2021-08-25
 
 ### Breaking changes
-
 * Drop support for Ruby < 2.5.0
 
 
