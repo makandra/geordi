@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     geordi (7.0.0)
+      thor (~> 1)
 
 GEM
   remote: http://rubygems.org/
@@ -161,7 +162,6 @@ DEPENDENCIES
   pry-byebug
   rake (< 13)
   rspec
-  thor (~> 1)
   tracker_api
 
 BUNDLED WITH

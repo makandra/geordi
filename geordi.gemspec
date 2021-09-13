@@ -23,6 +23,7 @@ Gem::Specification.new do |spec|
   spec.executables = spec.files.grep(%r(^exe/)) { |f| File.basename(f) }
   spec.require_paths = ['lib']
 
+  spec.add_runtime_dependency 'thor', '~> 1'
   # Development dependencies are defined in the Gemfile (therefore no `spec.add_development_dependency` directives)
 
   spec.post_install_message = <<-ATTENTION
