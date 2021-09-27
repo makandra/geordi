@@ -103,8 +103,6 @@ module Geordi
         menu.header = 'Choose a story'
 
         stories.each do |story|
-          print '.' # Progress
-
           state = story.current_state
           owners = story.owners
           owner_is_me = owners.collect(&:id).include?(my_id)
