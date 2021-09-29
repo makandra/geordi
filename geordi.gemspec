@@ -24,6 +24,7 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'thor', '~> 1'
+  spec.add_runtime_dependency 'psych', '>= 3.1.0'
   # Development dependencies are defined in the Gemfile (therefore no `spec.add_development_dependency` directives)
 
   spec.post_install_message = <<-ATTENTION
