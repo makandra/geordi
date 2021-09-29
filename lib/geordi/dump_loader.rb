@@ -14,8 +14,15 @@ module Geordi
       require 'yaml'
 
       evaluated_config_file = ERB.new(File.read('config/database.yml')).result
+
       # Allow aliases and a special set of classes like symbols and time objects
-      @config ||= YAML.safe_load(evaluated_config_file, [Symbol, Time], [], true)
+      permitted_classes = [Symbol, Time]
+      @config ||= if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+        YAML.safe_load(evaluated_config_file, permitted_classes: permitted_classes, aliases: true)
+      else
+        YAML.safe_load(evaluated_config_file, permitted_classes, [], true)
+      end
+
       @config['development']
     end
     alias_method :config, :development_database_config
