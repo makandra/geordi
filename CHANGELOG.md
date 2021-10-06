@@ -6,9 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* fix `YAML.safe_load` for `psych` >= 4
+
 ### Breaking changes
 
+
+## 7.0.2 2021-10-06
+
+### Compatible changes
+* fix `YAML.safe_load` for `psych` >= 4
 
 ## 7.0.1 2021-08-13
 
