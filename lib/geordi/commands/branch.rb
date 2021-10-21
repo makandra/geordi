@@ -6,7 +6,9 @@ On the first execution we ask for your Pivotal Tracker API token. It will be
 stored in `~/.config/geordi/global.yml`.
 LONGDESC
 
+option :from_maser, aliases: '-m', type: :boolean, desc: 'Checkout new branch from master instead of the current branch'
+
 def branch
   require 'geordi/gitpt'
-  Gitpt.new.run_branch
+  Gitpt.new.run_branch(from_master: options.from_maser)
 end

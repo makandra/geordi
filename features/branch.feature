@@ -9,6 +9,16 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     When I run `geordi branch` interactively
       # I skip the initials prompt
       And I type ""
+    Then the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
+
+
+  Scenario: Checkout a new branch with geordi branch from master
+    Given my username from git config is "Max Musterman"
+    And my local git branches are: master
+
+    When I run `geordi branch -m` interactively
+      # I skip the initials prompt
+      And I type ""
     Then the output should contain "Util.run! git, checkout, master"
       And the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
 

@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 
 ### Breaking changes
+* `geordi branch` now checks out new branches from the current branch instead of master, if you want to check out from master use `geordi branch -m`
 
 
 ## 7.0.2 2021-10-06
