@@ -26,7 +26,7 @@ module Geordi
       end
     end
 
-    def run_branch
+    def run_branch(from_master: false)
       story = choose_story || Interaction.fail('No story selected.')
 
       normalized_story_name = normalize_string(story.name)
@@ -50,7 +50,7 @@ module Geordi
       if branch_name.present?
         checkout_branch branch_name, new_branch: false
       else
-        checkout_branch new_branch_name, new_branch: true
+        checkout_branch new_branch_name, new_branch: true, from_master: from_master
       end
     end
 
@@ -139,9 +139,9 @@ module Geordi
       HighLine::BOLD + string + HighLine::RESET
     end
 
-    def checkout_branch(name, new_branch: false)
+    def checkout_branch(name, new_branch: false, from_master: false)
       if new_branch
-        Util.run! ['git', 'checkout', 'master']
+        Util.run! ['git', 'checkout', 'master'] if from_master
         Util.run! ['git', 'checkout', '-b', name]
       else
         Util.run! ['git', 'checkout', name]
