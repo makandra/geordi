@@ -33,7 +33,9 @@ Example: `geordi branch`
 On the first execution we ask for your Pivotal Tracker API token. It will be
 stored in `~/.config/geordi/global.yml`.
 
-By default `geordi branch` will checkout a new branch based on the current branch, you can use `geordi branch -m` to checkout from master.
+**Options**
+- `-m, [--from-master], [--no-from-master]`: Branch from master instead of the current branch
+
 
 ### `geordi capistrano COMMAND`
 Run a capistrano command on all deploy targets.

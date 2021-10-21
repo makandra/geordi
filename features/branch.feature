@@ -16,7 +16,7 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     Given my username from git config is "Max Musterman"
     And my local git branches are: master
 
-    When I run `geordi branch -m` interactively
+    When I run `geordi branch --from-master` interactively
       # I skip the initials prompt
       And I type ""
     Then the output should contain "Util.run! git, checkout, master"
