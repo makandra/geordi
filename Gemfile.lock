@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (7.0.2)
+    geordi (8.0.0)
       thor (~> 1)
 
 GEM
@@ -165,4 +165,4 @@ DEPENDENCIES
   tracker_api
 
 BUNDLED WITH
-   2.2.26
+   2.2.27

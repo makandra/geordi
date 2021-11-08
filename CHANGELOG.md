@@ -3,12 +3,18 @@
 All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
+
 ## Unreleased
 
 ### Compatible changes
 
 ### Breaking changes
-* `geordi branch` now checks out new branches from the current branch instead of master, if you want to check out from master use `geordi branch -m`
+
+
+## 8.0.0 2021-11-08
+
+### Breaking changes
+* `geordi branch` now checks out new branches from the current branch instead of master. To check out from master, use `geordi branch -m`.
 
 
 ## 7.0.2 2021-10-06
@@ -16,10 +22,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 * fix `YAML.safe_load` for `psych` >= 4
 
+
 ## 7.0.1 2021-08-13
 
 ### Compatible changes
 * Fix missing `thor` dependency
+
 
 ## 7.0.0 2021-08-25
 
