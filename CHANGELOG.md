@@ -9,6 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 
 ### Breaking changes
+* Remove the `geordi docker` command
 
 
 ## 8.0.0 2021-11-08
