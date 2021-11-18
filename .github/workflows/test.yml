@@ -31,10 +31,6 @@ jobs:
       run: |
         gem install bundler:2.2.26
         bundle install --no-deployment
-    - name: Install VNC viewer
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y xtightvncviewer
     - name: Run tests
       run: bundle exec rake
     

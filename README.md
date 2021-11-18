@@ -160,28 +160,6 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 - `-c, [--current-branch], [--no-current-branch]`: Set DEPLOY_BRANCH to the current branch during deploy
 
 
-### `geordi docker`
-Manage docker containers for the current project.
-
-Manage docker containers to run your project dockerized.
-
-It expects a `docker-compose.yml` file that specifies all services, and a service
-named "main" that opens a shell for the project.
-
-There are three subcommands:
-
-- `geordi docker setup`
-  Fetches all docker containers.
-
-- `geordi docker shell`
-  Runs the docker service named 'main'.
-  Append `--secondary` to open a second shell in an already running container.
-
-- `geordi docker vnc`
-  Opens a VNC viewer to connect to the VNC server in the container.
-  Append `--setup` to be guided through the setup of VNC viewer.
-
-
 ### `geordi drop-databases`
 Interactively delete local databases.
 
