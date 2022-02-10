@@ -7,18 +7,13 @@ module Geordi
 
     def run(options)
       chrome_version = determine_chrome_version
-      chromedriver_version = determine_chromedriver_version
+      current_chromedriver_version = determine_chromedriver_version
 
-      if skip_update?(chrome_version, chromedriver_version)
-        Interaction.success "No update required: both Chrome and chromedriver are on v#{chrome_version}!" unless options[:quiet_if_matching]
+      latest_chromedriver_version = latest_version(chrome_version)
+      if current_chromedriver_version == latest_chromedriver_version
+        Interaction.success "No update required: Chromedriver is already on the latest version v#{latest_chromedriver_version}!" unless options[:quiet_if_matching]
       else
-        chromedriver_zip = download_chromedriver(chrome_version)
-        unzip(chromedriver_zip, File.expand_path('~/bin'))
-
-        chromedriver_zip.unlink
-
-        # We need to determine the version again, as it could be nil in case no chromedriver was installed before
-        Interaction.success "Chromedriver updated to v#{determine_chromedriver_version}."
+        update_chromedriver(latest_chromedriver_version)
       end
     end
 
@@ -27,13 +22,13 @@ module Geordi
     def determine_chrome_version
       stdout_str, _error_str, status = Open3.capture3('google-chrome', '--version')
       chrome_version = unless stdout_str.nil?
-        stdout_str[/\AGoogle Chrome (\d+)/, 1]
+        stdout_str[/\AGoogle Chrome ([\d.]+)/, 1]
       end
 
       if !status.success? || chrome_version.nil?
         Interaction.fail('Could not determine the version of Google Chrome.')
       else
-        chrome_version.to_i
+        chrome_version
       end
     end
 
@@ -42,23 +37,32 @@ module Geordi
 
       stdout_str, _error_str, status = Open3.capture3('chromedriver', '-v')
       chromedriver_version = unless stdout_str.nil?
-        stdout_str[/\AChromeDriver (\d+)/, 1]
+        stdout_str[/\AChromeDriver ([\d.]+)/, 1]
       end
 
       if !status.success? || chromedriver_version.nil?
         Interaction.fail('Could not determine the version of chromedriver.')
       else
-        chromedriver_version.to_i
+        chromedriver_version
       end
     end
 
-    def skip_update?(chrome_version, chromedriver_version)
-      chrome_version == chromedriver_version
+    # Check https://groups.google.com/a/chromium.org/g/chromium-discuss/c/4BB4jmsRyv8/m/TY3FXS4HBgAJ
+    # for information how chrome version numbers work
+    def major_version(full_version)
+      full_version.match(/^(\d+\.\d+\.\d+)\.\d+$/)[1]
     end
 
-    def download_chromedriver(chrome_version)
-      latest_version = latest_version(chrome_version)
+    def update_chromedriver(latest_chromedriver_version)
+      chromedriver_zip = download_chromedriver(latest_chromedriver_version)
 
+      unzip(chromedriver_zip, File.expand_path('~/bin'))
+
+      # We need to determine the version again, as it could be nil in case no chromedriver was installed before
+      Interaction.success "Chromedriver updated to v#{determine_chromedriver_version}."
+    end
+
+    def download_chromedriver(latest_version)
       uri = URI("https://chromedriver.storage.googleapis.com/#{latest_version}/chromedriver_linux64.zip")
       response = Net::HTTP.get_response(uri)
 
@@ -73,11 +77,13 @@ module Geordi
     end
 
     def latest_version(chrome_version)
-      uri = URI("https://chromedriver.storage.googleapis.com/LATEST_RELEASE_#{chrome_version}")
+      return @latest_version if @latest_version
+
+      uri = URI("https://chromedriver.storage.googleapis.com/LATEST_RELEASE_#{major_version(chrome_version)}")
       response = Net::HTTP.get_response(uri)
 
       if response.is_a?(Net::HTTPSuccess)
-        response.body.to_s
+        @latest_version = response.body.to_s
       else
         Interaction.fail("Could not download the chromedriver v#{chrome_version}.")
       end

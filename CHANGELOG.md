@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* Change the update mechanism of `geordi chromedriver-update`: This command (and `geordi cucumber`/`geordi tests` if the `auto_update_chromedriver` option is active) will now always update to the latest version of chromedriver for the current chrome version.
 
 ### Breaking changes
 
