@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (9.0.0)
+    geordi (9.1.0)
       thor (~> 1)
 
 GEM

@@ -194,7 +194,9 @@ specified target's database and downloads it to `tmp/`.
 `geordi dump staging -l` (with a Capistrano deploy target and the `--load`
 option) sources the dump into the development database after downloading it.
 
-If you are using multiple databases per environment, pass the database name like this:
+If you are using multiple databases per environment, Geordi defaults to the
+"primary" database, or the first entry in database.yml. To dump a specific
+database, pass the database name like this:
 
     geordi dump -d primary
 

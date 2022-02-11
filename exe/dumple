@@ -1,28 +1,33 @@
 #!/usr/bin/env ruby
 
-require 'erb'
-
-fail_gently = ARGV.include?("--fail-gently")
-compress = ARGV.include?("--compress")
-
 if ARGV.include?("-i")
   puts "*******************************************************"
   puts
   system("du -sh ~/dumps")
   puts
   puts "*******************************************************"
+
   exit
 end
 
-###
-
+require 'erb'
 require "yaml"
-config_path = 'config/database.yml'
 
-begin
-  # go to project root
+DB_CONFIG_PATH = 'config/database.yml'
+DUMPS_DIR = "#{ENV['HOME']}/dumps"
+
+def run(*args)
+  if !!ENV['GEORDI_TESTING']
+    puts "system #{args.join(', ')}"
+    true # "Command succeeded"
+  else
+    system *args
+  end
+end
+
+def cd_to_project_root(fail_gently)
   current = Dir.pwd
-  until (File.exists? config_path)
+  until File.exists?(DB_CONFIG_PATH)
     Dir.chdir '..'
     if current == Dir.pwd
       if fail_gently
@@ -38,46 +43,24 @@ begin
         sleep 5
         exit
       else
-        raise "Call me from inside a Rails project."
+        raise "x Call me from inside a Rails project."
       end
     end
     current = Dir.pwd
   end
+end
 
-  config = YAML::load(ERB.new(File.read(config_path)).result)
-  environment, database = ARGV.reject{ |arg| arg[0].chr == '-' }
-  environment ||= 'production'
-  config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
-
-  if database
-    config = config[database] or raise %(Unknown #{environment} database "#{database}")
-  end
-
-  dump_dir = "#{ENV['HOME']}/dumps"
-  unless File.directory?(dump_dir)
-    Dir.mkdir(dump_dir)
-    system("chmod 700 #{dump_dir}")
-  end
-
-  if ARGV.find{ |arg| arg == '--for_download'}
-    dump_path = "#{dump_dir}/dump_for_download.dump"
-  else
-    dump_path = "#{dump_dir}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
-  end
-
-  given_database = database ? %(#{database} ) : ""
-  puts "> Dumping #{given_database}database for \"#{environment}\" environment ..."
-
+def dump_command(dump_file, config)
   host = config['host']
   port = config['port']
 
-  dump_command = case config['adapter']
+  case config['adapter']
   when /mysql/
     command = "mysqldump"
     command << " -u\"#{config['username']}\""
     command << " -p\"#{config['password']}\""
     command << " #{config['database']}"
-    command << " -r #{dump_path}"
+    command << " -r #{dump_file}"
     # Using a transaction to allow concurrent request while creating a dump.
     # This works only reliable for InnoDB tables.
     # More details: https://dev.mysql.com/doc/refman/5.7/en/mysqldump.html#option_mysqldump_single-transaction
@@ -96,25 +79,75 @@ begin
     command << " pg_dump #{config['database']}"
     command << " --clean"
     command << " --format=custom"
-    command << " --file=#{dump_path}"
+    command << " --file=#{dump_file}"
     command << " --username=\"#{config['username']}\""
     command << " --host=#{host}" if host
     command << " --port=#{port}" if port
     command
   else
-    raise "Adapter \"#{config['adapter']}\" is not supported"
+    raise %(x Adapter "#{config['adapter']}" is not supported.)
   end
-  success = system(dump_command)
-  success or raise "Creating the dump failed"
+end
 
-  system "chmod 600 #{dump_path}"
+def find_database_config(config_path, environment, database)
+  environment ||= 'production'
+  database_yml = ERB.new(File.read(config_path)).result
+  config = YAML::load(database_yml)
+  config = config[environment] or raise "x No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
+
+  if config.values[0].is_a? Hash # Multi-db setup
+    if database # Explicitly requested
+      config = config[database] or raise %(x Unknown #{environment} database "#{database}".)
+    elsif config.key? 'primary'
+      puts '> Multiple databases detected. Defaulting to primary database.'
+      config = config['primary']
+    else
+      puts "> Multiple databases detected. Defaulting to first entry (#{config.keys[0]})."
+      config = config.values[0]
+    end
+  else # Single-db setup
+    if database
+      raise %(x Could not select "#{database}" database in a single-db environment.)
+    end
+  end
+
+  config
+end
+
+def prepare_dump_path(config)
+  unless File.directory?(DUMPS_DIR)
+    Dir.mkdir(DUMPS_DIR)
+    run "chmod 700 #{DUMPS_DIR}"
+  end
+
+  if ARGV.include? '--for_download'
+    "#{DUMPS_DIR}/dump_for_download.dump"
+  else
+    "#{DUMPS_DIR}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"
+  end
+end
+
+begin
+  fail_gently = ARGV.include?("--fail-gently")
+  compress = ARGV.include?("--compress")
+  environment, database = ARGV.reject { |arg| arg[0].chr == '-' }
+
+  cd_to_project_root(fail_gently)
+  config = find_database_config(DB_CONFIG_PATH, environment, database)
+  dump_path = prepare_dump_path(config)
+
+  # Dump!
+  given_database = database ? %(#{database} ) : ""
+  command = dump_command(dump_path, config)
+  puts "> Dumping #{given_database}database for \"#{environment}\" environment ..."
+  run command or raise "x Creating the dump failed."
+  run "chmod 600 #{dump_path}"
 
   if compress
     puts "> Compressing the dump ..."
-
     # gzip compresses in place
-    compress_success = system("gzip #{dump_path}")
-    compress_success or raise "Compressing the dump failed"
+    compress_success = run "gzip #{dump_path}"
+    compress_success or raise "x Compressing the dump failed."
     dump_path << ".gz"
   end
 
