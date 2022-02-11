@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* `geordi dump` and `dumple` now default to "primary" database or the first
+  entry in a multi-db setup
+* Also added feature tests for `dumple` and structured the script
 
 ### Breaking changes
 
@@ -14,7 +17,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## 9.0.0 2021-12-02
 
 ### Breaking changes
-* Remove the `geordi docker` command.
+* Remove the `geordi docker` command set.
 
 
 ## 8.0.0 2021-11-08

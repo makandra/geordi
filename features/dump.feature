@@ -1,4 +1,5 @@
 Feature: The dump command
+
   Most aspects of connection to a server are tested in shell feature.
 
   Scenario: Creating a dump of the development database
