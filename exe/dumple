@@ -43,7 +43,7 @@ def cd_to_project_root(fail_gently)
         sleep 5
         exit
       else
-        raise "Call me from inside a Rails project."
+        raise "x Call me from inside a Rails project."
       end
     end
     current = Dir.pwd
@@ -85,7 +85,7 @@ def dump_command(dump_file, config)
     command << " --port=#{port}" if port
     command
   else
-    raise "Adapter \"#{config['adapter']}\" is not supported"
+    raise %(x Adapter "#{config['adapter']}" is not supported.)
   end
 end
 
@@ -93,11 +93,11 @@ def find_database_config(config_path, environment, database)
   environment ||= 'production'
   database_yml = ERB.new(File.read(config_path)).result
   config = YAML::load(database_yml)
-  config = config[environment] or raise "No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
+  config = config[environment] or raise "x No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
 
   if config.values[0].is_a? Hash # Multi-db setup
     if database # Explicitly requested
-      config = config[database] or raise %(Unknown #{environment} database "#{database}")
+      config = config[database] or raise %(x Unknown #{environment} database "#{database}".)
     elsif config.key? 'primary'
       puts '> Multiple databases detected. Defaulting to primary database.'
       config = config['primary']
@@ -107,7 +107,7 @@ def find_database_config(config_path, environment, database)
     end
   else # Single-db setup
     if database
-      raise %(Could not select "#{database}" database in a single-db environment)
+      raise %(x Could not select "#{database}" database in a single-db environment.)
     end
   end
 
@@ -140,14 +140,14 @@ begin
   given_database = database ? %(#{database} ) : ""
   command = dump_command(dump_path, config)
   puts "> Dumping #{given_database}database for \"#{environment}\" environment ..."
-  run command or raise "Creating the dump failed"
+  run command or raise "x Creating the dump failed."
   run "chmod 600 #{dump_path}"
 
   if compress
     puts "> Compressing the dump ..."
     # gzip compresses in place
     compress_success = run "gzip #{dump_path}"
-    compress_success or raise "Compressing the dump failed"
+    compress_success or raise "x Compressing the dump failed."
     dump_path << ".gz"
   end
 
