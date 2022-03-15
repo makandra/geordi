@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+* Add dump loading in multi-database-setups.
+
 ### Breaking changes
 
 

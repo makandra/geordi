@@ -12,16 +12,20 @@ specified target's database and downloads it to `tmp/`.
 option) sources the dump into the development database after downloading it.
 
 If you are using multiple databases per environment, Geordi defaults to the
-"primary" database, or the first entry in database.yml. To dump a specific
+"primary" database, or the first entry in database.yml. To target a specific
 database, pass the database name like this:
+```
+geordi dump -d primary
+```
 
-    geordi dump -d primary
-
-Loading a dump into one of multiple local databases is not supported yet.
+When used with the blank `load` option ("dump and source"), the `database` option
+will be respected both for the remote *and* the local database. If these should
+not match, please issue separate commands for dumping (`dump -d`) and sourcing
+(`dump -l -d`).
 DESC
 
 option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[DUMP_FILE]'
-option :database, aliases: '-d', type: :string, desc: 'Database name, if there are multiple databases', banner: 'NAME'
+option :database, aliases: '-d', type: :string, desc: 'Target database, if there are multiple databases', banner: 'NAME'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'
@@ -33,7 +37,7 @@ def dump(target = nil, *_args)
       Interaction.fail 'Missing a dump file.' if options.load == 'load'
       File.exist?(options.load) || raise('Could not find the given dump file: ' + options.load)
 
-      loader = DumpLoader.new(options.load)
+      loader = DumpLoader.new(options.load, options.database)
 
       Interaction.announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load
@@ -53,7 +57,7 @@ def dump(target = nil, *_args)
     dump_path = Geordi::Remote.new(target).dump(options)
 
     if options.load # … and dump loading
-      loader = DumpLoader.new(dump_path)
+      loader = DumpLoader.new(dump_path, options.database)
 
       Interaction.announce "Sourcing dump into the #{loader.config['database']} db"
       loader.load

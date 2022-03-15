@@ -103,8 +103,9 @@ Feature: The dump command
     And a file named "config/database.yml" with:
     """
     development:
-      database: test
-      adapter: postgresql
+      primary:
+        database: test
+        adapter: postgresql
     """
 
     When I run `geordi dump staging --database primary --load`
@@ -152,3 +153,41 @@ Feature: The dump command
       And the output should contain "Your test database has now the data of tmp/production.dump."
     But the output should not contain "Dump file removed"
       And the output should not contain "Util.run! rm"
+
+
+  Scenario: Sourcing a dump into one of multiple databases:
+    Given a file named "tmp/production.dump" with "some content"
+      And a file named "config/database.yml" with:
+      """
+      development:
+        primary:
+          database: test-primary
+          adapter: postgresql
+        other:
+          database: test-other
+          adapter: postgresql
+      """
+
+      When I run `geordi dump -l tmp/production.dump -d other`
+      Then the output should contain "Sourcing dump into the test-other db"
+        And the output should contain "Source file: tmp/production.dump"
+        And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test-other tmp/production.dump"
+      But the output should not contain "Sourcing dump into the test-primary db"
+
+  Scenario: Sourcing a dump into one of multiple databases without specifying a db
+    Given a file named "tmp/production.dump" with "some content"
+      And a file named "config/database.yml" with:
+      """
+      development:
+        other:
+          database: test-other
+          adapter: postgresql
+        primary:
+          database: test-primary
+          adapter: postgresql
+      """
+      When I run `geordi dump -l tmp/production.dump`
+      Then the output should contain "Sourcing dump into the test-primary db"
+        And the output should contain "Source file: tmp/production.dump"
+        And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test-primary tmp/production.dump"
+      But the output should not contain "Sourcing dump into the test-other db"

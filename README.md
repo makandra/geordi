@@ -195,16 +195,20 @@ specified target's database and downloads it to `tmp/`.
 option) sources the dump into the development database after downloading it.
 
 If you are using multiple databases per environment, Geordi defaults to the
-"primary" database, or the first entry in database.yml. To dump a specific
+"primary" database, or the first entry in database.yml. To target a specific
 database, pass the database name like this:
+```
+geordi dump -d primary
+```
 
-    geordi dump -d primary
-
-Loading a dump into one of multiple local databases is not supported yet.
+When used with the blank `load` option ("dump and source"), the `database` option
+will be respected both for the remote *and* the local database. If these should
+not match, please issue separate commands for dumping (`dump -d`) and sourcing
+(`dump -l -d`).
 
 **Options**
 - `-l, [--load=[DUMP_FILE]]`: Load a dump
-- `-d, [--database=NAME]`: Database name, if there are multiple databases
+- `-d, [--database=NAME]`: Target database, if there are multiple databases
 
 
 ### `geordi help [COMMAND]`

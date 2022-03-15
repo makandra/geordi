@@ -6,24 +6,45 @@ require 'geordi/util'
 module Geordi
   class DumpLoader
 
-    def initialize(file)
+    def initialize(file, database)
       @dump_file = file
+      @database = database
     end
 
     def development_database_config
+      return @config if @config
+
       require 'yaml'
 
       evaluated_config_file = ERB.new(File.read('config/database.yml')).result
 
       # Allow aliases and a special set of classes like symbols and time objects
       permitted_classes = [Symbol, Time]
-      @config ||= if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+      database_config = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
         YAML.safe_load(evaluated_config_file, permitted_classes: permitted_classes, aliases: true)
       else
         YAML.safe_load(evaluated_config_file, permitted_classes, [], true)
       end
 
-      @config['development']
+      development_config = database_config['development']
+
+      if development_config.values[0].is_a? Hash # Multi-db setup
+        @config = if @database
+          development_config[@database] || Interaction.fail(%(Unknown development database "#{@database}".))
+        elsif development_config.has_key? 'primary'
+          development_config['primary']
+        else
+          development_config.values[0]
+        end
+      else # Single-db setup
+        if @database
+          Interaction.fail %(Could not select "#{@database}" database in a single-db setup.)
+        else
+          @config = development_config
+        end
+      end
+
+      @config
     end
     alias_method :config, :development_database_config
 
@@ -61,9 +82,12 @@ module Geordi
     end
 
     def load
+      adapter_command = "#{config['adapter']}_command"
+      Interaction.fail "Unknown database adapter #{config['adapter'].inspect} in config/database.yml." unless respond_to? adapter_command
+
       Interaction.note 'Source file: ' + dump_file
 
-      source_command = send("#{config['adapter']}_command")
+      source_command = send(adapter_command)
       Util.run! source_command, fail_message: "An error occurred loading #{File.basename(dump_file)}"
     end
 
