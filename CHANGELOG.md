@@ -7,17 +7,19 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
-* Add dump loading in multi-database-setups.
-
 ### Breaking changes
+
+
+## 9.3.0 2022-04-26
+
+### Compatible changes
+* Add dump loading in multi-database-setups.
 
 
 ## 9.2.0 2022-02-18
 
 ### Compatible changes
 * Change the update mechanism of `geordi chromedriver-update`: This command (and `geordi cucumber`/`geordi tests` if the `auto_update_chromedriver` option is active) will now always update to the latest version of chromedriver for the current chrome version.
-
-### Breaking changes
 
 
 ## 9.1.0 2022-02-14
