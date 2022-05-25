@@ -92,7 +92,11 @@ end
 def find_database_config(config_path, environment, database)
   environment ||= 'production'
   database_yml = ERB.new(File.read(config_path)).result
-  config = YAML::load(database_yml)
+  config = if Gem::Version.new(Psych::VERSION) >= Gem::Version.new('3.1.0')
+    YAML.safe_load(database_yml, aliases: true)
+  else
+    YAML.safe_load(database_yml, [], [], true)
+  end
   config = config[environment] or raise "x No #{environment} database found.\nUsage: dumple ENVIRONMENT [DATABASE]"
 
   if config.values[0].is_a? Hash # Multi-db setup
