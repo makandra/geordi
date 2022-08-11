@@ -21,10 +21,6 @@ run tests afterwards.
 
 You can always run `geordi help <command>` to quickly look up command help.
 
-### `geordi apache-site VIRTUAL_HOST`
-Enable the given virtual host, disabling all others.
-
-
 ### `geordi branch`
 Check out a feature branch based on a story from Pivotal Tracker.
 

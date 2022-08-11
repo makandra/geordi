@@ -1,4 +1,4 @@
-desc 'apache-site VIRTUAL_HOST', 'Enable the given virtual host, disabling all others'
+desc 'apache-site VIRTUAL_HOST', 'Enable the given virtual host, disabling all others', hide: true
 def apache_site(*args)
   site = args.shift
   old_cwd = Dir.pwd
