@@ -6,9 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Use YAML.safe_load in dumple and allow aliases
 
 ### Breaking changes
+
+## 9.3.1 2022-06-07
+
+### Compatible changes
+* Use YAML.safe_load in dumple and allow aliases
 
 
 ## 9.3.0 2022-04-26
