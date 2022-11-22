@@ -30,7 +30,7 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
       # I enter my custom initials
       And I type "ab"
     Then the output should contain "Util.run! git, checkout, -b, ab/test-story-12"
-      And the file "tmp/global_settings.yml" should contain "pivotal_tracker_api_key: my_api_key\ngit_initials: ab"
+      And the file "tmp/global_settings.yml" should contain "git_initials: ab"
 
 
   Scenario: Checkout an existing branch with geordi branch
@@ -48,8 +48,12 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     When I run `geordi branch` interactively
     Then the output should contain "Could not determine local git branches"
 
-  Scenario: Checkout a new branch with initials from global_settings.yml.yml
-    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key\ngit_initials: jd"
+  Scenario: Checkout a new branch with initials from global_settings.yml
+    When I append to "tmp/global_settings.yml" with:
+    """
+
+    git_initials: jd
+    """
     And my local git branches are: master
 
     When I run `geordi branch` interactively
