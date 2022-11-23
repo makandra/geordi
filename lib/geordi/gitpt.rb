@@ -161,6 +161,11 @@ module Geordi
     end
 
     def git_user_initials
+      if settings.git_initials
+        Interaction.note "Using Git user initials from #{Settings::GLOBAL_SETTINGS_FILE_NAME}"
+        return settings.git_initials
+      end
+
       stdout_str = if Util.testing?
         ENV['GEORDI_TESTING_GIT_USERNAME']
       else
@@ -176,6 +181,7 @@ module Geordi
       if git_user_initials.nil?
         Interaction.fail('Could not determine the git user\'s initials.')
       else
+        settings.git_initials = git_user_initials
         git_user_initials
       end
     end
