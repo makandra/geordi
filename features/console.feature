@@ -4,4 +4,4 @@ Feature: The console command
   Scenario: Opening a local Rails console
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
-      And the output should contain "Util.run! bundle exec rails console -e development"
+      And the output should contain "Util.run! bundle exec rails console -e development -- --nomultiline"

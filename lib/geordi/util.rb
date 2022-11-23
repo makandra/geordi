@@ -85,11 +85,11 @@ module Geordi
 
       def console_command(environment)
         if gem_major_version('rails') == 2
-          'script/console ' + environment
+          "script/console #{environment} -- --nomultiline"
         elsif gem_major_version('rails') == 3
-          "#{binstub_or_fallback('rails')} console #{environment}"
+          "#{binstub_or_fallback('rails')} console #{environment} -- --nomultiline"
         else
-          "#{binstub_or_fallback('rails')} console -e #{environment}"
+          "#{binstub_or_fallback('rails')} console -e #{environment} -- --nomultiline"
         end
       end
 
