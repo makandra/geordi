@@ -85,8 +85,8 @@ module Geordi
 
       def console_command(environment)
         multiline_flag = if irb_version >= Gem::Version.new('1.2') && irb_version < Gem::Version.new('1.2.6')
-                           '-- --nomultiline'
-                         end
+          '-- --nomultiline'
+        end
 
         if gem_major_version('rails') == 2
           "script/console #{environment}"
@@ -188,10 +188,10 @@ module Geordi
 
       def irb_version
         version_string = if testing?
-                           ENV['GEORDI_TESTING_IRB_VERSION']
-                         else
-                           `irb --version`.match(/\d\.\d/)
-                         end
+          ENV['GEORDI_TESTING_IRB_VERSION']
+        else
+          `irb --version`[/irb (\d\.\d\.\d)/, 1]
+        end
 
         Gem::Version.new(version_string)
       end
