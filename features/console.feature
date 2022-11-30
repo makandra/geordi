@@ -6,7 +6,7 @@ Feature: The console command
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
     And the output should contain "Util.run! bundle exec rails console -e development"
-    But the output should not contain "-- --nomultiline"
+    But the output should not contain "nomultiline"
 
 
   Scenario: Opening a local Rails console with an irb version between 1.2.0 and 1.2.6
@@ -20,7 +20,7 @@ Feature: The console command
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
     And the output should contain "Util.run! bundle exec rails console -e development"
-    But the output should not contain "-- --nomultiline"
+    But the output should not contain "nomultiline"
 
 
   Scenario: Opening a remote Rails console with an irb version between 1.2 and 1.2.6
