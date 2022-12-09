@@ -9,6 +9,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+## 9.4.0 2022-12-09
+
+### Compatible changes
+* add gem metadata
+* Add configuration option for initials in geordi branch
+* Disable multiline autocomplete by default
+
+
 ## 9.3.1 2022-06-07
 
 ### Compatible changes
