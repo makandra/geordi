@@ -5,34 +5,39 @@ Feature: The console command
     Given the irb version is "1.1.0"
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
-    And the output should contain "Util.run! bundle exec rails console -e development"
-    But the output should not contain "nomultiline"
+      And the output should contain "Util.run! bundle exec rails console -e development"
+      But the output should not contain "nomultiline"
 
 
-  Scenario: Opening a local Rails console with an irb version between 1.2.0 and 1.2.6
+  Scenario: Opening a local Rails console with an Ruby version >= 3.0
+    Given the Ruby version is "3.0"
+    When I run `geordi console`
+    Then the output should contain "# Opening a local Rails console"
+      And the output should contain "Util.run! bundle exec rails console -e development"
+      But the output should not contain "nomultiline"
+
+
+  Scenario: Opening a local Rails console with an irb version >= 1.2.0 and Ruby version < 3.0
     Given the irb version is "1.2.0"
+      And the Ruby version is "2.9"
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
       And the output should contain "Util.run! bundle exec rails console -e development -- --nomultiline"
-
-  Scenario: Opening a local Rails console with irb version >= 1.2.6
-    Given the irb version is "1.2.6"
-    When I run `geordi console`
-    Then the output should contain "# Opening a local Rails console"
-    And the output should contain "Util.run! bundle exec rails console -e development"
-    But the output should not contain "nomultiline"
+      And the output should contain "Using --nomultiline switch for faster pasting"
 
 
-  Scenario: Opening a remote Rails console with an irb version between 1.2 and 1.2.6
+  Scenario: Opening a remote Rails console with an irb version >= 1.2.0 and Ruby version < 3.0
     Given the irb version is "1.2.0"
-    And a file named "Capfile" with "Capfile exists"
-    And a file named "config/deploy.rb" with "deploy file exists"
-    And a file named "config/deploy/staging.rb" with:
-    """
-    set :deploy_to, '/var/www/example.com'
-    set :user, 'user'
-    server 'www.example.com'
-    """
+      And the Ruby version is "2.9"
+      And a file named "Capfile" with "Capfile exists"
+      And a file named "config/deploy.rb" with "deploy file exists"
+      And a file named "config/deploy/staging.rb" with:
+      """
+      set :deploy_to, '/var/www/example.com'
+      set :user, 'user'
+      server 'www.example.com'
+      """
     When I run `geordi console staging`
     Then the output should contain "# Opening a Rails console on staging"
-    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e  -- --nomultiline"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e  -- --nomultiline"
+      And the output should contain "Using --nomultiline switch for faster pasting"

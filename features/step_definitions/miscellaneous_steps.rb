@@ -6,6 +6,10 @@ Given /^the irb version is "(.*)"$/ do |version|
   ENV['GEORDI_TESTING_IRB_VERSION'] = version
 end
 
+Given /^the Ruby version is "(.*)"/ do |version|
+  ENV['GEORDI_TESTING_RUBY_VERSION'] = version
+end
+
 Given 'I have staged changes' do
   ENV['GEORDI_TESTING_STAGED_CHANGES'] = 'true'
 end
@@ -28,4 +32,5 @@ After do
   ENV['GEORDI_TESTING_GIT_BRANCHES'] = nil
   ENV['GEORDI_TESTING_NO_PT_STORIES'] = nil
   ENV['GEORDI_TESTING_IRB_VERSION'] = nil
+  ENV['GEORDI_TESTING_RUBY_VERSION'] = nil
 end

@@ -84,16 +84,19 @@ module Geordi
       end
 
       def console_command(environment)
-        multiline_flag = if irb_version >= Gem::Version.new('1.2') && irb_version < Gem::Version.new('1.2.6')
-          '-- --nomultiline'
-        end
-
         if gem_major_version('rails') == 2
           "script/console #{environment}"
         elsif gem_major_version('rails') == 3
           "#{binstub_or_fallback('rails')} console #{environment}"
         else
-          "#{binstub_or_fallback('rails')} console -e #{environment} #{multiline_flag}"
+          "#{binstub_or_fallback('rails')} console -e #{environment} #{use_multiline_flag}"
+        end
+      end
+
+      def use_multiline_flag
+        if irb_version >= Gem::Version.new('1.2') && ruby_version < Gem::Version.new('3.0')
+          Interaction.note 'Using --nomultiline switch for faster pasting'
+          '-- --nomultiline'
         end
       end
 
@@ -196,6 +199,9 @@ module Geordi
         Gem::Version.new(version_string)
       end
 
+      def ruby_version
+        testing? ? Gem::Version.new(ENV['GEORDI_TESTING_RUBY_VERSION']) : RUBY_VERSION
+      end
     end
   end
 end
