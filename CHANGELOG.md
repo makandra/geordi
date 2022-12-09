@@ -9,6 +9,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+## 9.4.0 2022-12-09
+
+### Compatible changes
+* `branch` command: Git user initials are now stored in config file
+* `console` command: Disable irb multiline mode in order to fix ultra-slow pasting performance
+
+
 ## 9.3.1 2022-06-07
 
 ### Compatible changes
