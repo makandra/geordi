@@ -200,7 +200,8 @@ module Geordi
       end
 
       def ruby_version
-        testing? ? Gem::Version.new(ENV['GEORDI_TESTING_RUBY_VERSION']) : RUBY_VERSION
+        version_string = testing? ? ENV['GEORDI_TESTING_RUBY_VERSION'] : RUBY_VERSION
+        Gem::Version.new(version_string)
       end
     end
   end
