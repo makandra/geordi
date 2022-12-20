@@ -9,7 +9,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
-## 9.4.0 2022-12-09
+
+## 9.4.0 2022-12-20
 
 ### Compatible changes
 * `branch` command: Git user initials are now stored in config file
