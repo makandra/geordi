@@ -77,10 +77,10 @@ module Geordi
       global_path = GLOBAL_SETTINGS_FILE_NAME
       local_path = LOCAL_SETTINGS_FILE_NAME
 
-      global_settings = if File.exists?(global_path)
+      global_settings = if File.exist?(global_path)
         YAML.safe_load(File.read(global_path))
       end
-      local_settings = if File.exists?(local_path)
+      local_settings = if File.exist?(local_path)
         YAML.safe_load(File.read(local_path))
       end
 
@@ -88,7 +88,7 @@ module Geordi
       unless ENV[SETTINGS_WARNED]
         check_for_invalid_keys(global_settings, ALLOWED_GLOBAL_SETTINGS, global_path)
         check_for_invalid_keys(local_settings, ALLOWED_LOCAL_SETTINGS, local_path)
-        Interaction.warn "Unsupported config file \".firefox-version\". Please remove it." if File.exists?('.firefox-version')
+        Interaction.warn "Unsupported config file \".firefox-version\". Please remove it." if File.exist?('.firefox-version')
 
         ENV[SETTINGS_WARNED] = 'true'
       end

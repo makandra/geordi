@@ -27,7 +27,7 @@ end
 
 def cd_to_project_root(fail_gently)
   current = Dir.pwd
-  until File.exists?(DB_CONFIG_PATH)
+  until File.exist?(DB_CONFIG_PATH)
     Dir.chdir '..'
     if current == Dir.pwd
       if fail_gently

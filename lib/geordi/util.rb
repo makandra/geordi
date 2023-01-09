@@ -80,7 +80,7 @@ module Geordi
       def binstub_or_fallback(executable)
         binstub_file = "bin/#{executable}"
 
-        File.exists?(binstub_file) ? binstub_file : "bundle exec #{executable}"
+        File.exist?(binstub_file) ? binstub_file : "bundle exec #{executable}"
       end
 
       def console_command(environment)

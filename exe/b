@@ -1,6 +1,5 @@
 #!/usr/bin/env ruby
 
 call = ARGV.dup
-call = ['bundle', 'exec'] + call if File.exists?('Gemfile')
+call = ['bundle', 'exec'] + call if File.exist?('Gemfile')
 exec *call
-
