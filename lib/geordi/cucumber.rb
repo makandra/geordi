@@ -8,9 +8,14 @@ require File.expand_path('settings', __dir__)
 
 module Geordi
   class Cucumber
+    def run(arguments, options = {})
+      split_arguments = arguments.map { |arg| arg.split('=') }.flatten
 
-    def run(files, cucumber_options, options = {})
-      self.argv = files + cucumber_options.map { |option| option.split('=') }.flatten
+      self.argv = split_arguments.map do |arg|
+        # Ensure arguments containing white space are kept together
+        arg.match?(/\S\s\S/) ? %('#{arg}') : arg
+      end
+
       self.settings = Geordi::Settings.new
 
       consolidate_rerun_txt_files
@@ -32,22 +37,28 @@ module Geordi
       unless argv.include?('--format') || argv.include?('-f')
         format_args = spinner_available? ? ['--format', 'CucumberSpinner::CuriousProgressBarFormatter'] : ['--format', 'progress']
       end
+      if argv.include?('rerun')
+        drop_command_line_features!
+      end
       [ Util.binstub_or_fallback('cucumber'), format_args, escape_shell_args(argv)].flatten.compact.join(' ')
     end
 
     def parallel_execution_command
       Interaction.note 'Using parallel_tests'
-      self.argv = argv - command_line_features
+      drop_command_line_features!
 
       type_arg = Util.gem_version('parallel_tests') > Gem::Version.new('0.7.0') ? 'cucumber' : 'features'
       features = features_to_run
       features = find_all_features_recursively('features') if features.empty?
-
       [
         'bundle exec parallel_test -t ' + type_arg,
-        %(-o '#{command_line_options.join(' ')}'),
+        %(-o "#{command_line_options.join(' ')}"),
         "-- #{features.join(' ')}",
       ].compact.join(' ')
+    end
+
+    def drop_command_line_features!
+      self.argv = argv - command_line_features
     end
 
     def escape_shell_args(*args)
@@ -57,8 +68,10 @@ module Geordi
     end
 
     def show_features_to_run
-      if command_line_options.include? 'rerun'
+      if command_line_options.include?('rerun')
         Interaction.note 'Rerunning failed scenarios'
+      elsif command_line_tag_options.any?
+        Interaction.note "Only features matching tag option #{command_line_tag_options.join(',')}"
       elsif features_to_run.empty?
         Interaction.note 'All features in features/'
       else
@@ -108,6 +121,14 @@ module Geordi
         # last arg. Do it manually here.
         last_arg = argv.last
         args << last_arg if (last_arg && last_arg.start_with?('-'))
+      end
+    end
+
+    def command_line_tag_options
+      [].tap do |tag_options|
+        command_line_options.each_cons(2) do |option, tags|
+          tag_options << tags if option =~ /--tags|-t/
+        end
       end
     end
 

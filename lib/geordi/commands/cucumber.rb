@@ -52,22 +52,21 @@ def cucumber(*args)
       invoke_geordi 'chromedriver_update', quiet_if_matching: true
     end
 
-    cmd_opts, files = args.partition { |f| f.start_with? '-' }
-    cmd_opts << '--format' << 'pretty' << '--backtrace' if options.debug
+    arguments = args
+    arguments << '--format' << 'pretty' << '--backtrace' if options.debug
 
     # Parallel run of all given features + reruns ##############################
     Interaction.announce 'Running features'
-    normal_run_successful = Geordi::Cucumber.new.run(files, cmd_opts, verbose: options.verbose)
+    normal_run_successful = Geordi::Cucumber.new.run(arguments, verbose: options.verbose)
 
     unless normal_run_successful
-      cmd_opts << '--profile' << 'rerun'
-
+      arguments << '--profile' << 'rerun'
       # Reruns
       (options.rerun + 1).times do |i|
         Interaction.fail 'Features failed.' if i == options.rerun # All reruns done?
 
         Interaction.announce "Rerun ##{i + 1} of #{options.rerun}"
-        break if Geordi::Cucumber.new.run([], cmd_opts, verbose: options.verbose, parallel: false)
+        break if Geordi::Cucumber.new.run(arguments, verbose: options.verbose, parallel: false)
       end
     end
 

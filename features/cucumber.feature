@@ -51,10 +51,10 @@ Feature: The cucumber command
     """
     Feature: Failing feature
       Scenario: Failing scenario
-        And this test fails
+        Given this test fails
     """
 
-    When I run `geordi cucumber --rerun=2`
+    When I run `geordi cucumber --rerun 2`
     Then the output should contain "# Running features"
       And the output should contain "# Rerun #1 of 2"
       And the output should contain "# Rerun #2 of 2"
@@ -75,7 +75,7 @@ Feature: The cucumber command
     end
 
     Given /^I use puts with text "(.*)"$/ do |ann|
-      puts(ann)
+      log(ann)
     end
     """
       And a file named "features/failing.feature" with:
@@ -100,7 +100,7 @@ Feature: The cucumber command
       rerun: <%= rerun_failures %> <%= log_failures %>
       """
 
-    When I run `geordi cucumber --rerun=1 features/failing.feature`
+    When I run `geordi cucumber --rerun 1 features/failing.feature`
     # The command output includes both the first and the second run ("rerun").
     # Checking output of the first run ...
     Then the output should contain:
@@ -147,6 +147,44 @@ Feature: The cucumber command
     But the output should not contain "other.feature"
 
 
+  Scenario: Running all cucumber features matching a given tag
+    Given a file named "features/tagged.feature" with:
+    """
+    @tagged
+    Feature: Running a tagged feature
+      Scenario: A scenario
+    """
+      And a file named "features/not_tagged.feature" with:
+      """
+      Feature: Running a not tagged feature
+        Scenario: A scenario
+      """
+    When I run `geordi cucumber --tags @tagged`
+    Then the output should contain "Only features matching tag option @tagged"
+      And the output should contain "Feature: Running a tagged feature"
+    But the output should not contain "Feature: Running a not tagged feature"
+
+    # With '=' syntax
+    When I run `geordi cucumber --tags=@tagged`
+    Then the output should contain "Only features matching tag option @tagged"
+      And the output should contain "Feature: Running a tagged feature"
+    But the output should not contain "Feature: Running a not tagged feature"
+
+    # Negated tag
+    When I ignore previous output
+      And I run `geordi cucumber --tags 'not @tagged'`
+    Then the output should contain "Only features matching tag option 'not @tagged'"
+      And the output should contain "Feature: Running a not tagged feature"
+    But the output should not contain "Feature: Running a tagged feature"
+
+    # Negated with '=' syntax
+    When I ignore previous output
+      And I run `geordi cucumber --tags='not @tagged'`
+    Then the output should contain "Only features matching tag option 'not @tagged'"
+      And the output should contain "Feature: Running a not tagged feature"
+    But the output should not contain "Feature: Running a tagged feature"
+
+
   Scenario: Passing a format argument will skip the default format for a single run
     Given a file named "features/single.feature" with:
     """
@@ -154,7 +192,7 @@ Feature: The cucumber command
       Scenario: A single scenario
     """
 
-    When I run `geordi cucumber features/single.feature --format=pretty --verbose`
+    When I run `geordi cucumber features/single.feature --format pretty --verbose`
     Then the output should contain "bundle exec cucumber features/single.feature --format pretty"
 
 
@@ -196,6 +234,7 @@ Feature: The cucumber command
       And I run `geordi cucumber features/cucumber.feature`
     Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
       And the output should contain 'Supported settings in ./tmp/global_settings.yml are: ' 1 time
+
 
   Scenario: When running cucumber tests with a .firefox-version in the project root, a warning is issued
     Given a file named ".firefox-version" with "1.2.3"
