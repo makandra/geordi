@@ -10,13 +10,22 @@ Feature: Creating a git commit from a Pivotal Tracker story
     Then the output should contain "No stories to offer."
 
 
+  Scenario: It creates a commit with the pivotal tracker story url as description
+    Given I have staged changes
+
+    When I run `geordi commit` interactively
+      # No optional message
+    And I type ""
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story, -m, Story: https://www.story-url.com"
+
+
   Scenario: Extra arguments are forwarded to "git commit"
     Given I have staged changes
 
     When I run `geordi commit --extra-option` interactively
       # No optional message
       And I type ""
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story, --extra-option"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story, -m, Story: https://www.story-url.com, --extra-option"
 
 
   Scenario: With no staged changes, a warning is printed
