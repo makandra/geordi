@@ -128,11 +128,11 @@ module Geordi
       nil # Return nothing
     end
 
-    def create_commit(message, description, *git_args)
+    def create_commit(title, description, *git_args)
       extra = highline.ask("\nAdd an optional message").strip
-      message << ' - ' << extra if extra != ''
+      title << ' - ' << extra if extra != ''
 
-      Util.run!(['git', 'commit', '--allow-empty', '-m', message, '-m', description, *git_args])
+      Util.run!(['git', 'commit', '--allow-empty', '-m', title, '-m', description, *git_args])
     end
 
     def bold(string)

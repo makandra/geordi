@@ -10,6 +10,12 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
+## 9.4.2 2023-01-26
+
+### Compatible changes
+* `commit` command: The pivotal tracker story is linked in the description of the commit
+
+
 ## 9.4.1 2023-01-09
 
 ### Compatible changes
