@@ -22,7 +22,7 @@ module Geordi
 
       story = choose_story
       if story
-        create_commit "[##{story.id}] #{story.name}", *git_args
+        create_commit "[##{story.id}] #{story.name}", "Story: #{story.url}", *git_args
       end
     end
 
@@ -76,7 +76,7 @@ module Geordi
 
     def applicable_stories
       if Util.testing?
-        return ENV['GEORDI_TESTING_NO_PT_STORIES'] == 'true' ? [] : [OpenStruct.new(id: 12, name: 'Test Story')]
+        return ENV['GEORDI_TESTING_NO_PT_STORIES'] == 'true' ? [] : [OpenStruct.new(id: 12, name: 'Test Story', url: 'https://www.story-url.com')]
       end
 
       projects = load_projects
@@ -128,11 +128,11 @@ module Geordi
       nil # Return nothing
     end
 
-    def create_commit(message, *git_args)
+    def create_commit(title, description, *git_args)
       extra = highline.ask("\nAdd an optional message").strip
-      message << ' - ' << extra if extra != ''
+      title << ' - ' << extra if extra != ''
 
-      Util.run!(['git', 'commit', '--allow-empty', '-m', message, *git_args])
+      Util.run!(['git', 'commit', '--allow-empty', '-m', title, '-m', description, *git_args])
     end
 
     def bold(string)

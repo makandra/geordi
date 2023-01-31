@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* `commit` command: The pivotal tracker story is linked in the description of the commit
 
 ### Breaking changes
 
