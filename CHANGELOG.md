@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 * `commit` command: The pivotal tracker story is linked in the description of the commit
+* `rspec` command: When running specs the chromedriver is updated to the current version if necessary
 
 ### Breaking changes
 
