@@ -8,6 +8,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 * `commit` command: The pivotal tracker story is linked in the description of the commit
 * `server` command: Use `daho.im` instead of `vcap.me` when offering the local development URL
+* `rspec` command: chromedriver is updated automatically, if auto-update is configured and the app uses selenium-webdriver
 
 ### Breaking changes
 

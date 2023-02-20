@@ -10,8 +10,15 @@ LONGDESC
 
 def rspec(*files)
   if File.exist?('spec/spec_helper.rb')
+    require 'geordi/settings'
+
+    settings = Geordi::Settings.new
+
     invoke_geordi 'bundle_install'
     invoke_geordi 'yarn_install'
+    if settings.auto_update_chromedriver && Util.gem_available?('selenium-webdriver')
+      invoke_geordi 'chromedriver_update', quiet_if_matching: true
+    end
 
     Interaction.announce 'Running specs'
 
