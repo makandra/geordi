@@ -9,10 +9,11 @@ module Geordi
     # version of Geordi.
     require File.expand_path('settings', __dir__)
 
-    def initialize
+    def initialize(skip_owner_filter:)
       self.highline = HighLine.new
       self.settings = Settings.new
       self.client = build_client
+      self.skip_owner_filter = skip_owner_filter
     end
 
     def run_commit(git_args)
@@ -56,7 +57,7 @@ module Geordi
 
     private
 
-    attr_accessor :highline, :client, :settings
+    attr_accessor :highline, :client, :settings, :skip_owner_filter
 
     def build_client
       TrackerApi::Client.new(token: settings.pivotal_tracker_api_key)
@@ -76,13 +77,24 @@ module Geordi
 
     def applicable_stories
       if Util.testing?
+        puts "Using the stories filter: '#{stories_filter}'"
         return ENV['GEORDI_TESTING_NO_PT_STORIES'] == 'true' ? [] : [OpenStruct.new(id: 12, name: 'Test Story', url: 'https://www.story-url.com')]
       end
 
       projects = load_projects
       projects.collect do |project|
-        project.stories(filter: 'state:started,finished,rejected', fields: ':default,owners(id,name)')
+        project.stories(filter: stories_filter, fields: ':default,owners(id,name)')
       end.flatten
+    end
+
+    def stories_filter
+      stories_filter = 'state:started,finished,rejected'
+      stories_filter << " owner:#{settings.pivotal_tracker_owner_filter}" if filter_stories_by_owner?
+      stories_filter
+    end
+
+    def filter_stories_by_owner?
+      settings.pivotal_tracker_owner_filter.present? && !skip_owner_filter
     end
 
     def choose_story

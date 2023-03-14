@@ -10,6 +10,8 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
       # I skip the initials prompt
       And I type ""
     Then the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
+      # if not configured, the stories are not filtered by owner
+      And the output should contain "Using the stories filter: 'state:started,finished,rejected'"
 
 
   Scenario: Checkout a new branch with geordi branch from master
@@ -59,3 +61,19 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     When I run `geordi branch` interactively
     Then the output should contain "Using Git user initials from ./tmp/global_settings.yml"
       And the output should contain "Util.run! git, checkout, -b, jd/test-story-12"
+
+
+  Scenario: It can filter by story owner
+    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key\npivotal_tracker_owner_filter: maxmusterman"
+
+    When I run `geordi branch` interactively
+      And I type ""
+    Then the output should contain "Using the stories filter: 'state:started,finished,rejected owner:maxmusterman'"
+
+
+  Scenario: You can skip the owner filter
+    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key\npivotal_tracker_owner_filter: maxmusterman"
+
+    When I run `geordi branch --skip-owner-filter` interactively
+      And I type ""
+    Then the output should contain "Using the stories filter: 'state:started,finished,rejected'"

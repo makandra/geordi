@@ -15,8 +15,10 @@ Feature: Creating a git commit from a Pivotal Tracker story
 
     When I run `geordi commit` interactively
       # No optional message
-    And I type ""
+      And I type ""
     Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story, -m, Story: https://www.story-url.com"
+      # if not configured, the stories are not filtered by owner
+      And the output should contain "Using the stories filter: 'state:started,finished,rejected'"
 
 
   Scenario: Extra arguments are forwarded to "git commit"
@@ -48,3 +50,19 @@ Feature: Creating a git commit from a Pivotal Tracker story
     When I run `geordi commit` interactively
       And I type "optional message"
     Then the output should contain "Util.run! git, commit, --allow-empty, -m, [#12] Test Story - optional message"
+
+
+  Scenario: It can filter by story owner
+    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key\npivotal_tracker_owner_filter: maxmusterman"
+
+    When I run `geordi commit` interactively
+      And I type ""
+    Then the output should contain "Using the stories filter: 'state:started,finished,rejected owner:maxmusterman'"
+
+
+  Scenario: You can skip the owner filter
+    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key\npivotal_tracker_owner_filter: maxmusterman"
+
+    When I run `geordi commit --skip-owner-filter` interactively
+      And I type ""
+    Then the output should contain "Using the stories filter: 'state:started,finished,rejected'"

@@ -29,8 +29,12 @@ Example: `geordi branch`
 On the first execution we ask for your Pivotal Tracker API token and for your Git user initials. Both will be
 stored in `~/.config/geordi/global.yml`.
 
+You can filter the stories by owner by adding `pivotal_tracker_owner_filter: <your pivotal tracker username>` to your `~/.config/geordi/global.yml`.
+This filter can be skipped with the `-o` option.
+
 **Options**
 - `-m, [--from-master], [--no-from-master]`: Branch from master instead of the current branch
+- `-o, [--skip-owner-filter], [--no-skip-owner-filter]`: Don´t filter stories by owner
 
 
 ### `geordi capistrano COMMAND`
@@ -68,6 +72,12 @@ Any extra arguments are forwarded to `git commit -m <message>`.
 
 On the first execution we ask for your Pivotal Tracker API token. It will be
 stored in `~/.config/geordi/global.yml`.
+
+You can filter the stories by owner by adding `pivotal_tracker_owner_filter: <your pivotal tracker username>` to your `~/.config/geordi/global.yml`.
+This filter can be skipped with the `-o` option.
+
+**Options**
+- `-o, [--skip-owner-filter], [--no-skip-owner-filter]`: Don´t filter stories by owner
 
 
 ### `geordi console [TARGET]`
