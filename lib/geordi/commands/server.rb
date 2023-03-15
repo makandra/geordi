@@ -12,7 +12,7 @@ def server(port = nil)
 
   Interaction.announce 'Booting a development server'
   port ||= options.port
-  Interaction.note "URL: http://#{File.basename(Dir.pwd)}.vcap.me:#{port}"
+  Interaction.note "URL: http://#{File.basename(Dir.pwd)}.daho.im:#{port}"
   puts
 
   command = Util.server_command
