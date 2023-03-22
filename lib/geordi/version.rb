@@ -1,3 +1,3 @@
 module Geordi
-  VERSION = '9.4.1'.freeze
+  VERSION = '9.5.0'.freeze
 end

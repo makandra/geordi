@@ -6,18 +6,22 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+
+### Breaking changes
+
+
+# 9.5.0 2023-03-22
+
+### Compatible changes
 * `commit` command: The pivotal tracker story is linked in the description of the commit
 * `server` command: Use `daho.im` instead of `vcap.me` when offering the local development URL
 * `rspec` command: chromedriver is updated automatically, if auto-update is configured and the app uses selenium-webdriver
-
-### Breaking changes
 
 
 ## 9.4.1 2023-01-09
 
 ### Compatible changes
-
-- Ruby 3.2 support
+* Ruby 3.2 support
 
 
 ## 9.4.0 2022-12-09
