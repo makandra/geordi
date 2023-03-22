@@ -103,7 +103,7 @@ module Geordi
       invalid_keys = settings.keys - allowed_keys
       unless invalid_keys.empty?
         Interaction.warn "Unknown settings in #{file}: #{invalid_keys.join(", ")}"
-        Interaction.note "Supported settings in #{file} are: #{allowed_keys.join(", ")}"
+        puts "Supported settings in #{file} are: #{allowed_keys.join(", ")}"
       end
     end
 

@@ -177,7 +177,7 @@ Feature: The cucumber command
 
     When I run `geordi cucumber features/cucumber.feature`
     Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
-      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+      And the output should contain 'Supported settings in ./tmp/global_settings.yml are: ' 1 time
 
 
   Scenario: Invalid config keys are reported twice in two consecutive executions of geordi
@@ -190,12 +190,12 @@ Feature: The cucumber command
 
     When I run `geordi cucumber features/cucumber.feature`
     Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
-      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+      And the output should contain 'Supported settings in ./tmp/global_settings.yml are: ' 1 time
 
     When I ignore previous output
       And I run `geordi cucumber features/cucumber.feature`
     Then the output should contain '> Unknown settings in ./tmp/global_settings.yml: use_vnc' 1 time
-      And the output should contain '> Supported settings in ./tmp/global_settings.yml are: ' 1 time
+      And the output should contain 'Supported settings in ./tmp/global_settings.yml are: ' 1 time
 
   Scenario: When running cucumber tests with a .firefox-version in the project root, a warning is issued
     Given a file named ".firefox-version" with "1.2.3"
