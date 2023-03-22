@@ -8,11 +8,11 @@ with `db:migrate`.
 LONGDESC
 
 def migrate
-  invoke_geordi 'bundle_install'
-  invoke_geordi 'yarn_install'
-  Interaction.announce 'Migrating'
-
   if File.directory?('db/migrate')
+    invoke_geordi 'bundle_install'
+    invoke_geordi 'yarn_install'
+    Interaction.announce 'Migrating'
+
     if Util.file_containing?('Gemfile', /parallel_tests/)
       Interaction.note 'Development and parallel test databases'
       puts
