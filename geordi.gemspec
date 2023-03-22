@@ -31,8 +31,4 @@ Gem::Specification.new do |spec|
 
   spec.add_runtime_dependency 'thor', '~> 1'
   # Development dependencies are defined in the Gemfile (therefore no `spec.add_development_dependency` directives)
-
-  spec.post_install_message = <<-ATTENTION
-Support for sequential running of integration tests tagged with @solo has been dropped.
-  ATTENTION
 end
