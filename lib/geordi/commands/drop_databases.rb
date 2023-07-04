@@ -47,4 +47,8 @@ def drop_databases
   cleaner = DBCleaner.new(extra_flags)
   cleaner.clean_mysql unless options.postgres_only
   cleaner.clean_postgres unless options.mysql_only
+
+  Hint.did_you_know [
+    :delete_dumps
+  ]
 end

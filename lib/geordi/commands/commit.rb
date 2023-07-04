@@ -11,4 +11,8 @@ LONGDESC
 def commit(*git_args)
   require 'geordi/gitpt'
   Gitpt.new.run_commit(git_args)
+
+  Hint.did_you_know [
+    :branch
+  ]
 end

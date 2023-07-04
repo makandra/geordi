@@ -15,6 +15,10 @@ option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
 def shelll(target, *_args)
   require 'geordi/remote'
 
+  Hint.did_you_know [
+    :console
+  ]
+
   Interaction.announce 'Opening a shell on ' + target
   Geordi::Remote.new(target).shell(options)
 end

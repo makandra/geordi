@@ -26,6 +26,11 @@ def example
   Interaction.fail 'Option missing' unless options.opt?
 
   Interaction.success 'Done.'
+  Hint.did_you_know [
+    :update,                  # recommendation of another command
+    [:cucumber, :containing], # recommendation of another option
+    'Geordi can automatically update chromedriver before Cucumber tests. See `geordi help chromedriver-update`.', # prose
+  ]
 end
 
 # Command mappings, usually not needed

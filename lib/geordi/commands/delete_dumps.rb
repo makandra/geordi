@@ -38,4 +38,9 @@ def delete_dumps(*locations)
     deletable_dumps.each &File.method(:delete)
     Interaction.success 'Done.'
   end
+
+  Hint.did_you_know [
+    :clean,
+    :drop_databases
+  ]
 end

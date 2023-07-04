@@ -68,4 +68,11 @@ def dump(target = nil, *_args)
       Interaction.success "Your #{loader.config['database']} database has now the data of #{target}#{database_label}."
     end
   end
+
+  Hint.did_you_know [
+    :delete_dumps,
+    :drop_databases,
+    :migrate,
+    'Geordi can load a dump directly into the local database if passed a Capistrano stage and the option -l. See `geordi help dump`.'
+  ]
 end

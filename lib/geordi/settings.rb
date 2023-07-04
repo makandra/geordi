@@ -8,7 +8,7 @@ module Geordi
     GLOBAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/global_settings.yml'.freeze : File.join(ENV['HOME'], '.config/geordi/global.yml').freeze
     LOCAL_SETTINGS_FILE_NAME = Util.testing? ? './tmp/local_settings.yml'.freeze : './.geordi.yml'.freeze
 
-    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver pivotal_tracker_project_ids git_initials].freeze
+    ALLOWED_GLOBAL_SETTINGS = %w[ pivotal_tracker_api_key auto_update_chromedriver pivotal_tracker_project_ids git_initials hint_probability ].freeze
     ALLOWED_LOCAL_SETTINGS = %w[ pivotal_tracker_project_ids ].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
@@ -25,6 +25,10 @@ module Geordi
     def pivotal_tracker_api_key=(value)
       @global_settings['pivotal_tracker_api_key'] = value
       save_global_settings
+    end
+
+    def hint_probability
+      @global_settings['hint_probability']
     end
 
     def git_initials

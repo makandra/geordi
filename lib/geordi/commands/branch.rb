@@ -11,4 +11,9 @@ option :from_master, aliases: '-m', type: :boolean, desc: 'Branch from master in
 def branch
   require 'geordi/gitpt'
   Gitpt.new.run_branch(from_master: options.from_master)
+
+  Hint.did_you_know [
+    :commit,
+    [:branch, :from_master],
+  ]
 end

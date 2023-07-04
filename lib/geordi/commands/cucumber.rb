@@ -72,6 +72,13 @@ def cucumber(*args)
 
     Interaction.success 'Features green.'
 
+    Hint.did_you_know [
+      :rspec,
+      [:cucumber, :modified],
+      [:cucumber, :containing],
+      [:cucumber, :debug],
+      'Geordi can automatically update chromedriver before Cucumber tests. See `geordi help chromedriver-update`.'
+    ]
   else
     Interaction.note 'Cucumber not employed.'
   end

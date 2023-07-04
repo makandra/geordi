@@ -6,6 +6,10 @@ option :public, aliases: '-P', type: :boolean,
   desc: 'Make the server accessible from the local network'
 
 def server(port = nil)
+  Hint.did_you_know [
+    [:server, :public]
+  ]
+
   invoke_geordi 'bundle_install'
   invoke_geordi 'yarn_install'
   require 'geordi/util'

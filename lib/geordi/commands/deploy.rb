@@ -108,6 +108,11 @@ def deploy(target_stage = nil)
     Util.run!(capistrano_call, show_cmd: true)
 
     Interaction.success 'Deployment complete.'
+
+    Hint.did_you_know [
+      :capistrano,
+      :security_update
+    ]
   else
     Util.run!("git checkout #{source_branch}")
     Interaction.fail 'Deployment cancelled.'

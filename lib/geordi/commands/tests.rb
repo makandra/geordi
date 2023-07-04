@@ -35,4 +35,8 @@ def tests(*args)
 
     Interaction.success 'Successfully ran tests.'
   end
+
+  Hint.did_you_know [
+    :deploy
+  ]
 end

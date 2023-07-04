@@ -34,7 +34,7 @@ stored in `~/.config/geordi/global.yml`.
 
 
 ### `geordi capistrano COMMAND`
-Run a capistrano command on all deploy targets.
+Run a Capistrano command on all deploy targets.
 
 Example: `geordi capistrano deploy`
 

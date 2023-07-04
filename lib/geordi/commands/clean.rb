@@ -12,4 +12,8 @@ def clean
     Interaction.note pattern
     `find . -name #{pattern} -exec rm {} ';'`
   end
+
+  Hint.did_you_know [
+    :remove_executable_flags
+  ]
 end

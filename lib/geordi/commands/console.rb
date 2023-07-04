@@ -15,6 +15,11 @@ option :select_server, type: :string, aliases: '-s', banner: '[SERVER_NUMBER]',
 def console(target = 'development', *_args)
   require 'geordi/remote'
 
+  Hint.did_you_know [
+    :shelll,
+    [:console, :select_server],
+  ]
+
   if target == 'development'
     invoke_geordi 'bundle_install'
     invoke_geordi 'yarn_install'

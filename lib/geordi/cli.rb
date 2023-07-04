@@ -2,6 +2,7 @@ require 'thor'
 require 'bundler'
 require 'geordi/interaction'
 require 'geordi/util'
+require 'geordi/hint'
 
 module Geordi
   class CLI < Thor

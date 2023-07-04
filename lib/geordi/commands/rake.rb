@@ -22,4 +22,8 @@ def rake(*args)
       Util.run!(command, show_cmd: true)
     end
   end
+
+  Hint.did_you_know [
+    :capistrano
+  ]
 end
