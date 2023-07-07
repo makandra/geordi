@@ -166,6 +166,9 @@ and offer to delete them. Excluded are databases that are whitelisted. This come
 in handy when you're keeping your currently active projects in the whitelist files
 and perform regular housekeeping with Geordi.
 
+Per default, Geordi will try to connect to the databases as a local user without 
+password authorization.  
+
 Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
 
@@ -174,6 +177,7 @@ offer to edit the whitelist instead.
 - `-M, [--mysql-only], [--no-mysql-only]`: Only clean MySQL/MariaDB
 - `[--postgres=PORT_OR_SOCKET]`: Use Postgres port or socket
 - `[--mysql=PORT_OR_SOCKET]`: Use MySQL/MariaDB port or socket
+- `-S, [--sudo], [--no-sudo]`: Access databases as root
 
 
 ### `geordi dump [TARGET]`

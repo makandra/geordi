@@ -7,6 +7,9 @@ and offer to delete them. Excluded are databases that are whitelisted. This come
 in handy when you're keeping your currently active projects in the whitelist files
 and perform regular housekeeping with Geordi.
 
+Per default, Geordi will try to connect to the databases as a local user without 
+password authorization.  
+
 Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
 LONGDESC
@@ -19,6 +22,8 @@ option :postgres, banner: 'PORT_OR_SOCKET',
   desc: 'Use Postgres port or socket'
 option :mysql, banner: 'PORT_OR_SOCKET',
   desc: 'Use MySQL/MariaDB port or socket'
+option :sudo, aliases: '-S',  type: :boolean, default: false,
+ desc: 'Access databases as root'
 
 def drop_databases
   require 'geordi/db_cleaner'
@@ -42,9 +47,15 @@ def drop_databases
     postgres_flags = "--port=#{options.postgres}"
   end
 
-  extra_flags = { 'mysql' => mysql_flags,
-                 'postgres' => postgres_flags }
-  cleaner = DBCleaner.new(extra_flags)
+  unless options.sudo
+    Interaction.note 'Assuming your local user has permission to drop databases. Run with `--sudo` to use sudo.'
+  end
+
+  extra_flags = {
+    'mysql' => mysql_flags,
+    'postgres' => postgres_flags,
+  }
+  cleaner = DBCleaner.new(extra_flags, sudo: options.sudo)
   cleaner.clean_mysql unless options.postgres_only
   cleaner.clean_postgres unless options.mysql_only
 

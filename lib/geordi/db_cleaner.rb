@@ -5,12 +5,17 @@ require 'tempfile'
 module Geordi
   class DBCleaner
 
-    def initialize(extra_flags)
-      puts 'Please enter your sudo password if asked, for db operations as system users'
-      puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
-      puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
-      `sudo true`
-      Interaction.fail 'sudo access is required for database operations as database users' if $? != 0
+    def initialize(extra_flags, sudo: false)
+      @sudo = sudo
+
+      if @sudo
+        puts 'Please enter your sudo password if asked, for db operations as system users'
+        puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
+        puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
+        `sudo true`
+        Interaction.fail 'sudo access is required for database operations as database users' if $? != 0
+      end
+
       @derivative_dbname = /_(test\d*|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = Dir.home.to_s if base_directory.nil?
@@ -103,7 +108,7 @@ module Geordi
     end
 
     def decide_mysql_command(extra_flags)
-      cmd = 'sudo mysql'
+      cmd = @sudo ? 'sudo mysql' : 'mysql'
       unless extra_flags.nil?
         if extra_flags.include? 'port'
           port = Integer(extra_flags.split('=')[1].split[0])
@@ -111,24 +116,27 @@ module Geordi
         end
         cmd << " #{extra_flags}"
       end
-      Open3.popen3("#{cmd} -e 'QUIT'") do |_stdin, _stdout, stderr, thread|
-        break if thread.value.exitstatus == 0
-        # sudo mysql was not successful, switching to mysql-internal user management
-        mysql_error = stderr.read.lines[0].chomp.strip.split[1]
-        if %w[1045 1698].include? mysql_error # authentication failed
-          cmd = 'mysql -uroot'
-          cmd << " #{extra_flags}" unless extra_flags.nil?
-          unless File.exist? File.join(Dir.home, '.my.cnf')
-            puts "Please enter your MySQL/MariaDB password for account 'root'."
-            Interaction.warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
-            Interaction.warn 'See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information.'
-            cmd << ' -p' # need to ask for password now
+
+      if @sudo
+        Open3.popen3("#{cmd} -e 'QUIT'") do |_stdin, _stdout, stderr, thread|
+          break if thread.value.exitstatus == 0
+          # sudo mysql was not successful, switching to mysql-internal user management
+          mysql_error = stderr.read.lines[0].chomp.strip.split[1]
+          if %w[1045 1698].include? mysql_error # authentication failed
+            cmd = 'mysql -uroot'
+            cmd << " #{extra_flags}" unless extra_flags.nil?
+            unless File.exist? File.join(Dir.home, '.my.cnf')
+              puts "Please enter your MySQL/MariaDB password for account 'root'."
+              Interaction.warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
+              Interaction.note 'See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information.'
+              cmd << ' -p' # need to ask for password now
+            end
+            Open3.popen3("#{cmd} -e 'QUIT'") do |_stdin_2, _stdout_2, _stderr_2, thread_2|
+              Interaction.fail 'Could not connect to MySQL/MariaDB' unless thread_2.value.exitstatus == 0
+            end
+          elsif mysql_error == '2013' # connection to port or socket failed
+            Interaction.fail 'MySQL/MariaDB connection failed, is this the correct port?'
           end
-          Open3.popen3("#{cmd} -e 'QUIT'") do |_stdin_2, _stdout_2, _stderr_2, thread_2|
-            Interaction.fail 'Could not connect to MySQL/MariaDB' unless thread_2.value.exitstatus == 0
-          end
-        elsif mysql_error == '2013' # connection to port or socket failed
-          Interaction.fail 'MySQL/MariaDB connection failed, is this the correct port?'
         end
       end
       cmd
@@ -136,7 +144,7 @@ module Geordi
     private :decide_mysql_command
 
     def decide_postgres_command(extra_flags)
-      cmd = 'sudo -u postgres psql'
+      cmd = @sudo ? 'sudo -u postgres psql' : 'psql'
       unless extra_flags.nil?
         begin
           port = Integer(extra_flags.split('=')[1])
