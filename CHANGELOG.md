@@ -10,10 +10,21 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
-# 9.5.1 - 2023-04-26
+# 9.6.1 2023-09-22
 
 ### Compatible changes
+* `chromedriver-update` command: Retrieve chromedriver from new location 
 
+
+# 9.6.0 2023-07-24
+
+### Compatible changes
+* Add suggestions of related commands
+
+
+# 9.5.1 2023-04-26
+
+### Compatible changes
 * `cucumber` command: Support the passing of options without "=" 
 
 
