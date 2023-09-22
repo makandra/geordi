@@ -1,9 +1,12 @@
 require 'open3'
 require 'net/http'
 require 'tempfile'
+require 'json'
+require 'fileutils'
 
 module Geordi
   class ChromedriverUpdater
+    VERSIONS_PER_MILESTONES_URL = "https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json"
 
     def run(options)
       chrome_version = determine_chrome_version
@@ -49,8 +52,8 @@ module Geordi
 
     # Check https://groups.google.com/a/chromium.org/g/chromium-discuss/c/4BB4jmsRyv8/m/TY3FXS4HBgAJ
     # for information how chrome version numbers work
-    def major_version(full_version)
-      full_version.match(/^(\d+\.\d+\.\d+)\.\d+$/)[1]
+    def milestone_version(full_version)
+      full_version.match(/^\d+/)[0]
     end
 
     def update_chromedriver(latest_chromedriver_version)
@@ -62,31 +65,55 @@ module Geordi
       Interaction.success "Chromedriver updated to v#{determine_chromedriver_version}."
     end
 
-    def download_chromedriver(latest_version)
-      uri = URI("https://chromedriver.storage.googleapis.com/#{latest_version}/chromedriver_linux64.zip")
-      response = Net::HTTP.get_response(uri)
-
-      if response.is_a?(Net::HTTPSuccess)
-        file = Tempfile.new(['chromedriver', '.zip'])
+    def download_chromedriver(version)
+      fetch_response(chromedriver_url(version), "Could not download chromedriver v#{version}.") do |response|
+        file = Tempfile.new(%w[chromedriver .zip])
         file.write(response.body)
 
         file
+      end
+    end
+
+    def fetch_response(url, error_message)
+      uri = URI(url)
+      response = Net::HTTP.get_response(uri)
+
+      if response.is_a?(Net::HTTPSuccess)
+        yield(response)
       else
-        Interaction.fail("Could not download chromedriver v#{latest_version}.")
+        Interaction.fail(error_message)
+      end
+    end
+
+    def chromedriver_url(chrome_version)
+        chromedriver_per_platform = chromedriver_download_data.dig("milestones", milestone_version(chrome_version), "downloads", "chromedriver")
+        chromedriver = chromedriver_per_platform&.find do |chromedriver|
+          chromedriver["platform"] == "linux64"
+        end
+
+        if chromedriver && chromedriver["url"]
+          chromedriver["url"]
+        else
+          Interaction.fail("Could not find chromedriver download url for chrome version v#{chrome_version}")
+        end
+    end
+
+    def chromedriver_download_data
+      return @chromedriver_download_data if @chromedriver_download_data
+
+      fetch_response(VERSIONS_PER_MILESTONES_URL, "Could not find chromedriver download data") do |response|
+        begin
+          chromedriver_download_data = JSON.parse(response.body)
+        rescue JSON::ParserError
+          Interaction.fail("Could not parse chromedriver download data")
+        end
+        @chromedriver_download_data = chromedriver_download_data
       end
     end
 
     def latest_version(chrome_version)
-      return @latest_version if @latest_version
-
-      uri = URI("https://chromedriver.storage.googleapis.com/LATEST_RELEASE_#{major_version(chrome_version)}")
-      response = Net::HTTP.get_response(uri)
-
-      if response.is_a?(Net::HTTPSuccess)
-        @latest_version = response.body.to_s
-      else
-        Interaction.fail("Could not download the chromedriver v#{chrome_version}.")
-      end
+      latest_version = chromedriver_download_data.dig("milestones", milestone_version(chrome_version), "version")
+      latest_version || Interaction.fail("Could not find matching chromedriver for chrome v#{chrome_version}")
     end
 
     def unzip(zip, output_dir)
@@ -95,6 +122,11 @@ module Geordi
       unless status.success?
         Interaction.fail("Could not unzip #{zip.path}.")
       end
+
+      # the archive contains a folder in which the relevant files are located. These files must be moved to ~/bin.
+      FileUtils.mv("#{output_dir}/chromedriver-linux64/chromedriver", output_dir)
+      FileUtils.mv("#{output_dir}/chromedriver-linux64//LICENSE.chromedriver", output_dir)
+      FileUtils.rm_rf("#{output_dir}/chromedriver-linux64")
     end
   end
 end
