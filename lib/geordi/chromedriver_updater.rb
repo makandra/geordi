@@ -14,7 +14,7 @@ module Geordi
 
       latest_chromedriver_version = latest_version(chrome_version)
       if current_chromedriver_version == latest_chromedriver_version
-        Interaction.success "No update required: Chromedriver is already on the latest version v#{latest_chromedriver_version}!" unless options[:quiet_if_matching]
+        Interaction.note "No update required. Chromedriver is already on the latest version #{latest_chromedriver_version}." unless options[:quiet_if_matching]
       else
         update_chromedriver(latest_chromedriver_version)
       end
@@ -94,7 +94,7 @@ module Geordi
         if chromedriver && chromedriver["url"]
           chromedriver["url"]
         else
-          Interaction.fail("Could not find chromedriver download url for chrome version v#{chrome_version}")
+          Interaction.fail("Could not find chromedriver download url for Chrome version v#{chrome_version}.")
         end
     end
 
@@ -105,7 +105,7 @@ module Geordi
         begin
           chromedriver_download_data = JSON.parse(response.body)
         rescue JSON::ParserError
-          Interaction.fail("Could not parse chromedriver download data")
+          Interaction.fail("Could not parse chromedriver download data.")
         end
         @chromedriver_download_data = chromedriver_download_data
       end
@@ -113,7 +113,7 @@ module Geordi
 
     def latest_version(chrome_version)
       latest_version = chromedriver_download_data.dig("milestones", milestone_version(chrome_version), "version")
-      latest_version || Interaction.fail("Could not find matching chromedriver for chrome v#{chrome_version}")
+      latest_version || Interaction.fail("Could not find matching chromedriver for Chrome v#{chrome_version}.")
     end
 
     def unzip(zip, output_dir)
