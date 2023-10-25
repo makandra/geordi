@@ -19,26 +19,26 @@ module Geordi
       @derivative_dbname = /_(test\d*|development|cucumber)$/
       base_directory = ENV['XDG_CONFIG_HOME']
       base_directory = Dir.home.to_s if base_directory.nil?
-      @whitelist_directory = File.join(base_directory, '.config', 'geordi', 'whitelists')
-      FileUtils.mkdir_p(@whitelist_directory) unless File.directory? @whitelist_directory
+      @allowlist_directory = File.join(base_directory, '.config', 'geordi', 'allowlists')
+      FileUtils.mkdir_p(@allowlist_directory) unless File.directory? @allowlist_directory
       @mysql_command = decide_mysql_command(extra_flags['mysql'])
       @postgres_command = decide_postgres_command(extra_flags['postgres'])
     end
 
-    def edit_whitelist(dbtype)
-      whitelist = whitelist_fname(dbtype)
-      whitelisted_dbs = if File.exist? whitelist
-        Geordi::Util.stripped_lines(File.read(whitelist))\
+    def edit_allowlist(dbtype)
+      allowlist = allowlist_fname(dbtype)
+      allowlisted_dbs = if File.exist? allowlist
+        Geordi::Util.stripped_lines(File.read(allowlist))\
           .delete_if { |l| l.start_with? '#' }
       else
         []
       end
       all_dbs = list_all_dbs(dbtype)
-      tmp = Tempfile.open("geordi_whitelist_#{dbtype}")
+      tmp = Tempfile.open("geordi_allowlist_#{dbtype}")
       tmp.write <<~HEREDOC
-        # Put each whitelisted database on a new line.
+        # Put each allowlisted database on a new line.
         # System databases will never be deleted.
-        # When you whitelist foo, foo_development and foo_test\\d* are whitelisted, too.
+        # When you allowlist foo, foo_development and foo_test\\d* are allowlisted, too.
         # This works even if foo does not exist. Also, you will only see foo in this list.
         #
         # Syntax: keep foo
@@ -46,32 +46,32 @@ module Geordi
       HEREDOC
       tmpfile_content = Array.new
       all_dbs.each do |db|
-        next if is_whitelisted?(dbtype, db)
+        next if is_allowlisted?(dbtype, db)
         next if is_protected?(dbtype, db)
         db.sub!(@derivative_dbname, '')
         tmpfile_content.push(['drop', db])
       end
-      warn_manual_whitelist = false
-      whitelisted_dbs.each do |db_name|
-        # Remove 'keep' word from whitelist entries. This is not normally required since geordi
-        # does not save 'keep' or 'drop' to the whitelist file on disk but rather saves a list
-        # of all whitelisted db names and just presents the keep/drop information while editing
-        # the whitelist to supply users a list of databases they can whitelist by changing the
-        # prefix to 'keep'. Everything prefixed 'drop' is not considered whitelisted and thus
-        # not written to the whitelist file on disk.
+      warn_manual_allowlist = false
+      allowlisted_dbs.each do |db_name|
+        # Remove 'keep' word from allowlist entries. This is not normally required since geordi
+        # does not save 'keep' or 'drop' to the allowlist file on disk but rather saves a list
+        # of all allowlisted db names and just presents the keep/drop information while editing
+        # the allowlist to supply users a list of databases they can allowlist by changing the
+        # prefix to 'keep'. Everything prefixed 'drop' is not considered allowlisted and thus
+        # not written to the allowlist file on disk.
         #
-        # However, if users manually edit their whitelist files they might use the keep/drop
+        # However, if users manually edit their allowlist files they might use the keep/drop
         # syntax they're familiar with.
         if db_name.start_with? 'keep '
           db_name.gsub!(/keep /, '')
           db_name = db_name.split[1..-1].join(' ')
-          warn_manual_whitelist = true
+          warn_manual_allowlist = true
         end
         tmpfile_content.push(['keep', db_name]) unless db_name.empty?
       end
-      if warn_manual_whitelist
+      if warn_manual_allowlist
         Interaction.warn <<~ERROR_MSG
-          Your whitelist #{whitelist} seems to have been generated manually.
+          Your allowlist #{allowlist} seems to have been generated manually.
           In that case, make sure to use only one database name per line and omit the 'keep' prefix."
 
           Launching the editor.
@@ -86,24 +86,24 @@ module Geordi
       texteditor = Geordi::Util.decide_texteditor
       system("#{texteditor} #{tmp.path}")
       File.open(tmp.path, 'r') do |wl_edited|
-        whitelisted_dbs = []
-        whitelist_storage = File.open(whitelist, 'w')
+        allowlisted_dbs = []
+        allowlist_storage = File.open(allowlist, 'w')
         lines = Geordi::Util.stripped_lines(wl_edited.read)
         lines.each do |line|
           next if line.start_with?('#')
           unless line.split.length == 2
-            Interaction.fail "Invalid edit to whitelist file: \`#{line}\` - Syntax is: ^[keep|drop] dbname$"
+            Interaction.fail "Invalid edit to allowlist file: \`#{line}\` - Syntax is: ^[keep|drop] dbname$"
           end
           unless %w[keep drop k d].include? line.split.first
-            Interaction.fail "Invalid edit to whitelist file: \`#{line}\` - must start with either drop or keep."
+            Interaction.fail "Invalid edit to allowlist file: \`#{line}\` - must start with either drop or keep."
           end
           db_status, db_name = line.split
           if db_status == 'keep'
-            whitelisted_dbs.push db_name
-            whitelist_storage.write(db_name << "\n")
+            allowlisted_dbs.push db_name
+            allowlist_storage.write(db_name << "\n")
           end
         end
-        whitelist_storage.close
+        allowlist_storage.close
       end
     end
 
@@ -181,7 +181,7 @@ module Geordi
     def clean_mysql
       Interaction.announce 'Checking for MySQL databases'
       database_list = list_all_dbs('mysql')
-      # confirm_deletion includes option for whitelist editing
+      # confirm_deletion includes option for allowlist editing
       deletable_dbs = confirm_deletion('mysql', database_list)
       return if deletable_dbs.nil?
       deletable_dbs.each do |db|
@@ -205,34 +205,34 @@ module Geordi
       end
     end
 
-    def whitelist_fname(dbtype)
-      File.join(@whitelist_directory, dbtype) << '.txt'
+    def allowlist_fname(dbtype)
+      File.join(@allowlist_directory, dbtype) << '.txt'
     end
 
     def confirm_deletion(dbtype, database_list)
       proceed = ''
       until %w[y n].include? proceed
-        deletable_dbs = filter_whitelisted(dbtype, database_list)
+        deletable_dbs = filter_allowlisted(dbtype, database_list)
         if deletable_dbs.empty?
-          Interaction.note "No #{dbtype} databases found that were not whitelisted."
-          if Interaction.prompt('Edit the whitelist? [y]es or [n]o') == 'y'
+          Interaction.note "No #{dbtype} databases found that were not allowlisted."
+          if Interaction.prompt('Edit the allowlist? [y]es or [n]o') == 'y'
             proceed = 'e'
           else
             return []
           end
         end
         if proceed.empty?
-          Interaction.note "The following #{dbtype} databases are not whitelisted and can be deleted:"
+          Interaction.note "The following #{dbtype} databases are not allowlisted and can be deleted:"
           deletable_dbs.sort.each do |db|
             puts db
           end
-          Interaction.note "These #{dbtype} databases are not whitelisted and can be deleted."
-          proceed = Interaction.prompt('Proceed? [y]es, [n]o or [e]dit whitelist')
+          Interaction.note "These #{dbtype} databases are not allowlisted and can be deleted."
+          proceed = Interaction.prompt('Proceed? [y]es, [n]o or [e]dit allowlist')
         end
         case proceed
         when 'e'
           proceed = '' # reset user selection
-          edit_whitelist dbtype
+          edit_allowlist dbtype
         when 'n'
           Interaction.success 'Nothing deleted.'
           return []
@@ -251,31 +251,31 @@ module Geordi
       protected[dbtype].include? database_name
     end
 
-    def is_whitelisted?(dbtype, database_name)
-      whitelist_content = if File.exist? whitelist_fname(dbtype)
-        Geordi::Util.stripped_lines(File.open(whitelist_fname(dbtype), 'r').read)
+    def is_allowlisted?(dbtype, database_name)
+      allowlist_content = if File.exist? allowlist_fname(dbtype)
+        Geordi::Util.stripped_lines(File.open(allowlist_fname(dbtype), 'r').read)
       else
         []
       end
-      # Allow explicit whitelisting of derivative databases like projectname_test2
-      if whitelist_content.include? database_name
+      # Allow explicit allowlisting of derivative databases like projectname_test2
+      if allowlist_content.include? database_name
         true
-      # whitelisting `projectname` also whitelists `projectname_test\d*`, `projectname_development`
-      elsif whitelist_content.include? database_name.sub(@derivative_dbname, '')
+      # allowlisting `projectname` also allowlists `projectname_test\d*`, `projectname_development`
+      elsif allowlist_content.include? database_name.sub(@derivative_dbname, '')
         true
       else
         false
       end
     end
 
-    def filter_whitelisted(dbtype, database_list)
+    def filter_allowlisted(dbtype, database_list)
       # n.b. `delete` means 'delete from list of dbs that should be deleted in this context
       # i.e. `delete` means 'keep this database'
       deletable_dbs = database_list.dup
-      deletable_dbs.delete_if { |db| is_whitelisted?(dbtype, db) if File.exist? whitelist_fname(dbtype) }
+      deletable_dbs.delete_if { |db| is_allowlisted?(dbtype, db) if File.exist? allowlist_fname(dbtype) }
       deletable_dbs.delete_if { |db| is_protected?(dbtype, db) }
       deletable_dbs.delete_if { |db| db.start_with? '#' }
     end
-    private :filter_whitelisted
+    private :filter_allowlisted
   end
 end
