@@ -17,4 +17,8 @@ def chromedriver_update
   require 'geordi/chromedriver_updater'
 
   ChromedriverUpdater.new.run(options)
+
+  Hint.did_you_know [
+    'Geordi can automatically keep chromedriver up-to-date. See `geordi help chromedriver-update`.',
+  ] unless options.quiet_if_matching
 end

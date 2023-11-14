@@ -14,7 +14,7 @@ module Geordi
         if generated_hints.any? && should_print_hint
           puts
           puts generated_hints.sample
-          puts 'You can configure the probability for these hints by setting hint_probability to a unitless percent number in ~/.config/geordi/global.yml' unless settings_probability
+          puts "You can configure the probability for these hints by setting hint_probability to a unitless percent number in #{Settings::GLOBAL_SETTINGS_FILE_NAME}" unless settings_probability
         end
 
         generated_hints

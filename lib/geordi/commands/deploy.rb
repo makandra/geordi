@@ -111,7 +111,7 @@ def deploy(target_stage = nil)
 
     Hint.did_you_know [
       :capistrano,
-      :security_update
+      :security_update,
     ]
   else
     Util.run!("git checkout #{source_branch}")

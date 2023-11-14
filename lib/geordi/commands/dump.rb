@@ -73,6 +73,6 @@ def dump(target = nil, *_args)
     :delete_dumps,
     :drop_databases,
     :migrate,
-    'Geordi can load a dump directly into the local database if passed a Capistrano stage and the option -l. See `geordi help dump`.'
+    'Geordi can load a dump directly into the local database if passed a Capistrano stage and the option -l. See `geordi help dump`.',
   ]
 end

@@ -13,6 +13,7 @@ def commit(*git_args)
   Gitpt.new.run_commit(git_args)
 
   Hint.did_you_know [
-    :branch
+    :branch,
+    :deploy,
   ]
 end

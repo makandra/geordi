@@ -46,10 +46,13 @@ def rspec(*files)
       puts
       Util.run!(command.join(' '), fail_message: 'Specs failed.')
 
-      Hint.did_you_know [
-        :cucumber
-      ]
     end
+
+    Hint.did_you_know [
+      :cucumber,
+      'Geordi can automatically keep chromedriver up-to-date. See `geordi help chromedriver-update`.',
+      'You only need to type the unique prefix of a command to run it. `geordi rs` will work as well.',
+    ]
   else
     Interaction.note 'RSpec not employed.'
   end

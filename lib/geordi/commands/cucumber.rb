@@ -78,7 +78,8 @@ def cucumber(*args)
       [:cucumber, :containing],
       [:cucumber, :debug],
       [:cucumber, :rerun],
-      'Geordi can automatically update chromedriver before Cucumber tests. See `geordi help chromedriver-update`.'
+      'Geordi can automatically keep chromedriver up-to-date. See `geordi help chromedriver-update`.',
+      'You only need to type the unique prefix of a command to run it. `geordi cuc` will work as well.',
     ]
   else
     Interaction.note 'Cucumber not employed.'

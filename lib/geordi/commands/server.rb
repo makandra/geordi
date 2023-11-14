@@ -7,7 +7,7 @@ option :public, aliases: '-P', type: :boolean,
 
 def server(port = nil)
   Hint.did_you_know [
-    [:server, :public]
+    [:server, :public],
   ]
 
   invoke_geordi 'bundle_install'

@@ -14,6 +14,6 @@ def clean
   end
 
   Hint.did_you_know [
-    :remove_executable_flags
+    :remove_executable_flags,
   ]
 end

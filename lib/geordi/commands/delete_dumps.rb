@@ -41,6 +41,7 @@ def delete_dumps(*locations)
 
   Hint.did_you_know [
     :clean,
-    :drop_databases
+    :drop_databases,
+    :dump,
   ]
 end

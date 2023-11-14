@@ -14,6 +14,6 @@ def remove_executable_flags
   Interaction.success 'Done.'
 
   Hint.did_you_know [
-    :clean
+    :clean,
   ]
 end

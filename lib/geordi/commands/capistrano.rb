@@ -19,4 +19,9 @@ def capistrano(*args)
 
     Util.run!(command, fail_message: 'Capistrano failed. Have a look!')
   end
+
+  Hint.did_you_know [
+    :deploy,
+    :rake,
+  ]
 end

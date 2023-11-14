@@ -28,7 +28,10 @@ def setup
   Interaction.success 'Successfully set up the project.'
 
   Hint.did_you_know [
-    :update
+    :update,
+    :security_update,
+    [:setup, :dump],
+    [:setup, :test],
   ] unless options.dump || options.test
 
   invoke_geordi 'dump', options.dump, load: true if options.dump

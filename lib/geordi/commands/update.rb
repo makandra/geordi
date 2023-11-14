@@ -28,7 +28,9 @@ def update
     Interaction.success 'Successfully updated the project.'
 
     Hint.did_you_know [
-      :setup
+      :setup,
+      [:update, :dump],
+      [:update, :test],
     ] unless options.dump || options.test
 
     invoke_geordi 'dump', options.dump, load: true if options.dump

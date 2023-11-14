@@ -60,6 +60,6 @@ def drop_databases
   cleaner.clean_postgres unless options.mysql_only
 
   Hint.did_you_know [
-    :delete_dumps
+    :delete_dumps,
   ]
 end

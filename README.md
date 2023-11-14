@@ -19,6 +19,8 @@ You may abbreviate commands by typing only their first letters, e.g. `geordi
 con` will boot a development console, `geordi set -t` will setup a project and
 run tests afterwards.
 
+Commands will occasionally print "did you know" hints of other Geordi features.
+
 You can always run `geordi help <command>` to quickly look up command help.
 
 ### `geordi branch`

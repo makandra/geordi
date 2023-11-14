@@ -37,6 +37,6 @@ def tests(*args)
   end
 
   Hint.did_you_know [
-    :deploy
+    :deploy,
   ]
 end

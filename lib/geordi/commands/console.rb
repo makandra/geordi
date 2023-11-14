@@ -18,6 +18,7 @@ def console(target = 'development', *_args)
   Hint.did_you_know [
     :shelll,
     [:console, :select_server],
+    'You only need to type the unique prefix of a command to run it. `geordi con` will work as well.',
   ]
 
   if target == 'development'

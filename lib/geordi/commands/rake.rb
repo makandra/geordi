@@ -24,6 +24,6 @@ def rake(*args)
   end
 
   Hint.did_you_know [
-    :capistrano
+    :capistrano,
   ]
 end

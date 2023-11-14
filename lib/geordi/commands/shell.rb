@@ -16,7 +16,8 @@ def shelll(target, *_args)
   require 'geordi/remote'
 
   Hint.did_you_know [
-    :console
+    :console,
+    'You only need to type the unique prefix of a command to run it. `geordi sh` will work as well.',
   ]
 
   Interaction.announce 'Opening a shell on ' + target
