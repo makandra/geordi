@@ -10,8 +10,10 @@ Setting `auto_update_chromedriver` to `true` in your global Geordi config file
 cucumber tests if a newer chromedriver version is available.
 LONGDESC
 
-option :quiet_if_matching, type: :boolean, default: false,
+option :quiet_if_matching, type: :boolean, default: false, hide: true,
   desc: 'Suppress notification if chromedriver is already on the latest version'
+option :exit_on_failure, type: :boolean, default: true, hide: true,
+  desc: "Exit with status code 1, if an error occurs."
 
 def chromedriver_update
   require 'geordi/chromedriver_updater'

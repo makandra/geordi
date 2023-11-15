@@ -6,6 +6,8 @@ require 'fileutils'
 
 module Geordi
   class ChromedriverUpdater
+    class ProcessingError < StandardError; end
+
     VERSIONS_PER_MILESTONES_URL = "https://googlechromelabs.github.io/chrome-for-testing/latest-versions-per-milestone-with-downloads.json"
 
     def run(options)
@@ -18,6 +20,10 @@ module Geordi
       else
         update_chromedriver(latest_chromedriver_version)
       end
+
+    rescue ProcessingError => e
+      interaction_method = (options[:exit_on_failure] == false) ? :warn : :fail
+      Interaction.public_send(interaction_method, e.message)
     end
 
     private
@@ -29,7 +35,7 @@ module Geordi
       end
 
       if !status.success? || chrome_version.nil?
-        Interaction.fail('Could not determine the version of Google Chrome.')
+        raise ProcessingError, 'Could not determine the version of Google Chrome.'
       else
         chrome_version
       end
@@ -44,7 +50,7 @@ module Geordi
       end
 
       if !status.success? || chromedriver_version.nil?
-        Interaction.fail('Could not determine the version of chromedriver.')
+        raise ProcessingError, 'Could not determine the version of chromedriver.'
       else
         chromedriver_version
       end
@@ -62,11 +68,11 @@ module Geordi
       unzip(chromedriver_zip, File.expand_path('~/bin'))
 
       # We need to determine the version again, as it could be nil in case no chromedriver was installed before
-      Interaction.success "Chromedriver updated to v#{determine_chromedriver_version}."
+      Interaction.success "Chromedriver updated to #{determine_chromedriver_version}."
     end
 
     def download_chromedriver(version)
-      fetch_response(chromedriver_url(version), "Could not download chromedriver v#{version}.") do |response|
+      fetch_response(chromedriver_url(version), "Could not download chromedriver #{version}.") do |response|
         file = Tempfile.new(%w[chromedriver .zip])
         file.write(response.body)
 
@@ -81,8 +87,13 @@ module Geordi
       if response.is_a?(Net::HTTPSuccess)
         yield(response)
       else
-        Interaction.fail(error_message)
+        raise ProcessingError, error_message
       end
+
+    # Rescue Errno::NOERROR, Errno::ENOENT, Errno::EACCES, Errno::EFAULT, Errno::ECONNREFUSED, Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EHOSTDOWN, Errno::EHOSTUNREACH, ...,
+    # all of which are a subclass of SystemCallError
+    rescue SystemCallError => e
+      raise ProcessingError, "Request failed: #{e.message}"
     end
 
     def chromedriver_url(chrome_version)
@@ -94,7 +105,7 @@ module Geordi
         if chromedriver && chromedriver["url"]
           chromedriver["url"]
         else
-          Interaction.fail("Could not find chromedriver download url for Chrome version v#{chrome_version}.")
+          raise ProcessingError, "Could not find chromedriver download url for Chrome #{chrome_version}."
         end
     end
 
@@ -105,7 +116,7 @@ module Geordi
         begin
           chromedriver_download_data = JSON.parse(response.body)
         rescue JSON::ParserError
-          Interaction.fail("Could not parse chromedriver download data.")
+          raise ProcessingError, "Could not parse chromedriver download data."
         end
         @chromedriver_download_data = chromedriver_download_data
       end
@@ -113,14 +124,14 @@ module Geordi
 
     def latest_version(chrome_version)
       latest_version = chromedriver_download_data.dig("milestones", milestone_version(chrome_version), "version")
-      latest_version || Interaction.fail("Could not find matching chromedriver for Chrome v#{chrome_version}.")
+      latest_version || raise(ProcessingError, "Could not find matching chromedriver for Chrome #{chrome_version}.")
     end
 
     def unzip(zip, output_dir)
       _stdout_str, _error_str, status = Open3.capture3('unzip', '-d', output_dir, '-o', zip.path)
 
       unless status.success?
-        Interaction.fail("Could not unzip #{zip.path}.")
+        raise ProcessingError, "Could not unzip #{zip.path}."
       end
 
       # the archive contains a folder in which the relevant files are located. These files must be moved to ~/bin.

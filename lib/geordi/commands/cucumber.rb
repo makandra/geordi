@@ -49,7 +49,7 @@ def cucumber(*args)
     invoke_geordi 'bundle_install'
     invoke_geordi 'yarn_install'
     if settings.auto_update_chromedriver
-      invoke_geordi 'chromedriver_update', quiet_if_matching: true
+      invoke_geordi 'chromedriver_update', quiet_if_matching: true, exit_on_failure: false
     end
 
     arguments = args

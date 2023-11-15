@@ -48,12 +48,11 @@ You can always run `geordi help <command>` to quickly look up command help.
     geordi_section << "#{command.description.sub /(\.)?$/, '.'}\n\n"
     geordi_section << "#{command.long_description.strip}\n\n" if command.long_description
 
-    if command.options.any?
-      geordi_section << "**Options**\n"
-      # Taken from thor-1.0.1/lib/thor/base.rb:557
-      command.options.values.each do |option|
-        next if option.hide
+    visible_options = command.options.reject {|_option_name, option_object| option_object.hide }
 
+    if visible_options.any?
+      geordi_section << "**Options**\n"
+      visible_options.values.each do |option|
         geordi_section << "- `#{option.usage}`"
         geordi_section << ": #{option.description}" if option.description
         geordi_section << "\n"

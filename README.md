@@ -53,9 +53,6 @@ Setting `auto_update_chromedriver` to `true` in your global Geordi config file
 (`~/.config/geordi/global.yml`), will automatically update chromedriver before 
 cucumber tests if a newer chromedriver version is available.
 
-**Options**
-- `[--quiet-if-matching], [--no-quiet-if-matching]`: Suppress notification if chromedriver is already on the latest version
-
 
 ### `geordi clean`
 Remove unneeded files from the current directory.
