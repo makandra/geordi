@@ -2,10 +2,14 @@ require 'bundler'
 Bundler::GemHelper.install_tasks
 
 desc 'Default: Run all tests'
-task default: :features
+task default: [:rspec, :features]
 
 task :features do
-  exec 'bundle exec cucumber'
+  system 'bundle exec cucumber'
+end
+
+task :rspec do
+  system 'bundle exec rspec'
 end
 
 task :readme do

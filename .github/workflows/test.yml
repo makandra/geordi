@@ -31,6 +31,7 @@ jobs:
       run: |
         gem install bundler:2.2.26
         bundle install --no-deployment
-    - name: Run tests
-      run: bundle exec rake
-    
+    - name: Run specs
+      run: bundle exec rspec
+    - name: Run feature tests
+      run: bundle exec cucumber
