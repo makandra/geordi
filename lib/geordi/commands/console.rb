@@ -6,6 +6,8 @@ Remote: `geordi console staging`
 
 Selecting the server: `geordi console staging -s` shows a menu with all available
 servers. When passed a number, directly connects to the selected server.
+
+IRB flags can be given as `irb_flags: '...'` in the global Geordi config file (`~/.config/geordi/global.yml`).
 LONGDESC
 
 # This option is duplicated in shelll.rb

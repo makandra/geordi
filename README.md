@@ -79,6 +79,8 @@ Remote: `geordi console staging`
 Selecting the server: `geordi console staging -s` shows a menu with all available
 servers. When passed a number, directly connects to the selected server.
 
+IRB flags can be given as `irb_flags: '...'` in the global Geordi config file (`~/.config/geordi/global.yml`).
+
 **Options**
 - `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to
 
@@ -107,7 +109,7 @@ variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
 
 
 ### `geordi delete-dumps [DIRECTORY]`
-Delete database dump files (*.dump).
+Help deleting database dump files (*.dump).
 
 Example: `geordi delete-dumps` or `geordi delete-dumps ~/tmp/dumps`
 

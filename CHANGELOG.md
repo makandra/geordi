@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 * fix detection of IRB version
+* `console` command: IRB flags stored in the global config file are automatically passed on to IRB
 
 ### Breaking changes
 * `dump`-command: Drop and recreate the database before restoring a postgres dump
