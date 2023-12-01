@@ -410,14 +410,14 @@ To run Geordi without installation, call it like this:
 
     ruby -I lib exe/geordi
 
-    # From another directory
-    ruby -I ../geordi/lib ../geordi/exe/geordi
-
     # With debugger
     ruby -r byebug -I lib exe/geordi
 
-    # Have rbenv boot Geordi in the current Ruby version
-    RBENV_VERSION=$(<.ruby-version) ruby -I lib exe/geordi
+    # From another directory
+    ruby -I ../geordi/lib ../geordi/exe/geordi
+
+    # Run Geordi with the Ruby version of that other directory
+    RBENV_VERSION=$(<.ruby-version) ruby -I ../geordi/lib ../geordi/exe/geordi
 
 You can also *install* Geordi locally from its project directory with
 `rake install`. Make sure to switch to the expected Ruby version before.
