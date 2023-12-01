@@ -5,7 +5,7 @@ Feature: The console command
     Given the irb version is "1.1.0"
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
-      And the output should contain "Util.run! bundle exec rails console -e development"
+      And the output should contain "Util.run! (exec) bundle exec rails console -e development"
       But the output should not contain "nomultiline"
 
 
@@ -13,7 +13,7 @@ Feature: The console command
     Given the Ruby version is "3.0"
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
-      And the output should contain "Util.run! bundle exec rails console -e development"
+      And the output should contain "Util.run! (exec) bundle exec rails console -e development"
       But the output should not contain "nomultiline"
 
 
@@ -22,7 +22,7 @@ Feature: The console command
       And the Ruby version is "2.9"
     When I run `geordi console`
     Then the output should contain "# Opening a local Rails console"
-      And the output should contain "Util.run! bundle exec rails console -e development -- --nomultiline"
+      And the output should contain "Util.run! (exec) bundle exec rails console -e development -- --nomultiline"
       And the output should contain "Using --nomultiline switch for faster pasting"
 
 

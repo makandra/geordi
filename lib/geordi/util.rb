@@ -37,7 +37,8 @@ module Geordi
       # show_cmd: Whether to print the command
       # confirm: Whether to ask for confirmation before running it
       # fail_message: The text to print on command failure
-      def run!(command, show_cmd: false, confirm: false, fail_message: 'Something went wrong.')
+      # exec: Whether to run the command with `exec` instead of `system`
+      def run!(command, show_cmd: false, confirm: false, fail_message: 'Something went wrong.', exec: false)
         # Disable shell features for arrays https://stackoverflow.com/questions/13338147/ruby-system-method-arguments
         # Conversion: ['ls *', 'some arg'] => ['ls', '*', 'some arg']
         # If you need shell features, you need to pass in a String instead of an array.
@@ -60,19 +61,23 @@ module Geordi
 
         if testing?
           # Join with commas for precise argument distinction
-          puts "Util.run! #{show_command.join(', ')}"
+          puts "Util.run!#{' (exec)' if exec} #{show_command.join(', ')}"
         else
+          method = exec ? :exec : :system
+
           # Remove Geordi's Bundler environment when running commands.
           success = if !defined?(Bundler)
-            system(*command)
+            Kernel.public_send(method, *command)
           elsif Gem::Version.new(Bundler::VERSION) >= Gem::Version.new('1.17.3')
             Bundler.with_original_env do
-              system(*command)
+              Kernel.public_send(method, *command)
             end
           else
-            Bundler.clean_system(*command)
+            method = exec ? :clean_exec : :clean_system
+            Bundler.public_send(method, *command)
           end
 
+          # This part will never be reached when `exec` is true
           success || Interaction.fail(fail_message)
         end
       end
