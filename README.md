@@ -399,19 +399,25 @@ Adding a new command
 ---------------
 
 Copy `lib/geordi/COMMAND_TEMPLATE` to `lib/geordi/commands/your_command` and
-edit it to do what you need it to do. Please add a feature test for the new
-command; see features/ for inspiration.
+edit it to do what you need it to do. Please add appropriate tests for the new
+command; see existing tests for inspiration.
 
-To try Geordi locally, call it like this:
 
-    # -I means "add the following directory to load path"
-    ruby -Ilib exe/geordi
+Running Geordi locally
+----------------------
+
+To run Geordi without installation, call it like this:
+
+    ruby -I lib exe/geordi
 
     # From another directory
     ruby -I ../geordi/lib ../geordi/exe/geordi
 
     # With debugger
-    ruby -r byebug -I ../geordi/lib ../geordi/exe/geordi
+    ruby -r byebug -I lib exe/geordi
+
+    # Have rbenv boot Geordi in the current Ruby version
+    RBENV_VERSION=$(<.ruby-version) ruby -I lib exe/geordi
 
 You can also *install* Geordi locally from its project directory with
 `rake install`. Make sure to switch to the expected Ruby version before.
