@@ -28,7 +28,8 @@ def console(target = 'development', *_args)
     Interaction.announce 'Opening a local Rails console'
 
     command = Util.console_command(target)
-    Util.run!(command)
+    # Exec has better behavior on Ctrl + C
+    Util.run!(command, exec: true)
   else
     Interaction.announce 'Opening a Rails console on ' + target
 
