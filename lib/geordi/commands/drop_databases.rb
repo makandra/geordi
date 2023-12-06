@@ -15,11 +15,11 @@ offer to edit the whitelist instead.
 LONGDESC
 
 option :postgres_only, aliases: '-P', type: :boolean,
-  desc: 'Only clean Postgres', default: false
+  desc: 'Only clean PostgreSQL', default: false
 option :mysql_only, aliases: '-M', type: :boolean,
   desc: 'Only clean MySQL/MariaDB', default: false
 option :postgres, banner: 'PORT_OR_SOCKET',
-  desc: 'Use Postgres port or socket'
+  desc: 'Use PostgreSQL port or socket'
 option :mysql, banner: 'PORT_OR_SOCKET',
   desc: 'Use MySQL/MariaDB port or socket'
 option :sudo, aliases: '-S',  type: :boolean, default: false,

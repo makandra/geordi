@@ -3,13 +3,16 @@ require 'open3'
 require 'tempfile'
 
 module Geordi
+
+  DatabaseError = Class.new(StandardError)
+
   class DBCleaner
 
     def initialize(extra_flags, sudo: false)
       @sudo = sudo
 
       if @sudo
-        puts 'Please enter your sudo password if asked, for db operations as system users'
+        Interaction.note 'Please enter your sudo password when asked.'
         puts "We're going to run `sudo -u postgres psql` for PostgreSQL"
         puts '               and `sudo mysql`            for MariaDB (which uses PAM auth)'
         `sudo true`
@@ -17,10 +20,13 @@ module Geordi
       end
 
       @derivative_dbname = /_(test\d*|development|cucumber)$/
-      base_directory = ENV['XDG_CONFIG_HOME']
-      base_directory = Dir.home.to_s if base_directory.nil?
-      @allowlist_directory = File.join(base_directory, '.config', 'geordi', 'allowlists')
+      @base_directory = ENV['XDG_CONFIG_HOME']
+      @base_directory ||= Dir.home.to_s
+      @allowlist_directory = File.join(@base_directory, '.config', 'geordi', 'allowlists')
       FileUtils.mkdir_p(@allowlist_directory) unless File.directory? @allowlist_directory
+      if File.directory?(legacy_allowlist_directory)
+        move_allowlist_files
+      end
       @mysql_command = decide_mysql_command(extra_flags['mysql'])
       @postgres_command = decide_postgres_command(extra_flags['postgres'])
     end
@@ -126,7 +132,7 @@ module Geordi
             cmd = 'mysql -uroot'
             cmd << " #{extra_flags}" unless extra_flags.nil?
             unless File.exist? File.join(Dir.home, '.my.cnf')
-              puts "Please enter your MySQL/MariaDB password for account 'root'."
+              Interaction.note "Please enter your MySQL/MariaDB password for account 'root'."
               Interaction.warn "You should create a ~/.my.cnf file instead, or you'll need to enter your MySQL root password for each db."
               Interaction.note 'See https://makandracards.com/makandra/50813-store-mysql-passwords-for-development for more information.'
               cmd << ' -p' # need to ask for password now
@@ -165,17 +171,27 @@ module Geordi
       else
         list_all_mysql_dbs
       end
+    rescue DatabaseError
+      Interaction.fail 'Connection to database could not be established. Try running again with --sudo.'
     end
 
     def list_all_postgres_dbs
-      `#{@postgres_command} -t -A -c 'SELECT DATNAME FROM pg_database WHERE datistemplate = false'`.split
+      output, _error, status = Open3.capture3("#{@postgres_command} -t -A -c 'SELECT DATNAME FROM pg_database WHERE datistemplate = false'")
+
+      raise DatabaseError unless status.success?
+
+      output.split
     end
 
     def list_all_mysql_dbs
       if @mysql_command.include? '-p'
-        puts "Please enter your MySQL/MariaDB account 'root' for: list all databases"
+        Interaction.note "Please enter your MySQL/MariaDB account 'root' for: list all databases"
       end
-      `#{@mysql_command} -B -N -e 'show databases'`.split
+      output, _error, status = Open3.capture3("#{@mysql_command} -B -N -e 'show databases'")
+
+      raise DatabaseError unless status.success?
+
+      output.split
     end
 
     def clean_mysql
@@ -186,7 +202,7 @@ module Geordi
       return if deletable_dbs.nil?
       deletable_dbs.each do |db|
         if @mysql_command.include? '-p'
-          puts "Please enter your MySQL/MariaDB account 'root' for: DROP DATABASE #{db}"
+          Interaction.note "Please enter your MySQL/MariaDB account 'root' for: DROP DATABASE #{db}"
         else
           puts "Dropping MySQL/MariaDB database #{db}"
         end
@@ -195,7 +211,7 @@ module Geordi
     end
 
     def clean_postgres
-      Interaction.announce 'Checking for Postgres databases'
+      Interaction.announce 'Checking for PostgreSQL databases'
       database_list = list_all_dbs('postgres')
       deletable_dbs = confirm_deletion('postgres', database_list)
       return if deletable_dbs.nil?
@@ -234,7 +250,7 @@ module Geordi
           proceed = '' # reset user selection
           edit_allowlist dbtype
         when 'n'
-          Interaction.success 'Nothing deleted.'
+          Interaction.note 'Nothing deleted.'
           return []
         when 'y'
           return deletable_dbs
@@ -277,5 +293,23 @@ module Geordi
       deletable_dbs.delete_if { |db| db.start_with? '#' }
     end
     private :filter_allowlisted
+
+    def legacy_allowlist_directory
+      @legacy_allowlist_directory ||= File.join(@base_directory, '.config', 'geordi', 'whitelists')
+    end
+
+    def move_allowlist_files
+      %w[postgres mysql].each do |dbtype|
+        new_path = allowlist_fname(dbtype)
+        next if File.exist?(new_path)
+
+        legacy_path = File.join(legacy_allowlist_directory, dbtype) << '.txt'
+        FileUtils.mv(legacy_path, new_path)
+
+        if Dir.exist?(legacy_allowlist_directory) && Dir.empty?(legacy_allowlist_directory)
+          Dir.delete(legacy_allowlist_directory)
+        end
+      end
+    end
   end
 end
