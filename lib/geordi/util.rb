@@ -198,7 +198,7 @@ module Geordi
         version_string = if testing?
           ENV['GEORDI_TESTING_IRB_VERSION']
         else
-          `irb --version`[/irb (\d\.\d\.\d)/, 1]
+          `irb --version`[/irb (\d+\.\d+\.\d+)/, 1]
         end
 
         Gem::Version.new(version_string)
