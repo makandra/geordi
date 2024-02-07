@@ -149,7 +149,7 @@ Feature: The dump command
     When I run `geordi dump -l tmp/production.dump`
     Then the output should contain "Sourcing dump into the test db"
       And the output should contain "Source file: tmp/production.dump"
-      And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test tmp/production.dump"
+      And the output should contain "Util.run! dropdb --if-exists test && createdb test && pg_restore --no-owner --no-acl --dbname=test tmp/production.dump"
       And the output should contain "Your test database has now the data of tmp/production.dump."
     But the output should not contain "Dump file removed"
       And the output should not contain "Util.run! rm"
@@ -171,7 +171,7 @@ Feature: The dump command
       When I run `geordi dump -l tmp/production.dump -d other`
       Then the output should contain "Sourcing dump into the test-other db"
         And the output should contain "Source file: tmp/production.dump"
-        And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test-other tmp/production.dump"
+        And the output should contain "Util.run! dropdb --if-exists test-other && createdb test-other && pg_restore --no-owner --no-acl --dbname=test-other tmp/production.dump"
       But the output should not contain "Sourcing dump into the test-primary db"
 
   Scenario: Sourcing a dump into one of multiple databases without specifying a db
@@ -189,5 +189,5 @@ Feature: The dump command
       When I run `geordi dump -l tmp/production.dump`
       Then the output should contain "Sourcing dump into the test-primary db"
         And the output should contain "Source file: tmp/production.dump"
-        And the output should contain "Util.run! pg_restore --no-owner --clean --no-acl --dbname=test-primary tmp/production.dump"
+        And the output should contain "Util.run! dropdb --if-exists test-primary && createdb test-primary && pg_restore --no-owner --no-acl --dbname=test-primary tmp/production.dump"
       But the output should not contain "Sourcing dump into the test-other db"

@@ -62,12 +62,16 @@ module Geordi
 
     def postgresql_command
       ENV['PGPASSWORD'] = config['password']
-      command = 'pg_restore --no-owner --clean --no-acl'
-      command << ' --username=' << config['username'].to_s if config['username']
-      command << ' --port=' << config['port'].to_s if config['port']
-      command << ' --host=' << config['host'].to_s if config['host']
-      command << ' --dbname=' << config['database'].to_s
-      command << ' ' << dump_file
+      drop_command = 'dropdb --if-exists ' << config['database'].to_s
+      create_command = 'createdb ' << config['database'].to_s
+      restore_command = 'pg_restore --no-owner --no-acl'
+      restore_command << ' --username=' << config['username'].to_s if config['username']
+      restore_command << ' --port=' << config['port'].to_s if config['port']
+      restore_command << ' --host=' << config['host'].to_s if config['host']
+      restore_command << ' --dbname=' << config['database'].to_s
+      restore_command << ' ' << dump_file
+
+      drop_command + ' && ' + create_command + ' && ' + restore_command
     end
 
     def dump_file

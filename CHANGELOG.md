@@ -9,7 +9,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 * fix detection of IRB version
 
 ### Breaking changes
-
+* `dump`-command: Drop and recreate the database before restoring a postgres dump
 
 # 9.6.1 2023-09-22
 
