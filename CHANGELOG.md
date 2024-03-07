@@ -6,11 +6,23 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* fix detection of IRB version
+
+### Breaking changes
+
+
+# 10.0.0 2024-03-07
+
+### Compatible changes
 * `console` command: IRB flags stored in the global config file are automatically passed on to IRB
+* `console` command: Improve interrupt handling in local Rails console
+* `rspec` and `cucumber` commands: Do not fail or exit if chromedriver update fails
+* Fix detection of IRB version
+* Add new hints to 'Did you know'
 
 ### Breaking changes
 * `dump`-command: Drop and recreate the database before restoring a postgres dump
+* `drop_databases`-command: Use local user per default to connect to database
+
 
 # 9.6.1 2023-09-22
 

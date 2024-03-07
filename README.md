@@ -174,9 +174,9 @@ Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
 
 **Options**
-- `-P, [--postgres-only], [--no-postgres-only]`: Only clean Postgres
+- `-P, [--postgres-only], [--no-postgres-only]`: Only clean PostgreSQL
 - `-M, [--mysql-only], [--no-mysql-only]`: Only clean MySQL/MariaDB
-- `[--postgres=PORT_OR_SOCKET]`: Use Postgres port or socket
+- `[--postgres=PORT_OR_SOCKET]`: Use PostgreSQL port or socket
 - `[--mysql=PORT_OR_SOCKET]`: Use MySQL/MariaDB port or socket
 - `-S, [--sudo], [--no-sudo]`: Access databases as root
 
