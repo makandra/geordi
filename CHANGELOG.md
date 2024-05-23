@@ -9,6 +9,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Breaking changes
 
+# 10.0.1 2024-05-23
+
+### Compatible changes
+* `dump`-command: The dropdb and createdb commands now also mind the configuration in the database.yml.
 
 # 10.0.0 2024-03-07
 

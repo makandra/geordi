@@ -61,15 +61,17 @@ module Geordi
     alias_method :mysql2_command, :mysql_command
 
     def postgresql_command
+      shared_command_arguments = ''
+      shared_command_arguments << ' --username=' << config['username'].to_s if config['username']
+      shared_command_arguments << ' --port=' << config['port'].to_s if config['port']
+      shared_command_arguments << ' --host=' << config['host'].to_s if config['host']
+
       ENV['PGPASSWORD'] = config['password']
-      drop_command = 'dropdb --if-exists ' << config['database'].to_s
-      create_command = 'createdb ' << config['database'].to_s
-      restore_command = 'pg_restore --no-owner --no-acl'
-      restore_command << ' --username=' << config['username'].to_s if config['username']
-      restore_command << ' --port=' << config['port'].to_s if config['port']
-      restore_command << ' --host=' << config['host'].to_s if config['host']
-      restore_command << ' --dbname=' << config['database'].to_s
-      restore_command << ' ' << dump_file
+      database_name = config['database'].to_s
+
+      drop_command = "dropdb --if-exists#{shared_command_arguments} #{database_name}"
+      create_command = "createdb#{shared_command_arguments} #{database_name}"
+      restore_command = "pg_restore --no-owner --no-acl#{shared_command_arguments} --dbname=#{database_name} #{dump_file}"
 
       drop_command + ' && ' + create_command + ' && ' + restore_command
     end

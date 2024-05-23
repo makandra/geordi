@@ -144,12 +144,14 @@ Feature: The dump command
       development:
         database: test
         adapter: postgresql
+        username: db_user
+        host: db_host
       """
 
     When I run `geordi dump -l tmp/production.dump`
     Then the output should contain "Sourcing dump into the test db"
       And the output should contain "Source file: tmp/production.dump"
-      And the output should contain "Util.run! dropdb --if-exists test && createdb test && pg_restore --no-owner --no-acl --dbname=test tmp/production.dump"
+      And the output should contain "Util.run! dropdb --if-exists --username=db_user --host=db_host test && createdb --username=db_user --host=db_host test && pg_restore --no-owner --no-acl --username=db_user --host=db_host --dbname=test tmp/production.dump"
       And the output should contain "Your test database has now the data of tmp/production.dump."
     But the output should not contain "Dump file removed"
       And the output should not contain "Util.run! rm"
