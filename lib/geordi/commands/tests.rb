@@ -14,14 +14,13 @@ def tests(*args)
 
     if args.empty?
       Interaction.fail error_message
-    elsif args.first.start_with? 'spec'
-      invoke 'rspec', args, opts
-    elsif args.first.start_with? 'features'
-      invoke 'cucumber', args, opts
     else
-      Interaction.fail error_message
-    end
+      rspec_paths = args.select { |a| Util.rspec_path?(a) }
+      cucumber_paths = args.select { |a| Util.cucumber_path?(a) }
 
+      invoke('rspec', rspec_paths, opts) if rspec_paths.any?
+      invoke('cucumber', cucumber_paths, opts) if cucumber_paths.any?
+    end
   else
     rake_result = invoke_geordi 'with_rake'
 
