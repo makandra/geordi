@@ -209,6 +209,14 @@ module Geordi
         version_string = testing? ? ENV['GEORDI_TESTING_RUBY_VERSION'] : RUBY_VERSION
         Gem::Version.new(version_string)
       end
+
+      def cucumber_path?(path)
+        %r{(^|\/)features|\.feature($|:)}.match?(path)
+      end
+
+      def rspec_path?(path)
+        %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
+      end
     end
   end
 end

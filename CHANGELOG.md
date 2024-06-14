@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+* `tests`-command: When paths to cucumber and rspec tests are passed as arguments both cucumber and rspec are run.
+
 ### Breaking changes
 
 # 10.0.1 2024-05-23

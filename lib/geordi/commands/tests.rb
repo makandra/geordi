@@ -3,8 +3,8 @@ long_desc <<-LONGDESC
 When running `geordi tests` without any arguments, all unit tests, rspec specs
 and cucumber features will be run.
 
-When passing arguments, Geordi will forward them to either `rspec` or `cucumber`,
-depending on what the first argument indicates.
+When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`. 
+All rspec specs and cucumber features matching the given paths will be run.
 LONGDESC
 
 def tests(*args)
@@ -14,14 +14,13 @@ def tests(*args)
 
     if args.empty?
       Interaction.fail error_message
-    elsif args.first.start_with? 'spec'
-      invoke 'rspec', args, opts
-    elsif args.first.start_with? 'features'
-      invoke 'cucumber', args, opts
     else
-      Interaction.fail error_message
-    end
+      rspec_paths = args.select { |a| Util.rspec_path?(a) }
+      cucumber_paths = args.select { |a| Util.cucumber_path?(a) }
 
+      invoke('rspec', rspec_paths, opts) if rspec_paths.any?
+      invoke('cucumber', cucumber_paths, opts) if cucumber_paths.any?
+    end
   else
     rake_result = invoke_geordi 'with_rake'
 

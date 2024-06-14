@@ -336,8 +336,8 @@ Run all employed tests.
 When running `geordi tests` without any arguments, all unit tests, rspec specs
 and cucumber features will be run.
 
-When passing arguments, Geordi will forward them to either `rspec` or `cucumber`,
-depending on what the first argument indicates.
+When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`. 
+All rspec specs and cucumber features matching the given paths will be run.
 
 
 ### `geordi unit`
