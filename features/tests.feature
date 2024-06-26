@@ -16,7 +16,7 @@ Feature: The tests command
 
     When I run `geordi tests spec/some_spec.rb`
     Then the output should contain "# Running specs"
-      And the output should contain "Only: spec/some_spec.rb"
+      And the output should contain "> Only: spec/some_spec.rb"
 
 
   Scenario: Run only certain features
@@ -33,7 +33,7 @@ Feature: The tests command
 
     When I run `geordi tests spec`
     Then the output should contain "# Running specs"
-      And the output should contain "Only: spec"
+      And the output should contain "> Only: spec"
 
     When I run `geordi tests features`
     Then the output from "geordi tests features" should contain "# Running features"
@@ -47,7 +47,7 @@ Feature: The tests command
 
   When I run `geordi tests spec/some_spec.rb features/some.feature`
     Then the output should contain "# Running specs"
-      And the output should contain "Only: spec/some_spec.rb"
+      And the output should contain "> Only: spec/some_spec.rb"
       And the output should contain "> Only: features/some.feature"
 
 
