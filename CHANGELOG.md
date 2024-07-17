@@ -7,14 +7,21 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+### Breaking changes
+
+
+# 10.1.0 2024-07-17
+
+### Compatible changes
+
 * `tests`-command: When paths to cucumber and rspec tests are passed as arguments both cucumber and rspec are run.
 
-### Breaking changes
 
 # 10.0.1 2024-05-23
 
 ### Compatible changes
 * `dump`-command: The dropdb and createdb commands now also mind the configuration in the database.yml.
+
 
 # 10.0.0 2024-03-07
 
