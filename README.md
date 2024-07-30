@@ -343,6 +343,11 @@ All rspec specs and cucumber features matching the given paths will be run.
 ### `geordi unit`
 Run Test::Unit.
 
+Supports `parallel_tests`, binstubs and `bundle exec`.
+
+In order to limit processes in a parallel run, you can set an environment
+variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi unit`
+
 
 ### `geordi update`
 Bring a project up to date.
