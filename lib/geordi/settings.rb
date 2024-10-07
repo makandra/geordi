@@ -62,7 +62,7 @@ module Geordi
     end
 
     def linear_team_ids
-      local_team_ids = @local_settings['linear_team_ids'] || pt_project_ids_old
+      local_team_ids = @local_settings['linear_team_ids']
       global_team_ids = @global_settings['linear_team_ids']
 
       local_team_ids = array_wrap_team_ids(local_team_ids)
@@ -132,21 +132,6 @@ module Geordi
       end
     end
 
-    # deprecated
-    def gitpt_api_key_old
-      file_path = File.join(ENV['HOME'], '.gitpt')
-      if File.exist?(file_path) && !Util.testing?
-        token = YAML.load_file(file_path).fetch :token
-        self.linear_api_key = token
-
-        Geordi::Interaction.warn "The ~/.gitpt file is deprecated."
-        Geordi::Interaction.note "The contained setting has been moved to ~/.config/geordi/global.yml."
-        Geordi::Interaction.note "If you don't need to work with an older version of geordi you can delete ~/.gitpt now."
-
-        token
-      end
-    end
-
     def inquire_linear_api_key
       Geordi::Interaction.warn 'Your settings are missing or invalid.'
       Geordi::Interaction.warn "Please configure your Linear access."
@@ -155,21 +140,6 @@ module Geordi
       puts
 
       token
-    end
-
-    # deprecated
-    def pt_project_ids_old
-      if File.exist?('.pt_project_id')
-        project_ids = File.read('.pt_project_id')
-        puts # Make sure to start on a new line (e.g. when invoked after a #print)
-        Geordi::Interaction.warn "The usage of the .pt_project_id file is deprecated."
-        Geordi::Interaction.note(<<~INSTRUCTIONS)
-          Please remove this file from your project and add or extend the .geordi.yml file with the following content:
-            pivotal_tracker_project_ids: #{project_ids}
-        INSTRUCTIONS
-
-        project_ids
-      end
     end
 
     def array_wrap_team_ids(team_ids)
