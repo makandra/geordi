@@ -1,6 +1,7 @@
 require 'highline'
 require 'net/http'
 require 'json'
+require 'active_support/core_ext/object/blank'
 
 module Geordi
   class Gitlinear
@@ -47,7 +48,7 @@ module Geordi
       branch_name = local_branches.find { |branch_name| branch_name == new_branch_name }
       branch_name ||= local_branches.find { |branch_name| branch_name.include? issue['identifier'].to_s }
 
-      if branch_name&.present?
+      if branch_name.present?
         checkout_branch branch_name, new_branch: false
       else
         checkout_branch new_branch_name, new_branch: true, from_master: from_master
@@ -112,7 +113,12 @@ module Geordi
 
     def applicable_issues
       if Util.testing?
-        return ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? [] : [OpenStruct.new(id: 12, name: 'Test Issue', url: 'https://www.issue-url.com')]
+        settings.linear_api_key
+        return ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? [] : [{
+                                                                          'identifier' => '12',
+                                                                          'title' => 'Test Issue',
+                                                                          'url' => 'https://www.issue-url.com'
+                                                                        }]
       end
 
       team_ids = settings.linear_team_ids

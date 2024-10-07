@@ -1,6 +1,6 @@
-Feature: Check out a feature branch based on a story from Pivotal Tracker
+Feature: Check out a feature branch based on an issue from Linear
   Background:
-    Given a file named "tmp/global_settings.yml" with "pivotal_tracker_api_key: my_api_key"
+    Given a file named "tmp/global_settings.yml" with "linear_api_key: my_api_key"
 
   Scenario: Checkout a new branch with geordi branch
     Given my username from git config is "Max Musterman"
@@ -9,7 +9,7 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     When I run `geordi branch` interactively
       # I skip the initials prompt
       And I type ""
-    Then the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
+    Then the output should contain "Util.run! git, checkout, -b, mm/test-issue-12"
 
 
   Scenario: Checkout a new branch with geordi branch from master
@@ -20,7 +20,7 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
       # I skip the initials prompt
       And I type ""
     Then the output should contain "Util.run! git, checkout, master"
-      And the output should contain "Util.run! git, checkout, -b, mm/test-story-12"
+      And the output should contain "Util.run! git, checkout, -b, mm/test-issue-12"
 
 
   Scenario: Checkout a new branch with custom initials
@@ -29,19 +29,19 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
     When I run `geordi branch` interactively
       # I enter my custom initials
       And I type "ab"
-    Then the output should contain "Util.run! git, checkout, -b, ab/test-story-12"
+    Then the output should contain "Util.run! git, checkout, -b, ab/test-issue-12"
       And the file "tmp/global_settings.yml" should contain "git_initials: ab"
 
 
   Scenario: Checkout an existing branch with geordi branch
     Given my username from git config is "Max Musterman"
-      And my local git branches are: master, mm/test-story-12
+      And my local git branches are: master, mm/test-issue-12
 
     When I run `geordi branch` interactively
       # I skip the initials prompt
       And I type ""
     Then the output should not contain "Util.run! git, checkout, master"
-      And the output should contain "Util.run! git, checkout, mm/test-story-12"
+      And the output should contain "Util.run! git, checkout, mm/test-issue-12"
 
 
   Scenario: The interaction fails if the local git branches could not be determined
@@ -58,4 +58,4 @@ Feature: Check out a feature branch based on a story from Pivotal Tracker
 
     When I run `geordi branch` interactively
     Then the output should contain "Using Git user initials from ./tmp/global_settings.yml"
-      And the output should contain "Util.run! git, checkout, -b, jd/test-story-12"
+      And the output should contain "Util.run! git, checkout, -b, jd/test-issue-12"
