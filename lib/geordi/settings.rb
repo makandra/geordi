@@ -10,14 +10,13 @@ module Geordi
 
     ALLOWED_GLOBAL_SETTINGS = %w[
       auto_update_chromedriver
-      git_initials
       hint_probability
       irb_flags
-      pivotal_tracker_api_key
-      pivotal_tracker_project_ids
+      linear_api_key
+      linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ pivotal_tracker_project_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids ].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
@@ -30,26 +29,20 @@ module Geordi
       @global_settings['irb_flags']
     end
 
-    def pivotal_tracker_api_key
-      @global_settings['pivotal_tracker_api_key'] || gitpt_api_key_old || inquire_pt_api_key
+    def linear_api_key
+      @global_settings['linear_api_key'] || begin
+        Interaction.warn 'Linear API key not found'
+        inquire_linear_api_key
+      end
     end
 
-    def pivotal_tracker_api_key=(value)
-      @global_settings['pivotal_tracker_api_key'] = value
+    def linear_api_key=(value)
+      @global_settings['linear_api_key'] = value
       save_global_settings
     end
 
     def hint_probability
       @global_settings['hint_probability']
-    end
-
-    def git_initials
-      @global_settings['git_initials']
-    end
-
-    def git_initials=(value)
-      @global_settings['git_initials'] = value
-      save_global_settings
     end
 
     def auto_update_chromedriver
@@ -61,30 +54,21 @@ module Geordi
       save_global_settings
     end
 
-    def pivotal_tracker_project_ids
-      local_project_ids = @local_settings['pivotal_tracker_project_ids'] || pt_project_ids_old
-      global_project_ids = @global_settings['pivotal_tracker_project_ids']
+    def linear_team_ids
+      local_team_ids = normalize_team_ids(@local_settings['linear_team_ids'])
+      global_team_ids = normalize_team_ids(@global_settings['linear_team_ids'])
 
-      local_project_ids = array_wrap_project_ids(local_project_ids)
-      global_project_ids = array_wrap_project_ids(global_project_ids)
+      team_ids = local_team_ids | global_team_ids
 
-      project_ids = local_project_ids | global_project_ids
-
-      if project_ids.empty?
-        puts
-        Geordi::Interaction.warn "Sorry, I could not find a project ID in .geordi.yml :("
-        puts
-
-        puts "Please put at least one Pivotal Tracker project id into the .geordi.yml file in this directory, e.g."
-        puts
-        puts "pivotal_tracker_project_ids:"
-        puts "- 123456"
-        puts
-        puts 'You may add multiple IDs.'
+      if team_ids.empty?
+        Geordi::Interaction.warn 'No team id found.'
+        Interaction.note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
+        Interaction.note "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
+        puts 'linear_team_ids: abc-123-123-abc, def-456-456-def'
         exit 1
       end
 
-      project_ids
+      team_ids
     end
 
     private
@@ -132,54 +116,24 @@ module Geordi
       end
     end
 
-    # deprecated
-    def gitpt_api_key_old
-      file_path = File.join(ENV['HOME'], '.gitpt')
-      if File.exist?(file_path) && !Util.testing?
-        token = YAML.load_file(file_path).fetch :token
-        self.pivotal_tracker_api_key = token
-
-        Geordi::Interaction.warn "The ~/.gitpt file is deprecated."
-        Geordi::Interaction.note "The contained setting has been moved to ~/.config/geordi/global.yml."
-        Geordi::Interaction.note "If you don't need to work with an older version of geordi you can delete ~/.gitpt now."
-
-        token
-      end
-    end
-
-    def inquire_pt_api_key
-      Geordi::Interaction.warn 'Your settings are missing or invalid.'
-      Geordi::Interaction.warn "Please configure your Pivotal Tracker access."
-      token = Geordi::Interaction.prompt('Your API key:').to_s # Just be sure
-      self.pivotal_tracker_api_key = token
+    def inquire_linear_api_key
+      Geordi::Interaction.note 'Create an API key here: https://linear.app/makandra/settings/api'
+      token = Geordi::Interaction.prompt("Please enter the API key:")
+      self.linear_api_key = token
+      Interaction.note("API key stored in #{GLOBAL_SETTINGS_FILE_NAME}.")
       puts
 
       token
     end
 
-    # deprecated
-    def pt_project_ids_old
-      if File.exist?('.pt_project_id')
-        project_ids = File.read('.pt_project_id')
-        puts # Make sure to start on a new line (e.g. when invoked after a #print)
-        Geordi::Interaction.warn "The usage of the .pt_project_id file is deprecated."
-        Geordi::Interaction.note(<<~INSTRUCTIONS)
-          Please remove this file from your project and add or extend the .geordi.yml file with the following content:
-            pivotal_tracker_project_ids: #{project_ids}
-        INSTRUCTIONS
-
-        project_ids
-      end
-    end
-
-    def array_wrap_project_ids(project_ids)
-      case project_ids
+    def normalize_team_ids(team_ids)
+      case team_ids
       when Array
-        project_ids
+        team_ids
       when String
-        project_ids.split(/[\s]+/).map(&:to_i)
+        team_ids.split(/[\s,;]+/)
       when Integer
-        [project_ids]
+        [team_ids]
       else
         []
       end

@@ -14,7 +14,7 @@ RSpec.describe Geordi::Hint do
 
       expect {subject.did_you_know(array)}.to output(/Did you know\? (`geordi branch( -m)?`|Custom message)/).to_stdout
       expect(subject.did_you_know(array)).to eq([
-        'Did you know? `geordi branch` can check out a feature branch based on a story from Pivotal Tracker.',
+        'Did you know? `geordi branch` can check out a feature branch based on a Linear issue.',
         'Did you know? `geordi branch -m` can branch from master instead of the current branch.',
         'Did you know? Custom message',
       ])
