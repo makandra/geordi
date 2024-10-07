@@ -13,11 +13,11 @@ module Geordi
       git_initials
       hint_probability
       irb_flags
-      pivotal_tracker_api_key
-      pivotal_tracker_project_ids
+      linear_api_key
+      linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ pivotal_tracker_project_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids ].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
@@ -30,12 +30,12 @@ module Geordi
       @global_settings['irb_flags']
     end
 
-    def pivotal_tracker_api_key
-      @global_settings['pivotal_tracker_api_key'] || gitpt_api_key_old || inquire_pt_api_key
+    def linear_api_key
+      @global_settings['linear_api_key'] || inquire_linear_api_key
     end
 
-    def pivotal_tracker_api_key=(value)
-      @global_settings['pivotal_tracker_api_key'] = value
+    def linear_api_key=(value)
+      @global_settings['linear_api_key'] = value
       save_global_settings
     end
 
@@ -61,30 +61,30 @@ module Geordi
       save_global_settings
     end
 
-    def pivotal_tracker_project_ids
-      local_project_ids = @local_settings['pivotal_tracker_project_ids'] || pt_project_ids_old
-      global_project_ids = @global_settings['pivotal_tracker_project_ids']
+    def linear_team_ids
+      local_team_ids = @local_settings['linear_team_ids'] || pt_project_ids_old
+      global_team_ids = @global_settings['linear_team_ids']
 
-      local_project_ids = array_wrap_project_ids(local_project_ids)
-      global_project_ids = array_wrap_project_ids(global_project_ids)
+      local_team_ids = array_wrap_team_ids(local_team_ids)
+      global_team_ids = array_wrap_team_ids(global_team_ids)
 
-      project_ids = local_project_ids | global_project_ids
+      team_ids = local_team_ids | global_team_ids
 
-      if project_ids.empty?
+      if team_ids.empty?
         puts
-        Geordi::Interaction.warn "Sorry, I could not find a project ID in .geordi.yml :("
+        Geordi::Interaction.warn "Sorry, I could not find a team ID in .geordi.yml :("
         puts
 
-        puts "Please put at least one Pivotal Tracker project id into the .geordi.yml file in this directory, e.g."
+        puts "Please put at least one Linear team id into the .geordi.yml file in this directory, e.g."
         puts
-        puts "pivotal_tracker_project_ids:"
+        puts "linear_team_ids:"
         puts "- 123456"
         puts
         puts 'You may add multiple IDs.'
         exit 1
       end
 
-      project_ids
+      team_ids
     end
 
     private
@@ -137,7 +137,7 @@ module Geordi
       file_path = File.join(ENV['HOME'], '.gitpt')
       if File.exist?(file_path) && !Util.testing?
         token = YAML.load_file(file_path).fetch :token
-        self.pivotal_tracker_api_key = token
+        self.linear_api_key = token
 
         Geordi::Interaction.warn "The ~/.gitpt file is deprecated."
         Geordi::Interaction.note "The contained setting has been moved to ~/.config/geordi/global.yml."
@@ -147,11 +147,11 @@ module Geordi
       end
     end
 
-    def inquire_pt_api_key
+    def inquire_linear_api_key
       Geordi::Interaction.warn 'Your settings are missing or invalid.'
-      Geordi::Interaction.warn "Please configure your Pivotal Tracker access."
+      Geordi::Interaction.warn "Please configure your Linear access."
       token = Geordi::Interaction.prompt('Your API key:').to_s # Just be sure
-      self.pivotal_tracker_api_key = token
+      self.linear_api_key = token
       puts
 
       token
@@ -172,14 +172,14 @@ module Geordi
       end
     end
 
-    def array_wrap_project_ids(project_ids)
-      case project_ids
+    def array_wrap_team_ids(team_ids)
+      case team_ids
       when Array
-        project_ids
+        team_ids
       when String
-        project_ids.split(/[\s]+/).map(&:to_i)
+        team_ids.split(/[\s]+/).map(&:to_i)
       when Integer
-        [project_ids]
+        [team_ids]
       else
         []
       end
