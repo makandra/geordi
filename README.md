@@ -24,11 +24,11 @@ Commands will occasionally print "did you know" hints of other Geordi features.
 You can always run `geordi help <command>` to quickly look up command help.
 
 ### `geordi branch`
-Check out a feature branch based on a story from Pivotal Tracker.
+Check out a feature branch based on an issue from Linear.
 
 Example: `geordi branch`
 
-On the first execution we ask for your Pivotal Tracker API token and for your Git user initials. Both will be
+On the first execution we ask for your Linear API token and for your Git user initials. Both will be
 stored in `~/.config/geordi/global.yml`.
 
 **Options**
@@ -59,13 +59,13 @@ Remove unneeded files from the current directory.
 
 
 ### `geordi commit`
-Commit using a story title from Pivotal Tracker.
+Commit using an issue title from Linear.
 
 Example: `geordi commit`
 
 Any extra arguments are forwarded to `git commit -m <message>`.
 
-On the first execution we ask for your Pivotal Tracker API token. It will be
+On the first execution we ask for your Linear API token. It will be
 stored in `~/.config/geordi/global.yml`.
 
 
