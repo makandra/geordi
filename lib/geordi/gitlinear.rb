@@ -30,8 +30,6 @@ module Geordi
     def run_branch(from_master: false)
       issue = choose_issue || Interaction.fail('No issue selected.')
 
-      normalized_issue_name = normalize_string(issue['title'])
-
       branch_list_string = if Util.testing?
                              ENV['GEORDI_TESTING_GIT_BRANCHES'] || ''
                            else
@@ -42,7 +40,8 @@ module Geordi
         Interaction.fail 'Could not determine local git branches.'
       end
 
-      new_branch_name = "#{git_user_initials}/#{normalized_issue_name}-#{issue['identifier']}"
+      new_branch_name = "#{issue['branchName']}"
+
       local_branches = branch_list_string.split("\n")
 
       branch_name = local_branches.find { |branch_name| branch_name == new_branch_name }
@@ -117,7 +116,8 @@ module Geordi
         return ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? [] : [{
                                                                           'identifier' => '12',
                                                                           'title' => 'Test Issue',
-                                                                          'url' => 'https://www.issue-url.com'
+                                                                          'url' => 'https://www.issue-url.com',
+                                                                          'branchName' => 'testuser/12-test-issue'
                                                                         }]
       end
 
@@ -141,6 +141,7 @@ module Geordi
               title
               identifier
               url
+              branchName
               assignee {
                 name
                 isMe
@@ -193,44 +194,6 @@ module Geordi
         Util.run! ['git', 'checkout', '-b', name]
       else
         Util.run! ['git', 'checkout', name]
-      end
-    end
-
-    def normalize_string(name)
-      name.gsub!('ä', 'ae')
-      name.gsub!('ö', 'oe')
-      name.gsub!('ü', 'ue')
-      name.gsub!('ß', 'ss')
-      name.tr!('^A-Za-z0-9_ ', '')
-      name.squeeze! ' '
-      name.gsub!(' ', '-')
-      name.downcase!
-      name
-    end
-
-    def git_user_initials
-      if settings.git_initials
-        Interaction.note "Using Git user initials from #{Settings::GLOBAL_SETTINGS_FILE_NAME}"
-        return settings.git_initials
-      end
-
-      stdout_str = if Util.testing?
-                     ENV['GEORDI_TESTING_GIT_USERNAME']
-                   else
-                     `git config user.name`
-                   end
-
-      git_user_initials = unless stdout_str.nil?
-                            stdout_str.strip.split(' ').map(&:chars).map(&:first).join.downcase
-                          end
-
-      git_user_initials = Interaction.prompt 'Enter your initials:', git_user_initials
-
-      if git_user_initials.nil?
-        Interaction.fail('Could not determine the git user\'s initials.')
-      else
-        settings.git_initials = git_user_initials
-        git_user_initials
       end
     end
 

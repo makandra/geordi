@@ -10,7 +10,6 @@ module Geordi
 
     ALLOWED_GLOBAL_SETTINGS = %w[
       auto_update_chromedriver
-      git_initials
       hint_probability
       irb_flags
       linear_api_key
@@ -41,15 +40,6 @@ module Geordi
 
     def hint_probability
       @global_settings['hint_probability']
-    end
-
-    def git_initials
-      @global_settings['git_initials']
-    end
-
-    def git_initials=(value)
-      @global_settings['git_initials'] = value
-      save_global_settings
     end
 
     def auto_update_chromedriver

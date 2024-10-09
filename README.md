@@ -28,7 +28,7 @@ Check out a feature branch based on an issue from Linear.
 
 Example: `geordi branch`
 
-On the first execution we ask for your Linear API token and for your Git user initials. Both will be
+On the first execution we ask for your Linear API token. It will be
 stored in `~/.config/geordi/global.yml`.
 
 **Options**
