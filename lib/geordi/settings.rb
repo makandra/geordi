@@ -52,11 +52,8 @@ module Geordi
     end
 
     def linear_team_ids
-      local_team_ids = @local_settings['linear_team_ids']
-      global_team_ids = @global_settings['linear_team_ids']
-
-      local_team_ids = array_wrap_team_ids(local_team_ids)
-      global_team_ids = array_wrap_team_ids(global_team_ids)
+      local_team_ids =  normalize_team_ids(@local_settings['linear_team_ids'])
+      global_team_ids =  normalize_team_ids(@global_settings['linear_team_ids'])
 
       team_ids = local_team_ids | global_team_ids
 
@@ -132,7 +129,7 @@ module Geordi
       token
     end
 
-    def array_wrap_team_ids(team_ids)
+    def normalize_team_ids(team_ids)
       case team_ids
       when Array
         team_ids

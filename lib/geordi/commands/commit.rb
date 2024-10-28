@@ -10,7 +10,7 @@ LONGDESC
 
 def commit(*git_args)
   require 'geordi/gitlinear'
-  Gitlinear.new.run_commit(git_args)
+  Gitlinear.new.commit(git_args)
 
   Hint.did_you_know [
     :branch,

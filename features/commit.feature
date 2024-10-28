@@ -4,7 +4,7 @@ Feature: Creating a git commit from a Linear issue
 
 
   Scenario: If there are no issues, the command fails
-    Given there are no issues
+    Given there are no Linear issues
 
     When I run `geordi commit`
     Then the output should contain "No issues to offer."
@@ -16,7 +16,7 @@ Feature: Creating a git commit from a Linear issue
     When I run `geordi commit` interactively
       # No optional message
     And I type ""
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [12] Test Issue, -m, Issue: https://www.issue-url.com"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, -m, Issue: https://www.issue-url.com"
 
 
   Scenario: Extra arguments are forwarded to "git commit"
@@ -25,7 +25,7 @@ Feature: Creating a git commit from a Linear issue
     When I run `geordi commit --extra-option` interactively
       # No optional message
       And I type ""
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [12] Test Issue, -m, Issue: https://www.issue-url.com, --extra-option"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, -m, Issue: https://www.issue-url.com, --extra-option"
 
 
   Scenario: With no staged changes, a warning is printed
@@ -47,4 +47,4 @@ Feature: Creating a git commit from a Linear issue
 
     When I run `geordi commit` interactively
       And I type "optional message"
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [12] Test Issue - optional message"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue - optional message"

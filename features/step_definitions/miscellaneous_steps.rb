@@ -18,7 +18,7 @@ Given /^my local git branches are: (.*)$/ do |branches|
   ENV['GEORDI_TESTING_GIT_BRANCHES'] = branches.split(", ").join("\n") + "\n"
 end
 
-Given 'there are no issues' do
+Given 'there are no Linear issues' do
   ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] = 'true'
 end
 

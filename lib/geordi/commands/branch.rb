@@ -1,4 +1,4 @@
-desc 'branch', 'Check out a feature branch based on an issue from Linear'
+desc 'branch', 'Check out a feature branch based on a Linear issue'
 long_desc <<-LONGDESC
 Example: `geordi branch`
 
@@ -10,7 +10,7 @@ option :from_master, aliases: '-m', type: :boolean, desc: 'Branch from master in
 
 def branch
   require 'geordi/gitlinear'
-  Gitlinear.new.run_branch(from_master: options.from_master)
+  Gitlinear.new.branch(from_master: options.from_master)
 
   Hint.did_you_know [
     :commit,
