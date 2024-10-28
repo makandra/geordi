@@ -30,7 +30,10 @@ module Geordi
     end
 
     def linear_api_key
-      @global_settings['linear_api_key'] || inquire_linear_api_key
+      @global_settings['linear_api_key'] || begin
+                                              Interaction.warn 'Linear API key not found'
+                                              inquire_linear_api_key
+                                            end
     end
 
     def linear_api_key=(value)
@@ -58,16 +61,10 @@ module Geordi
       team_ids = local_team_ids | global_team_ids
 
       if team_ids.empty?
-        puts
-        Geordi::Interaction.warn "Sorry, I could not find a team ID in .geordi.yml :("
-        puts
-
-        puts "Please put at least one Linear team id into the .geordi.yml file in this directory, e.g."
-        puts
-        puts "linear_team_ids:"
-        puts "- 123456"
-        puts
-        puts 'You may add multiple IDs.'
+        Geordi::Interaction.warn 'No team id found.'
+        note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
+        note '"Copy model UUID". Store that team id in ./.geordi.yml:'
+        puts 'linear_team_ids: abc-123-123-abc, def-456-456-def'
         exit 1
       end
 
@@ -120,9 +117,8 @@ module Geordi
     end
 
     def inquire_linear_api_key
-      Geordi::Interaction.warn 'Your settings are missing or invalid.'
-      Geordi::Interaction.warn "Please configure your Linear access."
-      token = Geordi::Interaction.prompt('Your API key:').to_s # Just be sure
+      Geordi::Interaction.note 'Create an API key here: https://linear.app/makandra/settings/api'
+      token = Geordi::Interaction.prompt("Please enter your API key now. It will be stored in #{GLOBAL_SETTINGS_FILE_NAME}.")
       self.linear_api_key = token
       puts
 
