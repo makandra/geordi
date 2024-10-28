@@ -134,7 +134,7 @@ module Geordi
       when Array
         team_ids
       when String
-        team_ids.split(/[\s]+/).map(&:to_i)
+        team_ids.split(/[\s,;]+/)
       when Integer
         [team_ids]
       else
