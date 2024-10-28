@@ -1,7 +1,6 @@
 require 'highline'
 require 'net/http'
 require 'json'
-require 'active_support/core_ext/object/blank'
 
 module Geordi
   class Gitlinear
@@ -32,11 +31,11 @@ module Geordi
       matching_local_branch = local_branches.find { |branch_name| branch_name == issue['branchName'] }
       matching_local_branch ||= local_branches.find { |branch_name| branch_name.include? issue['identifier'].to_s }
 
-      if matching_local_branch.present?
-        Util.run! ['git', 'checkout', matching_local_branch]
-      else
+      if matching_local_branch.nil?
         Util.run! ['git', 'checkout', 'master'] if from_master
         Util.run! ['git', 'checkout', '-b', issue['branchName']]
+      else
+        Util.run! ['git', 'checkout', matching_local_branch]
       end
     end
 
