@@ -8,6 +8,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 
 ### Breaking changes
+* `geordi branch` now checks out a feature branch based on a Linear issue instead of a story from Pivotal Tracker
+* `geordi commit` now uses a Linear issue title instead of a story title from Pivotal Tracker
+
 
 
 # 10.1.0 2024-07-23
