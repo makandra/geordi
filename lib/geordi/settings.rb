@@ -31,9 +31,9 @@ module Geordi
 
     def linear_api_key
       @global_settings['linear_api_key'] || begin
-                                              Interaction.warn 'Linear API key not found'
-                                              inquire_linear_api_key
-                                            end
+        Interaction.warn 'Linear API key not found'
+        inquire_linear_api_key
+      end
     end
 
     def linear_api_key=(value)
@@ -55,15 +55,15 @@ module Geordi
     end
 
     def linear_team_ids
-      local_team_ids =  normalize_team_ids(@local_settings['linear_team_ids'])
-      global_team_ids =  normalize_team_ids(@global_settings['linear_team_ids'])
+      local_team_ids = normalize_team_ids(@local_settings['linear_team_ids'])
+      global_team_ids = normalize_team_ids(@global_settings['linear_team_ids'])
 
       team_ids = local_team_ids | global_team_ids
 
       if team_ids.empty?
         Geordi::Interaction.warn 'No team id found.'
         note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
-        note '"Copy model UUID". Store that team id in ./.geordi.yml:'
+        note "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
         puts 'linear_team_ids: abc-123-123-abc, def-456-456-def'
         exit 1
       end

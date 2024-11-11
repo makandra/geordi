@@ -46,12 +46,12 @@ module Geordi
     def local_branch_names
       @local_branch_names ||= begin
         branch_list_string = if Util.testing?
-                               ENV['GEORDI_TESTING_GIT_BRANCHES'].to_s
-                             else
-                               `git branch --format="%(refname:short)"`
-                             end
+          ENV['GEORDI_TESTING_GIT_BRANCHES'].to_s
+        else
+          `git branch --format="%(refname:short)"`
+        end
 
-        if branch_list_string.nil? || branch_list_string.strip.empty?
+        if branch_list_string.strip.empty?
           Interaction.fail 'Could not determine local Git branches.'
         end
 
@@ -169,7 +169,7 @@ module Geordi
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
 
-      query = [{ query: attributes.split.join(' '), variables: variables}].to_json
+      query = [{ query: attributes.split.join(' '), variables: variables }].to_json
 
       request = Net::HTTP::Post.new(uri.path)
       request.body = query

@@ -40,6 +40,7 @@ Feature: Creating a git commit from a Linear issue
       And I type "my_api_key"
       And I type "optional message"
     Then the file "tmp/global_settings.yml" should contain "linear_api_key: my_api_key"
+      And the output should contain "Util.run! git, commit"
 
 
   Scenario: It does not crash on an empty config file
