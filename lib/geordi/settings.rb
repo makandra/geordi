@@ -62,8 +62,8 @@ module Geordi
 
       if team_ids.empty?
         Geordi::Interaction.warn 'No team id found.'
-        note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
-        note "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
+        Interaction.note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
+        Interaction.note "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
         puts 'linear_team_ids: abc-123-123-abc, def-456-456-def'
         exit 1
       end
@@ -118,8 +118,9 @@ module Geordi
 
     def inquire_linear_api_key
       Geordi::Interaction.note 'Create an API key here: https://linear.app/makandra/settings/api'
-      token = Geordi::Interaction.prompt("Please enter your API key now. It will be stored in #{GLOBAL_SETTINGS_FILE_NAME}.")
+      token = Geordi::Interaction.prompt("Please enter the API key:")
       self.linear_api_key = token
+      Interaction.note("API key stored in #{GLOBAL_SETTINGS_FILE_NAME}.")
       puts
 
       token

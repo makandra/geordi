@@ -83,14 +83,8 @@ module Geordi
             assignee = issue['assignee']['name']
             assignee_is_me = issue['assignee']['isMe']
           else
-            assignee = "none"
+            assignee = "unassigned"
             assignee_is_me = false
-          end
-
-          if state == 'In Progress'
-            state = HighLine::GREEN + state + HighLine::RESET
-          else
-            state = HighLine::RED + state + HighLine::RESET
           end
 
           state += HighLine::BOLD if assignee_is_me
