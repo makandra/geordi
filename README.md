@@ -24,7 +24,7 @@ Commands will occasionally print "did you know" hints of other Geordi features.
 You can always run `geordi help <command>` to quickly look up command help.
 
 ### `geordi branch`
-Check out a feature branch based on an issue from Linear.
+Check out a feature branch based on a Linear issue.
 
 Example: `geordi branch`
 
