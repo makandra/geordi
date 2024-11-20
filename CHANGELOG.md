@@ -7,6 +7,10 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+* Skip `yarn install` for other package managers:
+  * Before: Check for a `package.json`
+  * After: Check for a `yarn.lock`
+
 ### Breaking changes
 
 
