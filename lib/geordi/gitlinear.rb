@@ -52,11 +52,7 @@ module Geordi
           `git branch --format="%(refname:short)"`
         end
 
-        if branch_list_string.strip.empty?
-          Interaction.fail 'Could not determine local Git branches.'
-        end
-
-        branch_list_string.split("\n")
+        branch_list_string.strip.split("\n")
       end
     end
 
@@ -65,42 +61,36 @@ module Geordi
         return dummy_issue_for_testing
       end
 
-      loading_message = 'Connecting to Linear ...'
-      print(loading_message)
       issues = fetch_linear_issues
-      reset_loading_message = "\r#{' ' * (loading_message.length + issues.length)}\r"
-
       if issues.empty?
-        print reset_loading_message
         Geordi::Interaction.fail('No issues to offer.')
       end
+      issues.sort_by! { |i| -i.dig('state', 'position') }
 
       highline.choose do |menu|
-        menu.header = 'Choose an issue'
+        max_label_length = 60
+        menu.header = 'Choose a started issue (ordered by state)'
 
         issues.each do |issue|
+          id = issue['identifier']
+          title = issue['title']
           state = issue['state']['name']
-          if issue['assignee']
-            assignee = issue['assignee']['name']
-            assignee_is_me = issue['assignee']['isMe']
-          else
-            assignee = "unassigned"
-            assignee_is_me = false
-          end
+          assignee = issue.dig('assignee', 'displayName') || 'unassigned'
 
-          state += HighLine::BOLD if assignee_is_me
-
-          label = "(#{assignee}, #{state}) #{issue['title']}"
-          label = bold(label) if assignee_is_me
+          label = "[#{id}] #{title}"
+          label = "#{label[0..(max_label_length - 5)]} ..." if label.length > max_label_length
+          label = HighLine::BLUE + HighLine::BOLD + label + HighLine::RESET if issue.dig('assignee', 'isMe')
+          label = "#{label} (#{assignee} / #{state})"
 
           menu.choice(label) { return issue }
         end
 
         menu.hidden('') { Interaction.fail('No issue selected.') }
-        print reset_loading_message # Once menu is build
       end
 
-      nil # Return nothing
+      # Selecting an issue will return that issue. If we ever get here, return
+      # nothing
+      nil
     end
 
     def dummy_issue_for_testing
@@ -144,11 +134,12 @@ module Geordi
               url
               branchName
               assignee {
-                name
+                displayName
                 isMe
               }
               state {
-               name
+                name
+                position
              }
             }
           }
@@ -160,7 +151,10 @@ module Geordi
 
     def query_api(attributes, variables)
       uri = URI(API_ENDPOINT)
+      loading_message = "Connecting to #{uri.host} ... "
+      clear_loading_message = "\r#{' ' * loading_message.length}\r"
 
+      print(loading_message)
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
 
@@ -173,6 +167,7 @@ module Geordi
       request['Authorization'] = settings.linear_api_key
 
       response = https.request(request)
+      print clear_loading_message
 
       parsed_response = JSON.parse(response.body)[0]
       if parsed_response.key?('errors')
@@ -182,8 +177,5 @@ module Geordi
       end
     end
 
-    def bold(string)
-      HighLine::BOLD + string + HighLine::RESET
-    end
   end
 end

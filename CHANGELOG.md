@@ -13,6 +13,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Compatible changes
 * Add support for default branches other than "master" (e.g. "main"). Will read
   this information from `origin`.
+* `geordi branch` will not fail if it can't determine local branches.
+* Improved Linear issue menu: now includes the issue id, truncates long issue
+  titles and puts metadata last
 
 
 ## 11.1.0 2024-11-20

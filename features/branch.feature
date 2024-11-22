@@ -31,8 +31,3 @@ Feature: Check out a feature branch based on an issue from Linear
 
     When I run `geordi branch`
     Then the output should contain "Util.run! git, checkout, testuser/team-123-test-issue"
-
-
-  Scenario: The command fails if local Git branches can not be determined
-    When I run `geordi branch`
-    Then the output should contain "Could not determine local Git branches"

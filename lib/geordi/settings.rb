@@ -62,8 +62,8 @@ module Geordi
 
       if team_ids.empty?
         Geordi::Interaction.warn 'No team id found.'
-        Interaction.note 'Please open a team in Linear, open the command menu with CTRL + K and choose'
-        Interaction.note "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
+        puts 'Please open a team in Linear, open the command menu with CTRL + K and choose'
+        puts "\"Copy model UUID\". Store that team id in #{LOCAL_SETTINGS_FILE_NAME}:"
         puts 'linear_team_ids: abc-123-123-abc, def-456-456-def'
         exit 1
       end
