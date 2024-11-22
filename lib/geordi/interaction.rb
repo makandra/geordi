@@ -57,6 +57,8 @@ module Geordi
       input = default if input.empty? && default
 
       agreement_regex ? !!(input =~ agreement_regex) : input
+    rescue Interrupt
+      fail 'Cancelled.'
     end
 
   end
