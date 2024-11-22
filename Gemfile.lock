@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (11.1.0)
+    geordi (11.2.0)
       thor (~> 1)
 
 GEM
@@ -119,4 +119,4 @@ DEPENDENCIES
   rspec
 
 BUNDLED WITH
-   2.3.25
+   2.3.26

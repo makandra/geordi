@@ -1,33 +1,16 @@
 desc 'security-update [STEP]', 'Support for performing security updates'
 long_desc <<-LONGDESC
 Preparation for security update: `geordi security-update`. Checks out production
-and pulls.
+and pulls, and will tell each step before performing it.
 
-After performing the update: `geordi security-update finish`. Switches branches,
-pulls, pushes and deploys as required by our workflow.
-
-This command tells what it will do before it does it. In detail:
-
-1. Ask user if tests are green
-
-2. Push production
-
-3. Check out master and pull
-
-4. Merge production and push in master
-
-5. Deploy staging, if there is a staging environment
-
-6. Ask user if deployment log is okay and staging application is still running
-
-7. Deploy other stages
-
-8. Ask user if deployment log is okay and application is still running on all stages
-
-9. Inform user about the next (manual) steps
+Part two after performing the update: `geordi security-update finish`. Switches
+branches, pulls, pushes and deploys as required by our workflow. This as well
+will tell each step before performing it.
 LONGDESC
 
 def security_update(step = 'prepare')
+  master = Util.git_default_branch
+
   case step
   when 'prepare'
     Interaction.announce 'Preparing for security update'
@@ -56,11 +39,11 @@ def security_update(step = 'prepare')
     Interaction.note 'Working directory clean.'
     Interaction.prompt('Have you successfully run all tests?', 'n', /y|yes/) || Interaction.fail('Please run tests first.')
 
-    Interaction.note 'About to: push production, checkout & pull master, merge production, push master.'
+    Interaction.note "About to: push production, checkout & pull #{master}, merge production, push #{master}."
     Interaction.prompt('Continue?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
 
     Util.run!('git push', show_cmd: true)
-    Util.run!('git checkout master', show_cmd: true)
+    Util.run!("git checkout #{master}", show_cmd: true)
     Util.run!('git pull', show_cmd: true)
     Util.run!('git merge production', show_cmd: true)
     Util.run!('git push', show_cmd: true)
@@ -106,5 +89,7 @@ def security_update(step = 'prepare')
     puts
     Interaction.note 'Now send an email to customer and project lead, informing them about the update.'
     Interaction.note 'Do not forget to make a joblog on a security budget, if available.'
+  else
+    Interaction.fail "Unsupported step #{step.inspect}"
   end
 end

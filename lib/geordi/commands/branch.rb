@@ -6,7 +6,7 @@ On the first execution we ask for your Linear API token. It will be
 stored in `~/.config/geordi/global.yml`.
 LONGDESC
 
-option :from_master, aliases: '-m', type: :boolean, desc: 'Branch from master instead of the current branch'
+option :from_master, aliases: %w[-m --from-main], type: :boolean, desc: 'Branch from master instead of the current branch'
 
 def branch
   require 'geordi/gitlinear'

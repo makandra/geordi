@@ -203,3 +203,33 @@ Feature: The security-update command
       > Now send an email to customer and project lead, informing them about the update.
       > Do not forget to make a joblog on a security budget, if available.
       """
+
+  Scenario: Finishing the security-update with a "main" branch instead of "master"
+    Given my default branch is "main"
+
+    When I run `geordi security-update finish` interactively
+    And I type "yes"
+    And I type "yes"
+
+    Then the output should contain:
+      """
+      Util.run! git status --porcelain
+      """
+    Then the output should contain:
+      """
+      > About to: push production, checkout & pull main, merge production, push main.
+      Continue? [n]
+      """
+    And the output should contain:
+      """
+      > git push
+      Util.run! git push
+      > git checkout main
+      Util.run! git checkout main
+      > git pull
+      Util.run! git pull
+      > git merge production
+      Util.run! git merge production
+      > git push
+      Util.run! git push
+      """

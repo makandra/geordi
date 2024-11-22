@@ -4,15 +4,20 @@ All notable changes to this project will be documented in this file.
 This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## Unreleased
+### Compatible changes
+### Breaking changes
+
+
+## 11.2.0 2024-11-22
 
 ### Compatible changes
+* Add support for default branches other than "master" (e.g. "main"). Will read
+  this information from `origin`.
 
-### Breaking changes
 
 ## 11.1.0 2024-11-20
 
 ### Compatible changes
-
 * Skip `yarn install` for other package managers:
   * Before: Check for a `package.json`
   * After: Check for a `yarn.lock`

@@ -31,11 +31,12 @@ module Geordi
       matching_local_branch = local_branches.find { |branch_name| branch_name == issue['branchName'] }
       matching_local_branch ||= local_branches.find { |branch_name| branch_name.include? issue['identifier'].to_s }
 
-      if matching_local_branch.nil?
-        Util.run! ['git', 'checkout', 'master'] if from_master
-        Util.run! ['git', 'checkout', '-b', issue['branchName']]
-      else
+      if matching_local_branch
         Util.run! ['git', 'checkout', matching_local_branch]
+      else
+        default_branch = Util.git_default_branch
+        Util.run! ['git', 'checkout', default_branch] if from_master
+        Util.run! ['git', 'checkout', '-b', issue['branchName']]
       end
     end
 

@@ -19,7 +19,8 @@ before it does it.** There are different scenarios where this command is handy:
   be skipped.
 
 Calling the command without arguments will infer the target stage from the
-current branch and fall back to master/staging.
+current branch and fall back to master/staging. (Will use the actual main branch
+of the repository, e.g. "main" instead of "master".)
 
 Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
@@ -37,7 +38,7 @@ option :current_branch, aliases: '-c', type: :boolean,
 
 def deploy(target_stage = nil)
   # Set/Infer default values
-  branch_stage_map = { 'master' => 'staging', 'production' => 'production' }
+  branch_stage_map = { 'master' => 'staging', 'main' => 'staging', 'production' => 'production' }
   if target_stage && !Util.deploy_targets.include?(target_stage)
     # Target stage autocompletion from available stages
     target_stage = Util.deploy_targets.find { |t| t.start_with? target_stage }
@@ -58,7 +59,10 @@ def deploy(target_stage = nil)
     source_branch = target_branch = Util.current_branch
   else
     source_branch = Interaction.prompt 'Source branch:', Util.current_branch
-    target_branch = Interaction.prompt 'Deploy branch:', branch_stage_map.invert.fetch(target_stage, 'master')
+
+    deploy_branch = 'production' if target_stage == 'production'
+    deploy_branch ||= Util.git_default_branch
+    target_branch = Interaction.prompt 'Deploy branch:', deploy_branch
   end
 
   merge_needed = (source_branch != target_branch)

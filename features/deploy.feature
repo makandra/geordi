@@ -60,3 +60,19 @@ Feature: The deploy command
       And I type ""
       And I type "no"
     Then the output should not contain "Deployment stage: [staging]"
+
+
+  Scenario: Deploy with a default branch of "main"
+    Given my default branch is "main"
+
+    When I run `geordi deploy` interactively
+    # Answer three prompts
+    And I type ""
+    And I type ""
+    And I type ""
+    And I type "cancel"
+
+    Then the output should contain:
+      """
+      Deployment stage: [staging] Source branch: [main] Deploy branch: [main]
+      """

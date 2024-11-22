@@ -18,6 +18,10 @@ Given /^my local git branches are: (.*)$/ do |branches|
   ENV['GEORDI_TESTING_GIT_BRANCHES'] = branches.split(", ").join("\n") + "\n"
 end
 
+Given /^my default branch is "(.*)"$/ do |default_branch|
+  ENV['GEORDI_TESTING_DEFAULT_BRANCH'] = default_branch
+end
+
 Given 'there are no Linear issues' do
   ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] = 'true'
 end
@@ -28,4 +32,5 @@ After do
   ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] = nil
   ENV['GEORDI_TESTING_IRB_VERSION'] = nil
   ENV['GEORDI_TESTING_RUBY_VERSION'] = nil
+  ENV['GEORDI_TESTING_DEFAULT_BRANCH'] = nil
 end

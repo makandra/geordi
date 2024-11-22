@@ -32,7 +32,7 @@ On the first execution we ask for your Linear API token. It will be
 stored in `~/.config/geordi/global.yml`.
 
 **Options**
-- `-m, [--from-master], [--no-from-master]`: Branch from master instead of the current branch
+- `-m, --from-main, [--from-master], [--no-from-master]`: Branch from master instead of the current branch
 
 
 ### `geordi capistrano COMMAND`
@@ -142,7 +142,8 @@ before it does it.** There are different scenarios where this command is handy:
   be skipped.
 
 Calling the command without arguments will infer the target stage from the
-current branch and fall back to master/staging.
+current branch and fall back to master/staging. (Will use the actual main branch
+of the repository, e.g. "main" instead of "master".)
 
 Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
@@ -267,29 +268,20 @@ variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi rspec`
 Support for performing security updates.
 
 Preparation for security update: `geordi security-update`. Checks out production
-and pulls.
+and pulls, and will tell each step before performing it.
 
-After performing the update: `geordi security-update finish`. Switches branches,
-pulls, pushes and deploys as required by our workflow.
-
-This command tells what it will do before it does it. In detail:
+Part two after performing the update: `geordi security-update finish`. Switches
+branches, pulls, pushes and deploys as required by our workflow. This as well
+will tell each step before performing it. In detail:
 
 1. Ask user if tests are green
-
 2. Push production
-
 3. Check out master and pull
-
 4. Merge production and push in master
-
 5. Deploy staging, if there is a staging environment
-
 6. Ask user if deployment log is okay and staging application is still running
-
 7. Deploy other stages
-
 8. Ask user if deployment log is okay and application is still running on all stages
-
 9. Inform user about the next (manual) steps
 
 

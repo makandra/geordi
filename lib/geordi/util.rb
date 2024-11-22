@@ -116,7 +116,7 @@ module Geordi
 
       def current_branch
         if testing?
-          'master'
+          git_default_branch
         else
           `git rev-parse --abbrev-ref HEAD`.strip
         end
@@ -217,6 +217,18 @@ module Geordi
       def rspec_path?(path)
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
+
+      def git_default_branch
+        default_branch = if testing?
+          ENV['GEORDI_TESTING_DEFAULT_BRANCH']
+        else
+          head_symref = `git ls-remote --symref origin HEAD`
+          head_symref[%r{\Aref: refs/heads/(\S+)\sHEAD}, 1]
+        end
+
+        default_branch || 'master'
+      end
+
     end
   end
 end
