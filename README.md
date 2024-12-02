@@ -1,5 +1,21 @@
-Geordi [![Tests](https://github.com/makandra/geordi/workflows/Tests/badge.svg)](https://github.com/makandra/geordi/actions)
-======
+<p>
+  <a href="https://makandra.de/">
+    <picture>
+      <source media="(prefers-color-scheme: light)" srcset="media/makandra-with-bottom-margin.light.svg">
+      <source media="(prefers-color-scheme: dark)" srcset="media/makandra-with-bottom-margin.dark.svg">
+      <img align="right" width="25%" alt="makandra" src="media/makandra-with-bottom-margin.light.svg">
+    </picture>
+  </a>
+
+  <picture>
+    <source media="(prefers-color-scheme: light)" srcset="media/logo.light.shapes.svg">
+    <source media="(prefers-color-scheme: dark)" srcset="media/logo.dark.shapes.svg">
+    <img width="140" alt="Geordi" role="heading" aria-level="1" src="media/logo.light.shapes.svg">
+  </picture>
+</p>
+
+[![Tests](https://github.com/makandra/geordi/workflows/Tests/badge.svg)](https://github.com/makandra/geordi/actions)
+
 
 Geordi is a collection of command line tools we use in our daily work with
 Ruby, Rails and Linux at [makandra](http://makandra.com/).
