@@ -63,7 +63,7 @@ GEM
       concurrent-ruby (~> 1.0)
     launchy (2.4.3)
       addressable (~> 2.3)
-    method_source (1.0.0)
+    method_source (1.1.0)
     middleware (0.1.0)
     minitest (5.14.4)
     multi_test (0.1.2)
@@ -75,12 +75,12 @@ GEM
       middleware
       thor
       thread_safe
-    pry (0.13.1)
+    pry (0.14.2)
       coderay (~> 1.1)
       method_source (~> 1.0)
-    pry-byebug (3.9.0)
+    pry-byebug (3.10.1)
       byebug (~> 11.0)
-      pry (~> 0.13.0)
+      pry (>= 0.13, < 0.15)
     public_suffix (3.1.1)
     rake (12.3.3)
     rspec (3.10.0)
