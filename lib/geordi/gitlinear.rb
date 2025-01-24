@@ -167,13 +167,20 @@ module Geordi
       request['Authorization'] = settings.linear_api_key
 
       response = https.request(request)
-      print clear_loading_message
+      parsed_response = JSON.parse(response.body)
 
-      parsed_response = JSON.parse(response.body)[0]
       if parsed_response.key?('errors')
-        raise parsed_response.dig('errors')
+        errors = parsed_response['errors'].map do |error|
+          msg = error.delete('message')
+          "#{msg} #{error.inspect}"
+        end
+        Interaction.fail <<~MSG.strip
+          API request failed:
+          #{errors.join("\n")}
+        MSG
       else
-        parsed_response['data']
+        print clear_loading_message
+        parsed_response.dig(0, 'data')
       end
     end
 
