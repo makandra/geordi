@@ -110,7 +110,12 @@ module Geordi
     def save_global_settings
       global_path = GLOBAL_SETTINGS_FILE_NAME
       global_directory = File.dirname(global_path)
-      FileUtils.mkdir_p(global_directory) unless File.directory? global_directory
+
+      unless File.directory?(global_directory)
+        require 'fileutils'
+        FileUtils.mkdir_p(global_directory)
+      end
+
       File.open(global_path, 'w') do |file|
         file.write @global_settings.to_yaml
       end
