@@ -158,7 +158,7 @@ module Geordi
       https = Net::HTTP.new(uri.host, uri.port)
       https.use_ssl = true
 
-      query = [{ query: attributes.split.join(' '), variables: variables }].to_json
+      query = { query: attributes.split.join(' '), variables: variables }.to_json
 
       request = Net::HTTP::Post.new(uri.path)
       request.body = query
@@ -180,7 +180,7 @@ module Geordi
         MSG
       else
         print clear_loading_message
-        parsed_response.dig(0, 'data')
+        parsed_response.dig('data')
       end
     end
 
