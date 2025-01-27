@@ -137,14 +137,15 @@ module Geordi
         end
       end
 
-      # try to guess user's favorite cli text editor
       def decide_texteditor
-        %w[/usr/bin/editor vi].each do |texteditor|
-          if cmd_exists?(texteditor) && texteditor.start_with?('$')
-            return ENV[texteditor[1..-1]]
-          elsif cmd_exists? texteditor
-            return texteditor
-          end
+        texteditor = %w[/usr/bin/editor vi].detect do |texteditor|
+          cmd_exists?(texteditor)
+        end
+
+        if texteditor
+          return texteditor
+        else
+          raise "Could not determine you favorite CLI text editor. Use `sudo update-alternatives --config editor` to set your preference."
         end
       end
 
