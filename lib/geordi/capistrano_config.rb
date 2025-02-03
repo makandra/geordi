@@ -15,7 +15,7 @@ module Geordi
     end
 
     def servers
-      deploy_info.scan(/^\s*server\s*['"](.*?)['"]/).flatten
+      deploy_info.scan(/^\s*server\s*\(?\s*['"](.*?)['"]/).flatten
     end
 
     def primary_server

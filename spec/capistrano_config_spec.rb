@@ -112,8 +112,22 @@ server 'app01.example.com',  user: \  'new_user'
       expect(subject).to receive(:deploy_info).and_return <<-TEXT
         server 'www.example-server-one.de', :app, :web, :db
         server 'www.example-server-two.de', :app, :web
+        server('www.example-server-three.de', :app)
+        server ('www.example-server-four.de', :app)
+        server ( 'www.example-server-five.de', :app)
+        server(
+          'www.example-server-six.de',
+          roles: [:app]
+        )
       TEXT
-      expect(subject.servers).to match_array(%w[www.example-server-one.de www.example-server-two.de])
+      expect(subject.servers).to match_array(%w[
+        www.example-server-one.de
+        www.example-server-two.de
+        www.example-server-three.de
+        www.example-server-four.de
+        www.example-server-five.de
+        www.example-server-six.de
+      ])
     end
 
     it 'returns an empty array if no server is found' do
