@@ -99,6 +99,15 @@ server 'app01.example.com',  user: \  'new_user'
       expect(subject.user('app01.example.com')).to eq('new_user')
     end
 
+    it 'understands multiline server definitions including brackets' do
+      write_file 'config/deploy.rb', <<-TEXT
+        server('app01.example.com',
+          user: 'new_user'
+        )
+      TEXT
+      expect(subject.user('app01.example.com')).to eq('new_user')
+    end
+
     it 'returns nothing if there is no user set with neither' do
       write_file 'config/deploy.rb', ""
       expect(subject.user('')).to be_nil
