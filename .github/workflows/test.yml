@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: 2.5.7
-            gemfile: Gemfile
           - ruby: 2.7.4
             gemfile: Gemfile
           - ruby: 3.0.2
             gemfile: Gemfile
           - ruby: 3.3.6
+            gemfile: Gemfile
+          - ruby: 3.4.2
             gemfile: Gemfile
     env:
       BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
@@ -31,7 +31,7 @@ jobs:
         ruby-version: "${{ matrix.ruby }}"
     - name: Bundle
       run: |
-        gem install bundler:2.2.26
+        gem install bundler:2.3.27
         bundle install --no-deployment
     - name: Run specs
       run: bundle exec rspec
