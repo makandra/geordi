@@ -11,11 +11,11 @@ module Geordi
 
     def user(server)
       cap2user = deploy_info[/^\s*set\s*:user,\s*['"](.*?)['"]/, 1]
-      cap2user || deploy_info[/^\s*server\s*['"]#{server}['"],.*user.{1,4}['"](.*?)['"]/, 1]
+      cap2user || deploy_info[/^\s*server\s*\(?\s*['"]#{server}['"],.*user.{1,4}['"](.*?)['"]/, 1]
     end
 
     def servers
-      deploy_info.scan(/^\s*server\s*['"](.*?)['"]/).flatten
+      deploy_info.scan(/^\s*server\s*\(?\s*['"](.*?)['"]/).flatten
     end
 
     def primary_server
