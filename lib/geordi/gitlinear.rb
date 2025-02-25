@@ -20,7 +20,7 @@ module Geordi
         No staged changes. Will create an empty commit.
       WARNING
 
-      issue = choose_issue
+      issue = issue_from_branch || choose_issue
       create_commit "[#{issue['identifier']}] #{issue['title']}", "Issue: #{issue['url']}", *git_args
     end
 
@@ -93,6 +93,28 @@ module Geordi
       nil
     end
 
+    def issue_from_branch
+      issue = if Util.testing?
+        dummy_issue_for_testing if ENV['GEORDI_TESTING_ISSUE_MATCHES'] == 'true'
+      else
+        current_branch = Util.current_branch
+        issue = fetch_linear_issues.find { |issue| issue['branchName'] == current_branch }
+      end
+
+      return unless issue
+
+      id = issue['identifier']
+      title = issue['title']
+
+      question = "Auto-detected issue #{HighLine::BLUE}#{HighLine::BOLD}[#{id}] #{title}#{HighLine::RESET} from branch name.\nIs this correct? (Y/n) "
+      answer = highline.agree(question) do |q|
+        q.default = "Y"
+        q.default_hint_show = false if q.respond_to?(:default_hint_show=) # needs HighLine >= 3.0 (and therefore Ruby >= 3.0)
+      end
+
+      return answer ? issue : nil
+    end
+
     def dummy_issue_for_testing
       settings.linear_api_key
       ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? Geordi::Interaction.fail('No issues to offer.') : {
@@ -112,6 +134,7 @@ module Geordi
     end
 
     def fetch_linear_issues
+      return @linear_issues if @linear_issues
       team_ids = settings.linear_team_ids
       filter = {
         "team": {
@@ -146,7 +169,7 @@ module Geordi
         }
       GRAPHQL
 
-      response.dig(*%w[issues nodes])
+      @linear_issues = response.dig(*%w[issues nodes])
     end
 
     def query_api(attributes, variables)
