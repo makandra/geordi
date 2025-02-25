@@ -26,6 +26,10 @@ Given 'there are no Linear issues' do
   ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] = 'true'
 end
 
+Given 'the current branch matches an issue' do
+  ENV['GEORDI_TESTING_ISSUE_MATCHES'] = 'true'
+end
+
 After do
   ENV['GEORDI_TESTING_STAGED_CHANGES'] = 'false'
   ENV['GEORDI_TESTING_GIT_BRANCHES'] = nil
@@ -33,4 +37,5 @@ After do
   ENV['GEORDI_TESTING_IRB_VERSION'] = nil
   ENV['GEORDI_TESTING_RUBY_VERSION'] = nil
   ENV['GEORDI_TESTING_DEFAULT_BRANCH'] = nil
+  ENV['GEORDI_TESTING_ISSUE_MATCHES'] = nil
 end
