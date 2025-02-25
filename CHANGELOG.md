@@ -6,6 +6,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+
+### Breaking changes
+
+
+## 12.0.0 2025-02-25
+
+### Compatible changes
 * Add support for Ruby 3.3
 * Add support for Ruby 3.4
 
