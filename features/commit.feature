@@ -18,6 +18,19 @@ Feature: Creating a git commit from a Linear issue
     And I type ""
     Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, -m, Issue: https://www.issue-url.com"
 
+  Scenario: It uses the current branch to preselect an issue
+    Given the current branch matches an issue
+
+    When I run `geordi commit` interactively
+
+    # Accept the prompt
+    And I type ""
+    # No optional message
+    And I type ""
+
+    Then the output should contain "Auto-detected issue [team-123] Test Issue from branch name."
+      And the output should contain "Use it? [y]"
+      And the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue"
 
   Scenario: Extra arguments are forwarded to "git commit"
     Given I have staged changes

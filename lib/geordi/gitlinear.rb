@@ -20,7 +20,7 @@ module Geordi
         No staged changes. Will create an empty commit.
       WARNING
 
-      issue = choose_issue
+      issue = issue_from_branch || choose_issue
       create_commit "[#{issue['identifier']}] #{issue['title']}", "Issue: #{issue['url']}", *git_args
     end
 
@@ -93,6 +93,23 @@ module Geordi
       nil
     end
 
+    def issue_from_branch
+      issue = if Util.testing?
+        dummy_issue_for_testing if ENV['GEORDI_TESTING_ISSUE_MATCHES'] == 'true'
+      else
+        current_branch = Util.current_branch
+        issue = fetch_linear_issues.find { |issue| issue['branchName'] == current_branch }
+      end
+
+      return unless issue
+
+      id = issue['identifier']
+      title = issue['title']
+
+      Interaction.note "Auto-detected issue #{HighLine::BOLD}[#{id}] #{title}#{HighLine::RESET} from branch name."
+      Interaction.prompt("Use it?", "y", /y|yes/i) ? issue : nil
+    end
+
     def dummy_issue_for_testing
       settings.linear_api_key
       ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? Geordi::Interaction.fail('No issues to offer.') : {
@@ -112,41 +129,43 @@ module Geordi
     end
 
     def fetch_linear_issues
-      team_ids = settings.linear_team_ids
-      filter = {
-        "team": {
-          "id": {
-            "in": team_ids,
-          }
-        },
-        "state": {
-          "type": {
-            "eq": "started"
-          }
-        }
-      }
-      response = query_api(<<~GRAPHQL, filter: filter)
-        query Issues($filter: IssueFilter) {
-          issues(filter: $filter) {
-            nodes {
-              title
-              identifier
-              url
-              branchName
-              assignee {
-                displayName
-                isMe
-              }
-              state {
-                name
-                position
-             }
+      @linear_issues ||= begin
+        team_ids = settings.linear_team_ids
+        filter = {
+          "team": {
+            "id": {
+              "in": team_ids,
+            }
+          },
+          "state": {
+            "type": {
+              "eq": "started"
             }
           }
         }
-      GRAPHQL
+        response = query_api(<<~GRAPHQL, filter: filter)
+          query Issues($filter: IssueFilter) {
+            issues(filter: $filter) {
+              nodes {
+                title
+                identifier
+                url
+                branchName
+                assignee {
+                  displayName
+                  isMe
+                }
+                state {
+                  name
+                  position
+               }
+              }
+            }
+          }
+        GRAPHQL
 
-      response.dig(*%w[issues nodes])
+        response.dig(*%w[issues nodes])
+      end
     end
 
     def query_api(attributes, variables)
