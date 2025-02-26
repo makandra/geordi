@@ -29,7 +29,7 @@ Feature: Creating a git commit from a Linear issue
     And I type ""
 
     Then the output should contain "Auto-detected issue [team-123] Test Issue from branch name."
-      And the output should contain "Is this correct? (Y/n)"
+      And the output should contain "Use it? [y]"
       And the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue"
 
   Scenario: Extra arguments are forwarded to "git commit"

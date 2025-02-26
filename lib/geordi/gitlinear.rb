@@ -106,13 +106,8 @@ module Geordi
       id = issue['identifier']
       title = issue['title']
 
-      question = "Auto-detected issue #{HighLine::BLUE}#{HighLine::BOLD}[#{id}] #{title}#{HighLine::RESET} from branch name.\nIs this correct? (Y/n) "
-      answer = highline.agree(question) do |q|
-        q.default = "Y"
-        q.default_hint_show = false if q.respond_to?(:default_hint_show=) # needs HighLine >= 3.0 (and therefore Ruby >= 3.0)
-      end
-
-      return answer ? issue : nil
+      Interaction.note "Auto-detected issue #{HighLine::BOLD}[#{id}] #{title}#{HighLine::RESET} from branch name."
+      Interaction.prompt("Use it?", "y", /y|yes/i) ? issue : nil
     end
 
     def dummy_issue_for_testing
@@ -134,42 +129,43 @@ module Geordi
     end
 
     def fetch_linear_issues
-      return @linear_issues if @linear_issues
-      team_ids = settings.linear_team_ids
-      filter = {
-        "team": {
-          "id": {
-            "in": team_ids,
-          }
-        },
-        "state": {
-          "type": {
-            "eq": "started"
-          }
-        }
-      }
-      response = query_api(<<~GRAPHQL, filter: filter)
-        query Issues($filter: IssueFilter) {
-          issues(filter: $filter) {
-            nodes {
-              title
-              identifier
-              url
-              branchName
-              assignee {
-                displayName
-                isMe
-              }
-              state {
-                name
-                position
-             }
+      @linear_issues ||= begin
+        team_ids = settings.linear_team_ids
+        filter = {
+          "team": {
+            "id": {
+              "in": team_ids,
+            }
+          },
+          "state": {
+            "type": {
+              "eq": "started"
             }
           }
         }
-      GRAPHQL
+        response = query_api(<<~GRAPHQL, filter: filter)
+          query Issues($filter: IssueFilter) {
+            issues(filter: $filter) {
+              nodes {
+                title
+                identifier
+                url
+                branchName
+                assignee {
+                  displayName
+                  isMe
+                }
+                state {
+                  name
+                  position
+               }
+              }
+            }
+          }
+        GRAPHQL
 
-      @linear_issues = response.dig(*%w[issues nodes])
+        response.dig(*%w[issues nodes])
+      end
     end
 
     def query_api(attributes, variables)
