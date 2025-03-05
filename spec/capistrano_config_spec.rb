@@ -9,6 +9,18 @@ RSpec.describe Geordi::CapistranoConfig, type: :aruba do
     Geordi::CapistranoConfig.new(@stage)
   end
 
+  describe '#config_data' do
+    let(:config_data) { subject.send :config_data }
+
+    it 'raises when config file is invalid ruby' do
+      write_file 'config/deploy.rb', <<-DEPLOY
+        !?!?
+      DEPLOY
+
+      expect { config_data }.to raise_error('invalid deployment configuration')
+    end
+  end
+
   describe '#load_deploy_info'do
     let(:deploy_info) { subject.send :load_deploy_info }
 
@@ -99,6 +111,15 @@ server 'app01.example.com',  user: \  'new_user'
       expect(subject.user('app01.example.com')).to eq('new_user')
     end
 
+    it 'understands multiline server definitions including parentheses' do
+      write_file 'config/deploy.rb', <<-TEXT
+        server('app01.example.com',
+          user: 'new_user'
+        )
+      TEXT
+      expect(subject.user('app01.example.com')).to eq('new_user')
+    end
+
     it 'returns nothing if there is no user set with neither' do
       write_file 'config/deploy.rb', ""
       expect(subject.user('')).to be_nil
@@ -112,8 +133,18 @@ server 'app01.example.com',  user: \  'new_user'
       expect(subject).to receive(:deploy_info).and_return <<-TEXT
         server 'www.example-server-one.de', :app, :web, :db
         server 'www.example-server-two.de', :app, :web
+        server('www.example-server-three.de', :app)
+        server(
+          'www.example-server-four.de',
+          roles: [:app]
+        )
       TEXT
-      expect(subject.servers).to match_array(%w[www.example-server-one.de www.example-server-two.de])
+      expect(subject.servers).to match_array(%w[
+        www.example-server-one.de
+        www.example-server-two.de
+        www.example-server-three.de
+        www.example-server-four.de
+      ])
     end
 
     it 'returns an empty array if no server is found' do
