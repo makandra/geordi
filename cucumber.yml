@@ -1,0 +1,1 @@
+default: --publish-quiet # Do not advertise to publish Cucumber results
