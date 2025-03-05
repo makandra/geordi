@@ -99,7 +99,7 @@ server 'app01.example.com',  user: \  'new_user'
       expect(subject.user('app01.example.com')).to eq('new_user')
     end
 
-    it 'understands multiline server definitions including brackets' do
+    it 'understands multiline server definitions including parentheses' do
       write_file 'config/deploy.rb', <<-TEXT
         server('app01.example.com',
           user: 'new_user'
