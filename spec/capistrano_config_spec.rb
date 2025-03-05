@@ -122,10 +122,8 @@ server 'app01.example.com',  user: \  'new_user'
         server 'www.example-server-one.de', :app, :web, :db
         server 'www.example-server-two.de', :app, :web
         server('www.example-server-three.de', :app)
-        server ('www.example-server-four.de', :app)
-        server ( 'www.example-server-five.de', :app)
         server(
-          'www.example-server-six.de',
+          'www.example-server-four.de',
           roles: [:app]
         )
       TEXT
@@ -134,8 +132,6 @@ server 'app01.example.com',  user: \  'new_user'
         www.example-server-two.de
         www.example-server-three.de
         www.example-server-four.de
-        www.example-server-five.de
-        www.example-server-six.de
       ])
     end
 
