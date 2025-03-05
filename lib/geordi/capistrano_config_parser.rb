@@ -3,7 +3,7 @@ require 'ripper'
 module Geordi
   class CapistranoConfigParser < Ripper
     def self.parse(*args)
-      raise 'invalid environment configuration file' unless sexp(*args)
+      raise 'invalid deployment configuration' unless sexp(*args)
 
       super(*args)
     end

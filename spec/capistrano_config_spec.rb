@@ -9,6 +9,18 @@ RSpec.describe Geordi::CapistranoConfig, type: :aruba do
     Geordi::CapistranoConfig.new(@stage)
   end
 
+  describe '#config_data' do
+    let(:config_data) { subject.send :config_data }
+
+    it 'raises when config file is invalid ruby' do
+      write_file 'config/deploy.rb', <<-DEPLOY
+        !?!?
+      DEPLOY
+
+      expect { config_data }.to raise_error('invalid deployment configuration')
+    end
+  end
+
   describe '#load_deploy_info'do
     let(:deploy_info) { subject.send :load_deploy_info }
 
