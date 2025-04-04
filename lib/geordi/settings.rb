@@ -122,7 +122,7 @@ module Geordi
     end
 
     def inquire_linear_api_key
-      Geordi::Interaction.note 'Create an API key here: https://linear.app/makandra/settings/api'
+      Geordi::Interaction.note 'Create a personal API key here: https://linear.app/makandra/settings/account/security'
       token = Geordi::Interaction.prompt("Please enter the API key:")
       self.linear_api_key = token
       Interaction.note("API key stored in #{GLOBAL_SETTINGS_FILE_NAME}.")
