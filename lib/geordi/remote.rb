@@ -1,6 +1,7 @@
 require 'geordi/capistrano_config'
 require 'geordi/interaction'
 require 'geordi/util'
+require 'abbrev' # Dependency of Highline
 require 'highline/import'
 require 'pathname'
 require 'fileutils'

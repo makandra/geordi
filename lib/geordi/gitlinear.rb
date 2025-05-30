@@ -1,3 +1,4 @@
+require 'abbrev' # Dependency of Highline
 require 'highline'
 require 'net/http'
 require 'json'

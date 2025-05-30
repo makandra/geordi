@@ -1,4 +1,5 @@
 require 'rubygems'
+require 'abbrev' # Dependency of Highline
 require 'highline'
 require 'geordi/interaction'
 require 'geordi/util'

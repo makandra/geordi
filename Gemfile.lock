@@ -1,12 +1,13 @@
 PATH
   remote: .
   specs:
-    geordi (12.1.1)
+    geordi (12.1.2)
       thor (~> 1)
 
 GEM
   remote: http://rubygems.org/
   specs:
+    abbrev (0.1.2)
     addressable (2.7.0)
       public_suffix (>= 2.0.2, < 5.0)
     aruba (0.14.14)
@@ -88,6 +89,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  abbrev
   aruba (< 1)
   cucumber (~> 9)
   geordi!
