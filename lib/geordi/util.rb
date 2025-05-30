@@ -137,13 +137,12 @@ module Geordi
         end
       end
 
-      # try to guess user's favorite cli text editor
-      def decide_texteditor
-        %w[/usr/bin/editor vi].each do |texteditor|
-          if cmd_exists?(texteditor) && texteditor.start_with?('$')
-            return ENV[texteditor[1..-1]]
-          elsif cmd_exists? texteditor
-            return texteditor
+      def get_texteditor
+        %w[/usr/bin/editor vi].find { |c| cmd_exists?(c) }.tap do |editor|
+          if editor == '/usr/bin/editor'
+            Interaction.note 'Choose text editor with: sudo update-alternatives --config editor'
+          elsif editor == nil
+            Interaction.fail 'Could not find a text editor.'
           end
         end
       end

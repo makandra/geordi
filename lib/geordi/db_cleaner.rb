@@ -29,6 +29,7 @@ module Geordi
       end
       @mysql_command = decide_mysql_command(extra_flags['mysql'])
       @postgres_command = decide_postgres_command(extra_flags['postgres'])
+      @texteditor = Geordi::Util.get_texteditor
     end
 
     def edit_allowlist(dbtype)
@@ -89,8 +90,7 @@ module Geordi
         tmp.write("#{line[0]} #{line[1]}\n")
       end
       tmp.close
-      texteditor = Geordi::Util.decide_texteditor
-      system("#{texteditor} #{tmp.path}")
+      system("#{@texteditor} #{tmp.path}")
       File.open(tmp.path, 'r') do |wl_edited|
         allowlisted_dbs = []
         allowlist_storage = File.open(allowlist, 'w')
