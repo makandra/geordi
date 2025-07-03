@@ -6,9 +6,21 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* `geordi commit` will now auto-suggest a matching issue based on the current branch
 
 ### Breaking changes
+
+
+## 12.2.0 2025-07-03
+
+### Compatible changes
+* `geordi deploy` will now respect the configured deploy branch from teh Capistrano config. Previously, it would choose "production" for a deploy to the production stage, and master/main else.
+
+
+## 12.1.0 2025-05-03
+
+### Compatible changes
+* `geordi commit` will now auto-suggest a matching issue based on the current branch
+* Some improvements and fixes
 
 
 ## 12.0.0 2025-02-25
