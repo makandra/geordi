@@ -1,3 +1,5 @@
+require_relative '../capistrano_config'
+
 desc 'deploy [STAGE]', 'Guided deployment across branches'
 long_desc <<-LONGDESC
 Example: `geordi deploy` or `geordi deploy p[roduction]` or `geordi deploy --current-branch`
@@ -47,6 +49,8 @@ def deploy(target_stage = nil)
 
   # Ask for required information
   target_stage ||= Interaction.prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
+  capistrano_config = CapistranoConfig.new(target_stage)
+
   if options.current_branch
     stage_file = "config/deploy/#{target_stage}.rb"
     Util.file_containing?(stage_file, 'DEPLOY_BRANCH') || Interaction.fail(<<~ERROR)
@@ -57,10 +61,10 @@ def deploy(target_stage = nil)
     ERROR
 
     source_branch = target_branch = Util.current_branch
-  else
+  else # Normal deploy
     source_branch = Interaction.prompt 'Source branch:', Util.current_branch
 
-    deploy_branch = 'production' if target_stage == 'production'
+    deploy_branch = capistrano_config.branch
     deploy_branch ||= Util.git_default_branch
     target_branch = Interaction.prompt 'Deploy branch:', deploy_branch
   end

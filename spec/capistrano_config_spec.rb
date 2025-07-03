@@ -30,6 +30,7 @@ RSpec.describe Geordi::CapistranoConfig, type: :aruba do
 
       expect(deploy_info).to eq(<<-TEXT)
         content of config/deploy/staging.rb
+
         content of config/deploy.rb
       TEXT
     end

@@ -18,6 +18,20 @@ module Geordi
       deploy_info.scan(/^\s*server\s*['"](.*?)['"]/).flatten
     end
 
+    def branch
+      deploy_info[/
+        # Marker
+        ^\s*set.:branch,
+
+        # Might be followed by ENV['DEPLOY_BRANCH']
+        .*
+
+        # Assume the last word in quotes will be the right branch
+        # (\1 matches the opening quote character)
+        (['"])(\w+)\1\s*$
+      /x, 2]
+    end
+
     def primary_server
       # Actually, servers may have a :primary property. From Capistrano 3, the
       # first listed server is the primary one by default, which is a good-
@@ -43,14 +57,10 @@ module Geordi
 
     def load_deploy_info
       lines = []
-      self.deploy_info = ''
-
-      if stage
-        lines += File.readlines(File.join(root, "config/deploy/#{stage}.rb"))
-      end
-
+      lines += File.readlines(File.join(root, "config/deploy/#{stage}.rb")).push("\n") if stage
       lines += File.readlines(File.join(root, 'config/deploy.rb'))
 
+      self.deploy_info = ''
       lines.each do |line|
         next if line =~ /^\s*#/ # Omit comment lines
         line.chomp! if line =~ /[\\,]\s*$/ # Join wrapped lines
