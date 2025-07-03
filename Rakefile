@@ -1,5 +1,10 @@
+require_relative 'lib/geordi/interaction'
+
 require 'bundler'
 Bundler::GemHelper.install_tasks
+
+# Run this before releasing
+Rake::Task['release:guard_clean'].enhance [:check]
 
 desc 'Default: Run all tests'
 task default: [:rspec, :features]
@@ -10,6 +15,12 @@ end
 
 task :rspec do
   system 'bundle exec rspec'
+end
+
+task :check do
+  Geordi::Interaction.prompt('Are all specs & features green?', 'y', /y|yes/) || Geordi::Interaction.fail('Please run all tests with `rake`.')
+  Geordi::Interaction.prompt('Have you updated the README?', 'y', /y|yes/) || Geordi::Interaction.fail('Please update the README with `rake readme`.')
+  Geordi::Interaction.prompt('Have you updated the CHANGELOG', 'y', /y|yes/) || Geordi::Interaction.fail('Please update the CHANGELOG with the latest changes.')
 end
 
 task :readme do
@@ -53,7 +64,11 @@ You can always run `geordi help <command>` to quickly look up command help.
     if visible_options.any?
       geordi_section << "**Options**\n"
       visible_options.values.each do |option|
-        geordi_section << "- `#{option.usage}`"
+        usage = option.usage
+          .gsub(/\[(--.*?)\]/, '\1')
+          .sub(/, --no-[\w-]+, --skip-[\w-]+$/, '')
+
+        geordi_section << "- `#{usage}`"
         geordi_section << ": #{option.description}" if option.description
         geordi_section << "\n"
       end
