@@ -48,7 +48,7 @@ On the first execution we ask for your Linear API token. It will be
 stored in `~/.config/geordi/global.yml`.
 
 **Options**
-- `-m, --from-main, [--from-master], [--no-from-master]`: Branch from master instead of the current branch
+- `-m, --from-main, --from-master`: Branch from master instead of the current branch
 
 
 ### `geordi capistrano COMMAND`
@@ -98,7 +98,7 @@ servers. When passed a number, directly connects to the selected server.
 IRB flags can be given as `irb_flags: '...'` in the global Geordi config file (`~/.config/geordi/global.yml`).
 
 **Options**
-- `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to
+- `-s, --select-server=[SERVER_NUMBER]`: Select a server to connect to
 
 
 ### `geordi cucumber [FILES and OPTIONS]`
@@ -117,11 +117,11 @@ In order to limit processes in a parallel run, you can set an environment
 variable like this: `PARALLEL_TEST_PROCESSORS=6 geordi cucumber`
 
 **Options**
-- `-m, [--modified], [--no-modified]`: Run all modified features
-- `-c, [--containing=STRING]`: Run all features that contain STRING
-- `-v, [--verbose], [--no-verbose]`: Show the test run command
-- `-d, [--debug], [--no-debug]`: Run Cucumber with `-f pretty -b`, which helps hunting down bugs
-- `-r, [--rerun=N]`: Rerun features up to N times while failing
+- `-m, --modified`: Run all modified features
+- `-c, --containing=STRING`: Run all features that contain STRING
+- `-v, --verbose`: Show the test run command
+- `-d, --debug`: Run Cucumber with `-f pretty -b`, which helps hunting down bugs
+- `-r, --rerun=N`: Rerun features up to N times while failing
 
 
 ### `geordi delete-dumps [DIRECTORY]`
@@ -170,8 +170,8 @@ instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
 
 **Options**
-- `-M, [--no-migrations], [--no-no-migrations]`: Run cap deploy instead of cap deploy:migrations
-- `-c, [--current-branch], [--no-current-branch]`: Set DEPLOY_BRANCH to the current branch during deploy
+- `-M, --no-migrations`: Run cap deploy instead of cap deploy:migrations
+- `-c, --current-branch`: Set DEPLOY_BRANCH to the current branch during deploy
 
 
 ### `geordi drop-databases`
@@ -191,11 +191,11 @@ Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
 
 **Options**
-- `-P, [--postgres-only], [--no-postgres-only]`: Only clean PostgreSQL
-- `-M, [--mysql-only], [--no-mysql-only]`: Only clean MySQL/MariaDB
-- `[--postgres=PORT_OR_SOCKET]`: Use PostgreSQL port or socket
-- `[--mysql=PORT_OR_SOCKET]`: Use MySQL/MariaDB port or socket
-- `-S, [--sudo], [--no-sudo]`: Access databases as root
+- `-P, --postgres-only`: Only clean PostgreSQL
+- `-M, --mysql-only`: Only clean MySQL/MariaDB
+- `--postgres=PORT_OR_SOCKET`: Use PostgreSQL port or socket
+- `--mysql=PORT_OR_SOCKET`: Use MySQL/MariaDB port or socket
+- `-S, --sudo`: Access databases as root
 
 
 ### `geordi dump [TARGET]`
@@ -225,8 +225,8 @@ not match, please issue separate commands for dumping (`dump -d`) and sourcing
 (`dump -l -d`).
 
 **Options**
-- `-l, [--load=[DUMP_FILE]]`: Load a dump
-- `-d, [--database=NAME]`: Target database, if there are multiple databases
+- `-l, --load=[DUMP_FILE]`: Load a dump
+- `-d, --database=NAME`: Target database, if there are multiple databases
 
 
 ### `geordi help [COMMAND]`
@@ -288,25 +288,15 @@ and pulls, and will tell each step before performing it.
 
 Part two after performing the update: `geordi security-update finish`. Switches
 branches, pulls, pushes and deploys as required by our workflow. This as well
-will tell each step before performing it. In detail:
-
-1. Ask user if tests are green
-2. Push production
-3. Check out master and pull
-4. Merge production and push in master
-5. Deploy staging, if there is a staging environment
-6. Ask user if deployment log is okay and staging application is still running
-7. Deploy other stages
-8. Ask user if deployment log is okay and application is still running on all stages
-9. Inform user about the next (manual) steps
+will tell each step before performing it.
 
 
 ### `geordi server [PORT]`
 Start a development server.
 
 **Options**
-- `-p, [--port=PORT]`: Choose a port
-- `-P, [--public], [--no-public]`: Make the server accessible from the local network
+- `-p, --port=PORT`: Choose a port
+- `-P, --public`: Make the server accessible from the local network
 
 
 ### `geordi setup`
@@ -322,8 +312,8 @@ If a local bin/setup file is found, Geordi skips its routine and runs bin/setup
 instead.
 
 **Options**
-- `-d, [--dump=TARGET]`: After setup, dump the TARGET db and source it into the development db
-- `-t, [--test], [--no-test]`: After setup, run tests
+- `-d, --dump=TARGET`: After setup, dump the TARGET db and source it into the development db
+- `-t, --test`: After setup, run tests
 
 
 ### `geordi shell TARGET`
@@ -335,7 +325,7 @@ Selecting the server: `geordi shell staging -s` shows a menu with all available
 servers. When passed a number, directly connects to the selected server.
 
 **Options**
-- `-s, [--select-server=[SERVER_NUMBER]]`: Select a server to connect to
+- `-s, --select-server=[SERVER_NUMBER]`: Select a server to connect to
 
 
 ### `geordi tests [FILES]`
@@ -365,8 +355,8 @@ Example: `geordi update`
 Performs: `git pull`, `bundle install` (if necessary) and migrates (if applicable).
 
 **Options**
-- `-d, [--dump=TARGET]`: After updating, dump the TARGET db and source it into the development db
-- `-t, [--test], [--no-test]`: After updating, run tests
+- `-d, --dump=TARGET`: After updating, dump the TARGET db and source it into the development db
+- `-t, --test`: After updating, run tests
 
 
 ### `geordi version`
