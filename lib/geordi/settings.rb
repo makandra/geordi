@@ -26,6 +26,7 @@ module Geordi
 
     # Global settings
     def irb_flags
+      return @local_settings['irb_flags'] if @local_settings.key? 'irb_flags'
       @global_settings['irb_flags']
     end
 
