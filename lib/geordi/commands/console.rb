@@ -7,7 +7,13 @@ Remote: `geordi console staging`
 Selecting the server: `geordi console staging -s` shows a menu with all available
 servers. When passed a number, directly connects to the selected server.
 
-IRB flags can be given as `irb_flags: '...'` in the global Geordi config file (`~/.config/geordi/global.yml`).
+IRB flags can be given as `irb_flags: '...'` in the global or local Geordi config file
+(`~/.config/geordi/global.yml` / `./.geordi.yml`). If you define irb_flags in both files, the local config file will be
+used. For IRB >=1.2 in combination with Ruby <3 geordi automatically sets the `--nomultiline` flag, to prevent slow
+pasting. You can override this behavior by setting `--multiline` in the global config file or by defining `irb_flags` 
+in the local config file. The latter will always turn off the automatic behavior, even if you don't set any values for 
+the irb_flags key.
+
 LONGDESC
 
 # This option is duplicated in shelll.rb

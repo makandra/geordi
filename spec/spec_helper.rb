@@ -15,6 +15,10 @@
 require 'aruba/rspec'
 require 'pry'
 require 'byebug'
+
+# Disables execution of Util.run! calls
+ENV['GEORDI_TESTING'] = 'true'
+
 ::Dir.glob('./lib/geordi/*.rb').each { |f| require f }
 
 # See http://rubydoc.info/gems/rspec-core/RSpec/Core/Configuration

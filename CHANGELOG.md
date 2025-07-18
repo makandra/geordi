@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
++ `geordi console` will now also take irb_flags from the local config file into account. These will have precedence over the global config file and flags automatically set by geordi.
+
 ### Breaking changes
 
 
@@ -19,7 +21,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## 12.2.0 2025-07-03
 
 ### Compatible changes
-* `geordi deploy` will now respect the configured deploy branch from teh Capistrano config. Previously, it would choose "production" for a deploy to the production stage, and master/main else.
+* `geordi deploy` will now respect the configured deploy branch from the Capistrano config. Previously, it would choose "production" for a deploy to the production stage, and master/main else.
 
 
 ## 12.1.0 2025-05-03

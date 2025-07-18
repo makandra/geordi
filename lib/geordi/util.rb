@@ -94,13 +94,18 @@ module Geordi
         elsif gem_major_version('rails') == 3
           "#{binstub_or_fallback('rails')} console #{environment}"
         else
-          use_multiline = if irb_version >= Gem::Version.new('1.2') && ruby_version < Gem::Version.new('3.0')
+
+          irb_flags_from_config, source = Settings.new.irb_flags
+          irb_flags = ""
+
+          if irb_version >= Gem::Version.new('1.2') && ruby_version < Gem::Version.new('3.0') && (source != :local)
             Interaction.note 'Using --nomultiline switch for faster pasting'
-            '--nomultiline'
+            irb_flags << '--nomultiline '
           end
 
-          irb_flags = [use_multiline, Settings.new.irb_flags].join(' ').strip
-          irb_flags.prepend('-- ') unless irb_flags.empty?
+          irb_flags << irb_flags_from_config if irb_flags_from_config
+
+          irb_flags.prepend('-- ').strip! unless irb_flags.empty?
 
           "#{binstub_or_fallback('rails')} console -e #{environment} #{irb_flags}"
         end

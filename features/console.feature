@@ -1,7 +1,7 @@
 Feature: The console command
   Most aspects of connection to a server are tested in shell feature.
 
-  Scenario: Opening a local Rails console with an irb version < 1.2.0 and preconfigured irb flags from the global settings
+  Scenario: Opening a local Rails console
     Given the irb version is "1.1.0"
       And a file named "tmp/global_settings.yml" with "irb_flags: --foo --baz"
     When I run `geordi console`
@@ -10,15 +10,7 @@ Feature: The console command
       But the output should not contain "nomultiline"
 
 
-  Scenario: Opening a local Rails console with an Ruby version >= 3.0
-    Given the Ruby version is "3.0"
-    When I run `geordi console`
-    Then the output should contain "# Opening a local Rails console"
-      And the output should contain "Util.run! (exec) bundle exec rails console -e development"
-      But the output should not contain "nomultiline"
-
-
-  Scenario: Opening a local Rails console with an irb version >= 1.2.0 and Ruby version < 3.0
+  Scenario: IRB 1.2.0+ on Ruby <3 is horribly slow when pasting long strings – we work around this by automatically setting the --nomultiline switch
     Given the irb version is "1.2.0"
       And the Ruby version is "2.9"
     When I run `geordi console`
@@ -27,7 +19,7 @@ Feature: The console command
       And the output should contain "Using --nomultiline switch for faster pasting"
 
 
-  Scenario: Opening a remote Rails console with an irb version >= 1.2.0 and Ruby version < 3.0
+  Scenario: Opening a remote Rails console with a slow pasting IRB sets the --nomultiline switch
     Given the irb version is "1.2.0"
       And the Ruby version is "2.9"
       And a file named "Capfile" with "Capfile exists"
@@ -45,10 +37,11 @@ Feature: The console command
       And the output should contain "Using --nomultiline switch for faster pasting"
 
 
-Scenario: Opening a remote Rails console with an irb version >= 1.2.0, a Ruby version < 3.0 and preconfigured irb flags from the global settings
+Scenario: Empty IRB flags in the local Geordi settings also override global IRB flags
   Given the irb version is "1.2.0"
     And the Ruby version is "2.9"
-    And a file named "tmp/global_settings.yml" with "irb_flags: --foo --baz"
+    And a file named "tmp/local_settings.yml" with "irb_flags:"
+    And a file named "tmp/global_settings.yml" with "irb_flags: --bar"
     And a file named "Capfile" with "Capfile exists"
     And a file named "config/deploy.rb" with "deploy file exists"
     And a file named "config/deploy/staging.rb" with:
@@ -60,4 +53,4 @@ Scenario: Opening a remote Rails console with an irb version >= 1.2.0, a Ruby ve
     """
   When I run `geordi console staging`
   Then the output should contain "# Opening a Rails console on staging"
-    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging -- --nomultiline --foo --baz"
+    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging"

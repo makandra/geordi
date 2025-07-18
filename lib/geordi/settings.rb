@@ -16,7 +16,7 @@ module Geordi
       linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids irb_flags ].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
@@ -26,7 +26,11 @@ module Geordi
 
     # Global settings
     def irb_flags
-      @global_settings['irb_flags']
+      if @local_settings.key? 'irb_flags'
+        [@local_settings['irb_flags'].to_s, :local]
+      elsif @global_settings.key? 'irb_flags'
+        [@global_settings['irb_flags'].to_s, :global]
+      end
     end
 
     def linear_api_key
