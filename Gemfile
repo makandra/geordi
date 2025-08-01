@@ -7,7 +7,6 @@ gem 'aruba', '< 1' # Drops support for Ruby 2.2-
 gem 'rake', '< 13' # Drops support for Ruby 2.1
 gem 'rspec'
 gem 'abbrev' # Dependency of Highline
-gem 'highline'
 gem 'parallel_tests'
 gem 'launchy'
 gem 'pry-byebug'

@@ -2,6 +2,7 @@ PATH
   remote: .
   specs:
     geordi (12.2.0)
+      highline
       thor (~> 1)
 
 GEM
@@ -93,7 +94,6 @@ DEPENDENCIES
   aruba (< 1)
   cucumber (~> 9)
   geordi!
-  highline
   launchy
   parallel_tests
   pry-byebug

@@ -30,5 +30,6 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_runtime_dependency 'thor', '~> 1'
+  spec.add_runtime_dependency 'highline'
   # Development dependencies are defined in the Gemfile (therefore no `spec.add_development_dependency` directives)
 end
