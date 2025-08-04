@@ -6,9 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Add highline as a runtime dependency
 
 ### Breaking changes
+
+
+## 12.3.0 2025-08-04
+
+### Compatible changes
+* Add highline as a runtime dependency
 
 
 ## 12.2.0 2025-07-03

@@ -1,7 +1,7 @@
 PATH
   remote: .
   specs:
-    geordi (12.2.0)
+    geordi (12.3.0)
       highline
       thor (~> 1)
 
