@@ -60,4 +60,42 @@ Scenario: Opening a remote Rails console with an irb version >= 1.2.0, a Ruby ve
     """
   When I run `geordi console staging`
   Then the output should contain "# Opening a Rails console on staging"
-    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging -- --nomultiline --foo --baz"
+    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging -- --foo --baz"
+
+
+Scenario: Opening a remote Rails console with an irb version >= 1.2.0, a Ruby version < 3.0 and preconfigured irb flags from local and global settings
+  Given the irb version is "1.2.0"
+    And the Ruby version is "2.9"
+    And a file named "tmp/local_settings.yml" with "irb_flags: --foo --baz"
+    And a file named "tmp/global_settings.yml" with "irb_flags: --bar"
+    And a file named "Capfile" with "Capfile exists"
+    And a file named "config/deploy.rb" with "deploy file exists"
+    And a file named "config/deploy/staging.rb" with:
+    """
+    set :rails_env, 'staging'
+    set :deploy_to, '/var/www/example.com'
+    set :user, 'user'
+    server 'www.example.com'
+    """
+  When I run `geordi console staging`
+  Then the output should contain "# Opening a Rails console on staging"
+    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging -- --foo --baz"
+
+
+Scenario: Opening a remote Rails console with an irb version >= 1.2.0, a Ruby version < 3.0 and empty irb flags in local settings and preconfigured irb flags in global settings
+  Given the irb version is "1.2.0"
+    And the Ruby version is "2.9"
+    And a file named "tmp/local_settings.yml" with "irb_flags:"
+    And a file named "tmp/global_settings.yml" with "irb_flags: --bar"
+    And a file named "Capfile" with "Capfile exists"
+    And a file named "config/deploy.rb" with "deploy file exists"
+    And a file named "config/deploy/staging.rb" with:
+    """
+    set :rails_env, 'staging'
+    set :deploy_to, '/var/www/example.com'
+    set :user, 'user'
+    server 'www.example.com'
+    """
+  When I run `geordi console staging`
+  Then the output should contain "# Opening a Rails console on staging"
+    And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'bundle exec rails console -e staging"
