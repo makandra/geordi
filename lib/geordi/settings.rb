@@ -16,7 +16,7 @@ module Geordi
       linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids irb_flags ].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 

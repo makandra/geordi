@@ -61,6 +61,12 @@ RSpec.describe Geordi::Settings do
       expect(described_class.new.irb_flags).to eq '--no-readline'
     end
 
+    it "can handle multiple flags" do
+      write_file(local_settings_file_path, 'irb_flags: --readline --noinspect')
+
+      expect(described_class.new.irb_flags).to eq "--readline --noinspect"
+    end
+
     it "returns nil if neither global nor local settings define irb_flags" do
       write_file(global_settings_file_path, 'auto_update_chromedriver: false')
       write_file(local_settings_file_path, 'auto_update_chromedriver: true')
