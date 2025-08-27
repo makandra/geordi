@@ -16,7 +16,7 @@ module Geordi
       linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids linear_state_after_deploy].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
@@ -55,10 +55,7 @@ module Geordi
     end
 
     def linear_team_ids
-      local_team_ids = normalize_team_ids(@local_settings['linear_team_ids'])
-      global_team_ids = normalize_team_ids(@global_settings['linear_team_ids'])
-
-      team_ids = local_team_ids | global_team_ids
+      team_ids = get_linear_team_ids
 
       if team_ids.empty?
         Geordi::Interaction.warn 'No team id found.'
@@ -70,6 +67,32 @@ module Geordi
 
       team_ids
     end
+
+    def linear_team_ids?
+      team_ids = get_linear_team_ids
+      !team_ids.empty?
+    end
+
+    def linear_state_after_deploy(stage)
+      config = @local_settings['linear_state_after_deploy']
+
+      default_state = if config && config[stage]
+        config[stage]
+      else
+        ''
+      end
+
+      target_state = Interaction.prompt("Target state for deployed issues:", default_state)
+
+      if !target_state.empty? && !target_state.eql?(default_state)
+        @local_settings['linear_state_after_deploy'] ||= Hash.new
+        @local_settings['linear_state_after_deploy'][stage] = target_state
+        save_local_settings unless Util.testing?
+      end
+
+      target_state
+    end
+
 
     private
 
@@ -121,6 +144,14 @@ module Geordi
       end
     end
 
+    def save_local_settings
+      local_path = LOCAL_SETTINGS_FILE_NAME
+
+      File.open(local_path, 'w') do |file|
+        file.write @local_settings.to_yaml
+      end
+    end
+
     def inquire_linear_api_key
       Geordi::Interaction.note 'Create a personal API key here: https://linear.app/makandra/settings/account/security'
       token = Geordi::Interaction.prompt("Please enter the API key:")
@@ -129,6 +160,13 @@ module Geordi
       puts
 
       token
+    end
+
+    def get_linear_team_ids
+      local_team_ids = normalize_team_ids(@local_settings['linear_team_ids'])
+      global_team_ids = normalize_team_ids(@global_settings['linear_team_ids'])
+
+      local_team_ids | global_team_ids
     end
 
     def normalize_team_ids(team_ids)

@@ -114,22 +114,6 @@ module Geordi
         end
       end
 
-      def current_branch
-        if testing?
-          git_default_branch
-        else
-          `git rev-parse --abbrev-ref HEAD`.strip
-        end
-      end
-
-      def staged_changes?
-        if testing?
-          ENV['GEORDI_TESTING_STAGED_CHANGES'] == 'true'
-        else
-          statuses = `git status --porcelain`.split("\n")
-          statuses.any? { |l| /^[A-Z]/i =~ l }
-        end
-      end
 
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
@@ -217,17 +201,19 @@ module Geordi
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
 
-      def git_default_branch
-        default_branch = if testing?
-          ENV['GEORDI_TESTING_DEFAULT_BRANCH']
-        else
-          head_symref = `git ls-remote --symref origin HEAD`
-          head_symref[%r{\Aref: refs/heads/(\S+)\sHEAD}, 1]
+      def extract_linear_issue_ids(commit_messages)
+        found_ids = []
+
+        regex = /^\[[A-Z]+-\d+\]/
+
+        commit_messages&.each do |line|
+          line&.scan(regex) do |match|
+            found_ids << match
+          end
         end
 
-        default_branch || 'master'
+        found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
       end
-
     end
   end
 end

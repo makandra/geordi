@@ -57,4 +57,11 @@ RSpec.describe Geordi::Util do
     end
 
   end
+
+  describe '.extract_linear_issue_id' do
+    it 'returns extracted issue ids from the beginning of the commit message' do
+      commit_messages = ["first example commit", "[W-365] Linear Issue Commit", "Commit with id [A-123] that gets ignored"]
+      expect(described_class.extract_linear_issue_ids(commit_messages)).to eq  ["W-365"]
+    end
+  end
 end
