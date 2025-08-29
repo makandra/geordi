@@ -7,9 +7,13 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
-+ `geordi console` will now also take irb_flags from the local config file into account. These will have precedence over the global config file and flags automatically set by geordi.
-
 ### Breaking changes
+
+
+## 12.4.0 2025-08-29
+
+### Compatible changes
++ `geordi console` will now also take irb_flags from the local config file into account. These will have precedence over the global config file and flags automatically set by geordi.
 
 
 ## 12.3.0 2025-08-04
