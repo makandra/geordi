@@ -54,22 +54,18 @@ module Geordi
     end
 
     def move_issues_to_state(issue_identifiers, state)
-      return dummy_issue_titles_for_testing(issue_identifiers) if Util.testing?
+      return if Util.testing?
 
-      teams_issues = fetch_linear_issues
-      state_ids = find_target_state_ids(state)
+      issues = fetch_linear_issues # This only retrieves issues for the configured linear team ids
+      state_ids_by_team_id = state_ids_by_team_id(state)
 
-      successfully_moved_issues = []
       issue_identifiers.each do |identifier|
-        issue = teams_issues.find { |i| i['identifier'] == identifier }
+        issue = issues.find { |i| i['identifier'] == identifier }
 
-        if issue && (state = state_ids[issue.dig('team', 'id')])
-          update_issue_state(issue['id'], state)
-          successfully_moved_issues << "[#{issue['identifier']}] #{issue['title']}"
-        end
+        skip unless issue && (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
+
+        update_issue_state(issue['id'], state_id)
       end
-
-      successfully_moved_issues
     end
 
     def issue_from_branch
@@ -89,6 +85,26 @@ module Geordi
       Interaction.prompt("Use it?", "y", /y|yes/i) ? issue : nil
     end
 
+    def extract_issue_ids(commit_messages)
+      found_ids = []
+
+      regex = /^\[[A-Z]+\d*-\d+\]/
+
+      commit_messages&.each do |line|
+        line&.scan(regex) do |match|
+          found_ids << match
+        end
+      end
+
+      found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
+    end
+
+    def filter_by_issue_ids(list_of_strings, issue_ids)
+      list_of_strings.select do |message|
+        issue_ids.any? { |id| message.start_with?("[#{id}]") }
+      end
+    end
+
     private
 
     attr_accessor :highline, :settings
@@ -103,14 +119,6 @@ module Geordi
         'assignee' => { 'name' => 'Test User', 'isMe' => true },
         'state' => { 'name' => 'In Progress' }
       }
-    end
-
-    def dummy_issue_titles_for_testing(issue_identifiers)
-      issue_titles = []
-      count = 1
-      issue_identifiers.each do |identifier|
-        issue_titles << "[#{identifier}] Test Issue #{count}}"
-      end
     end
 
     def fetch_linear_issues
@@ -157,7 +165,7 @@ module Geordi
       end
     end
 
-    def find_target_state_ids(state_name)
+    def state_ids_by_team_id(state_name)
       result = {}
 
       team_ids = settings.linear_team_ids
@@ -199,7 +207,7 @@ module Geordi
       end
 
       if result.empty?
-        Interaction.fail("The issue state #{state_name} does not exist.")
+        Interaction.fail("The issue state #{state_name.inspect} does not exist.")
       end
 
       result

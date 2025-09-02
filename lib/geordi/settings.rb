@@ -83,21 +83,21 @@ module Geordi
     def linear_state_after_deploy(stage)
       config_state = @local_settings['linear_state_after_deploy']
 
-      config_state = if config_state && config_state[stage]
+      if config_state && config_state[stage]
         config[stage]
       else
         ''
       end
+    end
 
-      target_state = Interaction.prompt("Target state for deployed issues:", config_state)
+    def persist_linear_state_after_deploy(stage, target_state)
+      config_state = @local_settings.dig('linear_state_after_deploy', stage)
 
-      if !target_state.empty? && !target_state.eql?(config_state)
+      unless target_state.eql?(config_state)
         @local_settings['linear_state_after_deploy'] ||= Hash.new
         @local_settings['linear_state_after_deploy'][stage] = target_state
         save_local_settings
       end
-
-      target_state
     end
 
 

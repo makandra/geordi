@@ -28,7 +28,7 @@ Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
 is a file config/deploy/makandra.rb.
 
-If Linear team ids are configured (see `geordi commit`'), will offer to move deployed issues to a new state. 
+If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state. 
 
 When your project is running Capistrano 3, deployment will use `cap deploy`
 instead of `cap deploy:migrations`. You can force using `deploy` by passing the
@@ -78,7 +78,11 @@ def deploy(target_stage = nil)
   end
 
   if settings.linear_integration_set_up?
-    target_state = settings.linear_state_after_deploy(target_branch)
+    config_state = settings.linear_state_after_deploy(target_stage)
+    config_state = 'skip' if config_state.empty?
+    target_state = Interaction.prompt("Move deployed Linear issues to state:", config_state)
+    target_state = '' if target_state.empty? || target_state == 'skip'
+    settings.persist_linear_state_after_deploy(target_stage, target_state)
   end
 
   merge_needed = (source_branch != target_branch)
@@ -106,13 +110,13 @@ def deploy(target_stage = nil)
     Util.run!("git --no-pager log origin/#{target_branch}..#{source_branch} --oneline")
 
     commit_messages = Git.commits_between(source_branch, target_branch)
-    linear_issue_ids = Util.extract_linear_issue_ids(commit_messages)
+    linear_issue_ids = linear_client.extract_issue_ids(commit_messages)
   end
   Interaction.note "Deploy to #{target_stage}"
   Interaction.note "From current branch #{source_branch}" if options.current_branch
 
   if !linear_issue_ids.empty? && target_state && !target_state.empty?
-    relevant_commits = Util.relevant_linear_commit_messages(commit_messages, linear_issue_ids)
+    relevant_commits = linear_client.filter_by_issue_ids(commit_messages, linear_issue_ids)
     Interaction.note("Move these Linear issues to state \"#{target_state}\":")
     puts relevant_commits.join("\n")
   end
@@ -136,10 +140,11 @@ def deploy(target_stage = nil)
 
     Util.run!(capistrano_call, show_cmd: true)
 
-    Interaction.success 'Deployment complete.'
     if !linear_issue_ids.empty? && target_state && !target_state.empty?
       linear_client.move_issues_to_state(linear_issue_ids, target_state)
     end
+
+    Interaction.success 'Deployment complete.'
 
     Hint.did_you_know [
       :capistrano,
