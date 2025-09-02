@@ -75,26 +75,26 @@ module Geordi
       team_ids
     end
 
-    def linear_team_ids?
+    def linear_integration_set_up?
       team_ids = get_linear_team_ids
       !team_ids.empty?
     end
 
     def linear_state_after_deploy(stage)
-      config = @local_settings['linear_state_after_deploy']
+      config_state = @local_settings['linear_state_after_deploy']
 
-      default_state = if config && config[stage]
+      config_state = if config_state && config_state[stage]
         config[stage]
       else
         ''
       end
 
-      target_state = Interaction.prompt("Target state for deployed issues:", default_state)
+      target_state = Interaction.prompt("Target state for deployed issues:", config_state)
 
-      if !target_state.empty? && !target_state.eql?(default_state)
+      if !target_state.empty? && !target_state.eql?(config_state)
         @local_settings['linear_state_after_deploy'] ||= Hash.new
         @local_settings['linear_state_after_deploy'][stage] = target_state
-        save_local_settings unless Util.testing?
+        save_local_settings
       end
 
       target_state
@@ -152,10 +152,12 @@ module Geordi
     end
 
     def save_local_settings
-      local_path = LOCAL_SETTINGS_FILE_NAME
+      unless Util.testing?
+        local_path = LOCAL_SETTINGS_FILE_NAME
 
-      File.open(local_path, 'w') do |file|
-        file.write @local_settings.to_yaml
+        File.open(local_path, 'w') do |file|
+          file.write @local_settings.to_yaml
+        end
       end
     end
 

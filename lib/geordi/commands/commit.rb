@@ -1,7 +1,3 @@
-require 'geordi/linear_client'
-require 'geordi/git'
-require 'highline'
-
 desc 'commit', 'Commit using an issue title from Linear'
 long_desc <<-LONGDESC
 Example: `geordi commit`
@@ -13,6 +9,9 @@ stored in `~/.config/geordi/global.yml`.
 LONGDESC
 
 def commit(*git_args)
+  require 'geordi/linear_client'
+  require 'geordi/git'
+  require 'highline'
 
   Interaction.warn <<~WARNING unless Git.staged_changes?
         No staged changes. Will create an empty commit.

@@ -1,6 +1,3 @@
-require 'geordi/linear_client'
-require 'geordi/git'
-
 desc 'branch', 'Check out a feature branch based on a Linear issue'
 long_desc <<-LONGDESC
 Example: `geordi branch`
@@ -12,6 +9,9 @@ LONGDESC
 option :from_master, aliases: %w[-m --from-main], type: :boolean, desc: 'Branch from master instead of the current branch'
 
 def branch
+  require 'geordi/linear_client'
+  require 'geordi/git'
+
   issue = LinearClient.new.choose_issue
 
   local_branches = Git.local_branch_names

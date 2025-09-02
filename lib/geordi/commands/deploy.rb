@@ -1,6 +1,4 @@
 require_relative '../capistrano_config'
-require 'geordi/git'
-require 'geordi/linear_client'
 
 desc 'deploy [STAGE]', 'Guided deployment across branches'
 long_desc <<-LONGDESC
@@ -43,6 +41,9 @@ option :current_branch, aliases: '-c', type: :boolean,
   desc: 'Set DEPLOY_BRANCH to the current branch during deploy'
 
 def deploy(target_stage = nil)
+  require 'geordi/git'
+  require 'geordi/linear_client'
+
   settings = Settings.new
   linear_client = LinearClient.new
 
@@ -76,7 +77,7 @@ def deploy(target_stage = nil)
     target_branch = Interaction.prompt 'Deploy branch:', deploy_branch
   end
 
-  if settings.linear_team_ids?
+  if settings.linear_integration_set_up?
     target_state = settings.linear_state_after_deploy(target_branch)
   end
 
@@ -110,6 +111,12 @@ def deploy(target_stage = nil)
   Interaction.note "Deploy to #{target_stage}"
   Interaction.note "From current branch #{source_branch}" if options.current_branch
 
+  if !linear_issue_ids.empty? && target_state && !target_state.empty?
+    relevant_commits = Util.relevant_linear_commit_messages(commit_messages, linear_issue_ids)
+    Interaction.note("Move these Linear issues to state \"#{target_state}\":")
+    puts relevant_commits.join("\n")
+  end
+
   if Interaction.prompt('Go ahead with the deployment?', 'n', /y|yes/)
     puts
     git_call = []
@@ -131,9 +138,7 @@ def deploy(target_stage = nil)
 
     Interaction.success 'Deployment complete.'
     if !linear_issue_ids.empty? && target_state && !target_state.empty?
-      successfully_moved_issues = linear_client.move_issues_to_state(linear_issue_ids, target_state)
-      Interaction.note("Moved these issues to state \"#{target_state}\":")
-      puts successfully_moved_issues.join("\n")
+      linear_client.move_issues_to_state(linear_issue_ids, target_state)
     end
 
     Hint.did_you_know [

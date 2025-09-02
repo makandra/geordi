@@ -14,20 +14,22 @@ Feature: The deploy command
       And a file named "tmp/local_settings.yml" with "linear_team_ids: abc23-def456-ghi67"
 
     When I run `geordi deploy` interactively
-      # Answer three prompts
+      # Answer prompts
       And I type "staging"
       And I type "master"
-      And I type "staging"
-      And I type "On Staging"
+      And I type "target-branch"
+      And I type "Target Linear State"
       # Confirm deployment
       And I type "yes"
     Then the output should contain:
       """
       # You are about to:
-      > Merge branch master into staging
+      > Merge branch master into target-branch
       > Push these commits:
-      Util.run! git --no-pager log origin/staging..master --oneline
+      Util.run! git --no-pager log origin/target-branch..master --oneline
       > Deploy to staging
+      > Move these Linear issues to state "Target Linear State":
+      [W-367] Test commit
       Go ahead with the deployment? [n]
       """
     And the output should contain:
@@ -36,8 +38,6 @@ Feature: The deploy command
       Util.run! cap staging deploy:migrations
 
       > Deployment complete.
-      > Moved these issues to state "On Staging":
-      W-367
       """
 
   Scenario: Deploying the current branch

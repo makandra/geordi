@@ -209,7 +209,7 @@ module Geordi
       def extract_linear_issue_ids(commit_messages)
         found_ids = []
 
-        regex = /^\[[A-Z]+-\d+\]/
+        regex = /^\[[A-Z]+\d*-\d+\]/
 
         commit_messages&.each do |line|
           line&.scan(regex) do |match|
@@ -218,6 +218,12 @@ module Geordi
         end
 
         found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
+      end
+
+      def relevant_linear_commit_messages(commit_messages, linear_issue_ids)
+        commit_messages.select do |message|
+          linear_issue_ids.any? { |id| message.start_with?("[#{id}]") }
+        end
       end
     end
   end
