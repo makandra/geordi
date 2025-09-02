@@ -205,6 +205,20 @@ module Geordi
       def rspec_path?(path)
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
+
+      def extract_linear_issue_ids(commit_messages)
+        found_ids = []
+
+        regex = /^\[[A-Z]+-\d+\]/
+
+        commit_messages&.each do |line|
+          line&.scan(regex) do |match|
+            found_ids << match
+          end
+        end
+
+        found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
+      end
     end
   end
 end

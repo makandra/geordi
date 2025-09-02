@@ -58,6 +58,13 @@ RSpec.describe Geordi::Util do
 
   end
 
+  describe '.extract_linear_issue_id' do
+    it 'returns extracted issue ids from the beginning of the commit message' do
+      commit_messages = ["first example commit", "[W-365] Linear Issue Commit", "Commit with id [A-123] that gets ignored"]
+      expect(described_class.extract_linear_issue_ids(commit_messages)).to eq  ["W-365"]
+    end
+  end
+
   describe '.console_command', type: :aruba do
     let(:global_settings_file_path) { File.expand_path('./tmp/global_settings.yml') }
     let(:local_settings_file_path) { File.expand_path('./tmp/local_settings.yml') }
