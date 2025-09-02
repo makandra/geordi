@@ -119,22 +119,6 @@ module Geordi
         end
       end
 
-      def current_branch
-        if testing?
-          git_default_branch
-        else
-          `git rev-parse --abbrev-ref HEAD`.strip
-        end
-      end
-
-      def staged_changes?
-        if testing?
-          ENV['GEORDI_TESTING_STAGED_CHANGES'] == 'true'
-        else
-          statuses = `git status --porcelain`.split("\n")
-          statuses.any? { |l| /^[A-Z]/i =~ l }
-        end
-      end
 
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
@@ -221,18 +205,6 @@ module Geordi
       def rspec_path?(path)
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
-
-      def git_default_branch
-        default_branch = if testing?
-          ENV['GEORDI_TESTING_DEFAULT_BRANCH']
-        else
-          head_symref = `git ls-remote --symref origin HEAD`
-          head_symref[%r{\Aref: refs/heads/(\S+)\sHEAD}, 1]
-        end
-
-        default_branch || 'master'
-      end
-
     end
   end
 end

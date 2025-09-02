@@ -45,18 +45,6 @@ module Geordi
 
     attr_accessor :highline, :settings
 
-    def local_branch_names
-      @local_branch_names ||= begin
-        branch_list_string = if Util.testing?
-          ENV['GEORDI_TESTING_GIT_BRANCHES'].to_s
-        else
-          `git branch --format="%(refname:short)"`
-        end
-
-        branch_list_string.strip.split("\n")
-      end
-    end
-
     def choose_issue
       if Util.testing?
         return dummy_issue_for_testing
