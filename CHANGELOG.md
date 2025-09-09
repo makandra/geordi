@@ -6,9 +6,14 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* `geordi deploy` will now offer to move deployed issues to a new state if linear_team_ids are configured
 
 ### Breaking changes
+
+
+## 12.5.0 2025-09-09
+
+### Compatible changes
+* `geordi deploy` will now offer to move deployed issues to a new state if linear_team_ids are configured.
 
 
 ## 12.4.0 2025-08-29
