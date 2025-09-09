@@ -16,7 +16,7 @@ module Geordi
       linear_team_ids
     ].freeze
 
-    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids irb_flags ].freeze
+    ALLOWED_LOCAL_SETTINGS = %w[ linear_team_ids linear_state_after_deploy irb_flags].freeze
 
     SETTINGS_WARNED = 'GEORDI_INVALID_SETTINGS_WARNED'
 
@@ -75,6 +75,32 @@ module Geordi
       team_ids
     end
 
+    def linear_integration_set_up?
+      team_ids = get_linear_team_ids
+      !team_ids.empty?
+    end
+
+    def linear_state_after_deploy(stage)
+      config_state = @local_settings['linear_state_after_deploy']
+
+      if config_state && config_state[stage]
+        config[stage]
+      else
+        ''
+      end
+    end
+
+    def persist_linear_state_after_deploy(stage, target_state)
+      config_state = @local_settings.dig('linear_state_after_deploy', stage)
+
+      unless target_state.eql?(config_state)
+        @local_settings['linear_state_after_deploy'] ||= Hash.new
+        @local_settings['linear_state_after_deploy'][stage] = target_state
+        save_local_settings
+      end
+    end
+
+
     private
 
     def read_settings
@@ -125,6 +151,16 @@ module Geordi
       end
     end
 
+    def save_local_settings
+      unless Util.testing?
+        local_path = LOCAL_SETTINGS_FILE_NAME
+
+        File.open(local_path, 'w') do |file|
+          file.write @local_settings.to_yaml
+        end
+      end
+    end
+
     def inquire_linear_api_key
       Geordi::Interaction.note 'Create a personal API key here: https://linear.app/makandra/settings/account/security'
       token = Geordi::Interaction.prompt("Please enter the API key:")
@@ -133,6 +169,13 @@ module Geordi
       puts
 
       token
+    end
+
+    def get_linear_team_ids
+      local_team_ids = normalize_team_ids(@local_settings['linear_team_ids'])
+      global_team_ids = normalize_team_ids(@global_settings['linear_team_ids'])
+
+      local_team_ids | global_team_ids
     end
 
     def normalize_team_ids(team_ids)

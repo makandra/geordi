@@ -4,7 +4,7 @@ require 'net/http'
 require 'json'
 
 module Geordi
-  class Gitlinear
+  class LinearClient
     # This require-style is to prevent Ruby from loading files of a different
     # version of Geordi.
     require File.expand_path('settings', __dir__)
@@ -14,47 +14,6 @@ module Geordi
     def initialize
       self.highline = HighLine.new
       self.settings = Settings.new
-    end
-
-    def commit(git_args)
-      Interaction.warn <<~WARNING unless Util.staged_changes?
-        No staged changes. Will create an empty commit.
-      WARNING
-
-      issue = issue_from_branch || choose_issue
-      create_commit "[#{issue['identifier']}] #{issue['title']}", "Issue: #{issue['url']}", *git_args
-    end
-
-    def branch(from_master: false)
-      issue = choose_issue
-
-      local_branches = local_branch_names
-      matching_local_branch = local_branches.find { |branch_name| branch_name == issue['branchName'] }
-      matching_local_branch ||= local_branches.find { |branch_name| branch_name.include? issue['identifier'].to_s }
-
-      if matching_local_branch
-        Util.run! ['git', 'checkout', matching_local_branch]
-      else
-        default_branch = Util.git_default_branch
-        Util.run! ['git', 'checkout', default_branch] if from_master
-        Util.run! ['git', 'checkout', '-b', issue['branchName']]
-      end
-    end
-
-    private
-
-    attr_accessor :highline, :settings
-
-    def local_branch_names
-      @local_branch_names ||= begin
-        branch_list_string = if Util.testing?
-          ENV['GEORDI_TESTING_GIT_BRANCHES'].to_s
-        else
-          `git branch --format="%(refname:short)"`
-        end
-
-        branch_list_string.strip.split("\n")
-      end
     end
 
     def choose_issue
@@ -94,12 +53,27 @@ module Geordi
       nil
     end
 
+    def move_issues_to_state(issue_identifiers, state)
+      return if Util.testing?
+
+      issues = fetch_linear_issues # This only retrieves issues for the configured linear team ids
+      state_ids_by_team_id = state_ids_by_team_id(state)
+
+      issue_identifiers.each do |identifier|
+        issue = issues.find { |i| i['identifier'] == identifier }
+
+        skip unless issue && (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
+
+        update_issue_state(issue['id'], state_id)
+      end
+    end
+
     def issue_from_branch
       issue = if Util.testing?
         dummy_issue_for_testing if ENV['GEORDI_TESTING_ISSUE_MATCHES'] == 'true'
       else
-        current_branch = Util.current_branch
-        issue = fetch_linear_issues.find { |issue| issue['branchName'] == current_branch }
+        current_branch = Git.current_branch
+        fetch_linear_issues.find { |issue| issue['branchName'] == current_branch }
       end
 
       return unless issue
@@ -111,6 +85,30 @@ module Geordi
       Interaction.prompt("Use it?", "y", /y|yes/i) ? issue : nil
     end
 
+    def extract_issue_ids(commit_messages)
+      found_ids = []
+
+      regex = /^\[[A-Z]+\d*-\d+\]/
+
+      commit_messages&.each do |line|
+        line&.scan(regex) do |match|
+          found_ids << match
+        end
+      end
+
+      found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
+    end
+
+    def filter_by_issue_ids(list_of_strings, issue_ids)
+      list_of_strings.select do |message|
+        issue_ids.any? { |id| message.start_with?("[#{id}]") }
+      end
+    end
+
+    private
+
+    attr_accessor :highline, :settings
+
     def dummy_issue_for_testing
       settings.linear_api_key
       ENV['GEORDI_TESTING_NO_LINEAR_ISSUES'] == 'true' ? Geordi::Interaction.fail('No issues to offer.') : {
@@ -121,12 +119,6 @@ module Geordi
         'assignee' => { 'name' => 'Test User', 'isMe' => true },
         'state' => { 'name' => 'In Progress' }
       }
-    end
-
-    def create_commit(title, description, *git_args)
-      extra = highline.ask("\nAdd an optional message").strip
-      title << ' - ' << extra if extra != ''
-      Util.run!(['git', 'commit', '--allow-empty', '-m', title, '-m', description, *git_args])
     end
 
     def fetch_linear_issues
@@ -150,6 +142,7 @@ module Geordi
               nodes {
                 title
                 identifier
+                id
                 url
                 branchName
                 assignee {
@@ -159,7 +152,10 @@ module Geordi
                 state {
                   name
                   position
-               }
+                }
+                team {
+                  id
+                }
               }
             }
           }
@@ -167,6 +163,70 @@ module Geordi
 
         response.dig(*%w[issues nodes])
       end
+    end
+
+    def state_ids_by_team_id(state_name)
+      result = {}
+
+      team_ids = settings.linear_team_ids
+      filter = {
+        "team": {
+          "id": {
+            "in": team_ids,
+          }
+        }
+      }
+      response = query_api(<<~GRAPHQL, filter: filter)
+        query workflowStates($filter: WorkflowStateFilter) {
+          workflowStates(filter: $filter) {
+            nodes {
+              id
+              name
+              team {
+                id
+                name
+              }
+            }
+          }
+        }
+      GRAPHQL
+
+      response = response.dig(*%w[workflowStates nodes])
+
+      team_ids.each do |team_id|
+        found_state = response.find do |item|
+          item["team"]["id"] == team_id && item["name"] == state_name
+        end
+
+        if found_state
+          result[team_id] = found_state["id"]
+        else
+          team_identifier = response.find { |item| item.dig('team', 'id') == team_id }&.dig('team', 'name') || team_id
+          Interaction.warn("Could not find the state \"#{state_name}\" for team \"#{team_identifier}\". Skipping its issues.")
+        end
+      end
+
+      if result.empty?
+        Interaction.fail("The issue state #{state_name.inspect} does not exist.")
+      end
+
+      result
+    end
+
+    def update_issue_state(issue_id, state_id)
+      query_api(<<~GRAPHQL, nil)
+        mutation UpdateIssueState {
+          issueUpdate(
+            id: "#{issue_id}"
+            input: {
+              stateId: "#{state_id}"
+            }
+          )
+          {
+            success
+          }
+        }
+      GRAPHQL
     end
 
     def query_api(attributes, variables)

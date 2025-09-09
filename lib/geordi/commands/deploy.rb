@@ -28,6 +28,8 @@ Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
 is a file config/deploy/makandra.rb.
 
+If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state. 
+
 When your project is running Capistrano 3, deployment will use `cap deploy`
 instead of `cap deploy:migrations`. You can force using `deploy` by passing the
 -M option: `geordi deploy -M staging`.
@@ -39,6 +41,12 @@ option :current_branch, aliases: '-c', type: :boolean,
   desc: 'Set DEPLOY_BRANCH to the current branch during deploy'
 
 def deploy(target_stage = nil)
+  require 'geordi/git'
+  require 'geordi/linear_client'
+
+  settings = Settings.new
+  linear_client = LinearClient.new
+
   # Set/Infer default values
   branch_stage_map = { 'master' => 'staging', 'main' => 'staging', 'production' => 'production' }
   if target_stage && !Util.deploy_targets.include?(target_stage)
@@ -48,7 +56,7 @@ def deploy(target_stage = nil)
   end
 
   # Ask for required information
-  target_stage ||= Interaction.prompt 'Deployment stage:', branch_stage_map.fetch(Util.current_branch, 'staging')
+  target_stage ||= Interaction.prompt 'Deployment stage:', branch_stage_map.fetch(Git.current_branch, 'staging')
   capistrano_config = CapistranoConfig.new(target_stage)
 
   if options.current_branch
@@ -60,18 +68,25 @@ def deploy(target_stage = nil)
       set :branch, ENV['DEPLOY_BRANCH'] || 'master'
     ERROR
 
-    source_branch = target_branch = Util.current_branch
+    source_branch = target_branch = Git.current_branch
   else # Normal deploy
-    source_branch = Interaction.prompt 'Source branch:', Util.current_branch
+    source_branch = Interaction.prompt 'Source branch:', Git.current_branch
 
     deploy_branch = capistrano_config.branch
-    deploy_branch ||= Util.git_default_branch
+    deploy_branch ||= Git.default_branch
     target_branch = Interaction.prompt 'Deploy branch:', deploy_branch
+  end
+
+  if settings.linear_integration_set_up?
+    config_state = settings.linear_state_after_deploy(target_stage)
+    config_state = 'skip' if config_state.empty?
+    target_state = Interaction.prompt("Move deployed Linear issues to state:", config_state)
+    target_state = '' if target_state.empty? || target_state == 'skip'
+    settings.persist_linear_state_after_deploy(target_stage, target_state)
   end
 
   merge_needed = (source_branch != target_branch)
   push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
-  push_needed = false if Util.testing? # Hard to test
 
   Interaction.announce "Checking whether your #{source_branch} branch is ready" ############
   Util.run!("git checkout #{source_branch}")
@@ -89,12 +104,22 @@ def deploy(target_stage = nil)
 
   Interaction.announce 'You are about to:' #################################################
   Interaction.note "Merge branch #{source_branch} into #{target_branch}" if merge_needed
+  linear_issue_ids = []
   if push_needed
-    Interaction.note 'Push these commits:' if push_needed
+    Interaction.note 'Push these commits:'
     Util.run!("git --no-pager log origin/#{target_branch}..#{source_branch} --oneline")
+
+    commit_messages = Git.commits_between(source_branch, target_branch)
+    linear_issue_ids = linear_client.extract_issue_ids(commit_messages)
   end
   Interaction.note "Deploy to #{target_stage}"
   Interaction.note "From current branch #{source_branch}" if options.current_branch
+
+  if !linear_issue_ids.empty? && target_state && !target_state.empty?
+    relevant_commits = linear_client.filter_by_issue_ids(commit_messages, linear_issue_ids)
+    Interaction.note("Move these Linear issues to state \"#{target_state}\":")
+    puts relevant_commits.join("\n")
+  end
 
   if Interaction.prompt('Go ahead with the deployment?', 'n', /y|yes/)
     puts
@@ -114,6 +139,10 @@ def deploy(target_stage = nil)
     end
 
     Util.run!(capistrano_call, show_cmd: true)
+
+    if !linear_issue_ids.empty? && target_state && !target_state.empty?
+      linear_client.move_issues_to_state(linear_issue_ids, target_state)
+    end
 
     Interaction.success 'Deployment complete.'
 

@@ -5,23 +5,31 @@ Feature: The deploy command
       And a file named "config/deploy.rb" with "deploy.rb exists"
       And a file named "config/deploy/staging.rb" with "staging.rb exists"
 
-
   Scenario: Deploying from master to staging
 
     Unfortunately, Aruba cannot run commands truly interactively. We need to
     answer prompts blindly, and check the output afterwards.
 
+    Given the commit with the message "[W-367] Test commit" is going to be deployed
+      And a file named "tmp/local_settings.yml" with "linear_team_ids: abc23-def456-ghi67"
+
     When I run `geordi deploy` interactively
-      # Answer three prompts
+      # Answer prompts
       And I type "staging"
       And I type "master"
-      And I type ""
+      And I type "target-branch"
+      And I type "Target Linear State"
       # Confirm deployment
       And I type "yes"
     Then the output should contain:
       """
       # You are about to:
+      > Merge branch master into target-branch
+      > Push these commits:
+      Util.run! git --no-pager log origin/target-branch..master --oneline
       > Deploy to staging
+      > Move these Linear issues to state "Target Linear State":
+      [W-367] Test commit
       Go ahead with the deployment? [n]
       """
     And the output should contain:
@@ -31,7 +39,6 @@ Feature: The deploy command
 
       > Deployment complete.
       """
-
 
   Scenario: Deploying the current branch
 

@@ -9,7 +9,9 @@ will tell each step before performing it.
 LONGDESC
 
 def security_update(step = 'prepare')
-  master = Util.git_default_branch
+  require 'geordi/git'
+
+  master = Git.default_branch
 
   case step
   when 'prepare'
