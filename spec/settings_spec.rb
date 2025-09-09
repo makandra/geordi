@@ -1,4 +1,17 @@
 RSpec.describe Geordi::Settings do
+  let(:global_settings_file_path) { File.expand_path('./tmp/global_settings.yml') }
+  let(:local_settings_file_path) { File.expand_path('./tmp/local_settings.yml') }
+
+  before do
+    FileUtils.mkdir_p(File.dirname(global_settings_file_path))
+    FileUtils.mkdir_p(File.dirname(local_settings_file_path))
+  end
+
+  after do
+    FileUtils.rm_f(global_settings_file_path)
+    FileUtils.rm_f(local_settings_file_path)
+  end
+
   describe '.normalize_team_ids' do
     it 'does not break Linear Team IDs if they are given as comma seperated String' do
       team_ids = "105be97c-924d,47a3-82feba8,456bc-defgh"
@@ -25,21 +38,7 @@ RSpec.describe Geordi::Settings do
     end
   end
 
-
   describe '#irb_flags', type: :aruba do
-    let(:global_settings_file_path) { File.expand_path('./tmp/global_settings.yml') }
-    let(:local_settings_file_path) { File.expand_path('./tmp/local_settings.yml') }
-
-    before do
-      FileUtils.mkdir_p(File.dirname(global_settings_file_path))
-      FileUtils.mkdir_p(File.dirname(local_settings_file_path))
-    end
-
-    after do
-      FileUtils.rm_f(global_settings_file_path)
-      FileUtils.rm_f(local_settings_file_path)
-    end
-
     it 'uses the local settings if present' do
       write_file(global_settings_file_path, 'irb_flags: --no-readline')
       write_file(local_settings_file_path, 'irb_flags: --readline')
@@ -81,4 +80,12 @@ RSpec.describe Geordi::Settings do
       expect(described_class.new.irb_flags).to be_nil
     end
   end
+
+  describe '#linear_state_after_deploy', type: :aruba do
+    it 'returns the state stored for the given stage' do
+      write_file(local_settings_file_path, "linear_state_after_deploy:\n  staging: QA")
+      expect(subject.linear_state_after_deploy('staging')).to eq 'QA'
+    end
+  end
+
 end

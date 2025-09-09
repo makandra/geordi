@@ -40,6 +40,7 @@ Feature: The deploy command
       > Deployment complete.
       """
 
+
   Scenario: Deploying the current branch
 
     Deploying the current branch requires support by the deployed application:

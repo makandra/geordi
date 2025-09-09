@@ -84,7 +84,7 @@ module Geordi
       config_state = @local_settings['linear_state_after_deploy']
 
       if config_state && config_state[stage]
-        config[stage]
+        config_state[stage]
       else
         ''
       end
