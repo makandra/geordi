@@ -28,7 +28,8 @@ Feature: Creating a git commit from a Linear issue
     # No optional message
     And I type ""
 
-    Then the output should contain "Auto-detected issue [team-123] Test Issue from branch name."
+    Then the output should contain "Auto-detected issue from branch name:"
+      And the output should contain "[team-123] Test Issue"
       And the output should contain "Use it? [y]"
       And the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue"
 
