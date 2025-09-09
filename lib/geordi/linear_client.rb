@@ -76,13 +76,15 @@ module Geordi
         fetch_linear_issues.find { |issue| issue['branchName'] == current_branch }
       end
 
-      return unless issue
+      if issue
+        id = issue['identifier']
+        title = issue['title']
 
-      id = issue['identifier']
-      title = issue['title']
+        Interaction.note 'Auto-detected issue from branch name:'
+        puts HighLine::BOLD + "[#{id}] #{title}" + HighLine::RESET
 
-      Interaction.note "Auto-detected issue #{HighLine::BOLD}[#{id}] #{title}#{HighLine::RESET} from branch name."
-      Interaction.prompt("Use it?", "y", /y|yes/i) ? issue : nil
+        issue if Interaction.prompt('Use it?', 'y', /y|yes/i)
+      end
     end
 
     def extract_issue_ids(commit_messages)
