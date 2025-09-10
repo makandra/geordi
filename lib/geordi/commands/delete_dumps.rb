@@ -33,7 +33,7 @@ def delete_dumps(*locations)
     Interaction.warn 'No dump files found.'
   else
     puts deletable_dumps
-    Interaction.prompt('Delete these files?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
+    Interaction.confirm_or_cancel('Delete these files?', default: 'n')
 
     deletable_dumps.each &File.method(:delete)
     Interaction.success 'Done.'

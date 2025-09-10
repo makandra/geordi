@@ -18,7 +18,7 @@ def security_update(step = 'prepare')
     Interaction.announce 'Preparing for security update'
     Interaction.warn 'Please read https://makandracards.com/makandra/1587 before applying security updates!'
     Interaction.note 'About to checkout production and pull.'
-    Interaction.prompt('Continue?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
+    Interaction.confirm_or_cancel
 
     Util.run!('git checkout production', show_cmd: true)
     Util.run!('git pull', show_cmd: true)
@@ -42,7 +42,7 @@ def security_update(step = 'prepare')
     Interaction.prompt('Have you successfully run all tests?', 'n', /y|yes/) || Interaction.fail('Please run tests first.')
 
     Interaction.note "About to: push production, checkout & pull #{master}, merge production, push #{master}."
-    Interaction.prompt('Continue?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
+    Interaction.confirm_or_cancel
 
     Util.run!('git push', show_cmd: true)
     Util.run!("git checkout #{master}", show_cmd: true)
@@ -58,12 +58,12 @@ def security_update(step = 'prepare')
 
     if all_deploy_targets.include?('staging')
       Interaction.note 'There is a staging environment.'
-      Interaction.prompt('Deploy staging now?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
+      Interaction.confirm_or_cancel('Deploy staging now?')
 
       Interaction.announce 'Deploy staging'
       Util.run! "bundle exec cap staging #{deploy}", show_cmd: true
 
-      Interaction.prompt('Is the deployment log okay and the application is still running on staging?', 'y', /y|yes/) || Interaction.fail('Please fix the deployment issues on staging before you continue.')
+      Interaction.confirm_or_cancel('Is the deployment log okay and is the application still running on staging?', 'Please fix the deployment issues on staging before you continue.', default: 'n')
     else
       Interaction.note 'There is no staging environment.'
     end
@@ -77,14 +77,14 @@ def security_update(step = 'prepare')
       Interaction.note 'Found the following other stages:'
       puts deploy_targets_without_staging
       puts
-      Interaction.prompt('Deploy other stages now?', 'y', /y|yes/) || Interaction.fail('Cancelled.')
+      Interaction.confirm_or_cancel('Deploy other stages now?')
 
       deploy_targets_without_staging.each do |target|
         Interaction.announce "Deploy #{target}"
         Util.run!("bundle exec cap #{target} #{deploy}", show_cmd: true)
       end
 
-      Interaction.prompt('Is the application still running on all other stages and the logs are okay?', 'y', /y|yes/) || Interaction.fail('Please fix the application immediately!')
+      Interaction.confirm_or_cancel('Are *all* the deployment logs okay and is the application still running on *all* other stages?', 'Please fix the application immediately!', default: 'n')
     end
 
     Interaction.success 'Successfully pushed and deployed security update'

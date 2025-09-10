@@ -61,5 +61,9 @@ module Geordi
       fail 'Cancelled.'
     end
 
+    def confirm_or_cancel(message = 'Continue?', cancel_message = 'Cancelled.', default: 'y')
+      prompt(message, default, /y|yes/) or fail(cancel_message)
+    end
+
   end
 end

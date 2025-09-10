@@ -121,7 +121,8 @@ def deploy(target_stage = nil)
     puts relevant_commits.join("\n")
   end
 
-  if Interaction.prompt('Go ahead with the deployment?', 'n', /y|yes/)
+  # Execute ####################################################################
+  if Interaction.prompt('Execute this now?', 'y', /y|yes/)
     puts
     git_call = []
     git_call << "git merge #{source_branch}" if merge_needed

@@ -8,7 +8,7 @@ def capistrano(*args)
 
   Interaction.note 'Found the following deploy targets:'
   puts targets
-  Interaction.prompt('Continue?', 'n', /y|yes/) || Interaction.fail('Cancelled.')
+  Interaction.confirm_or_cancel(default: 'n')
 
   targets << nil if targets.empty? # default target
   targets.each do |stage|

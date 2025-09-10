@@ -230,8 +230,8 @@ module Geordi
       until %w[y n].include? proceed
         deletable_dbs = filter_allowlisted(dbtype, database_list)
         if deletable_dbs.empty?
-          Interaction.note "No #{dbtype} databases found that were not allowlisted."
-          if Interaction.prompt('Edit the allowlist? [y]es or [n]o') == 'y'
+          Interaction.note "No deletable #{dbtype} databases found."
+          if Interaction.prompt('Edit the allowlist?', 'y', /y|yes/)
             proceed = 'e'
           else
             return []
@@ -245,6 +245,7 @@ module Geordi
           Interaction.note "These #{dbtype} databases are not allowlisted and can be deleted."
           proceed = Interaction.prompt('Proceed? [y]es, [n]o or [e]dit allowlist')
         end
+
         case proceed
         when 'e'
           proceed = '' # reset user selection

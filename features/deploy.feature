@@ -30,7 +30,7 @@ Feature: The deploy command
       > Deploy to staging
       > Move these Linear issues to state "Target Linear State":
       [W-367] Test commit
-      Go ahead with the deployment? [n]
+      Execute this now? [y]
       """
     And the output should contain:
       """

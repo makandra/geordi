@@ -21,7 +21,7 @@ module Geordi
 
         # install missing gem
         Interaction.warn 'Probably missing gem: ' + gem_name
-        Interaction.prompt('Install it now?', 'y', /y|yes/) || Interaction.fail('Missing Gems.')
+        Interaction.confirm_or_cancel('Install it now?', 'Missing Gems.')
         Util.run!(install_command, show_cmd: true)
 
         # retry
@@ -50,13 +50,12 @@ module Geordi
           show_command = [command]
         end
 
-        if show_cmd
-          # Join with spaces for better readability and copy-pasting
+        if show_cmd || confirm
           Interaction.note_cmd show_command.join(' ')
         end
 
         if confirm
-          Interaction.prompt('Run this now?', 'n', /y|yes/) or Interaction.fail('Cancelled.')
+          Interaction.confirm_or_cancel('Run this now?')
         end
 
         if testing?

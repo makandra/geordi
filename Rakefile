@@ -18,9 +18,9 @@ task :rspec do
 end
 
 task :check do
-  Geordi::Interaction.prompt('Are all specs & features green?', 'y', /y|yes/) || Geordi::Interaction.fail('Please run all tests with `rake`.')
-  Geordi::Interaction.prompt('Have you updated the README?', 'y', /y|yes/) || Geordi::Interaction.fail('Please update the README with `rake readme`.')
-  Geordi::Interaction.prompt('Have you updated the CHANGELOG', 'y', /y|yes/) || Geordi::Interaction.fail('Please update the CHANGELOG with the latest changes.')
+  Geordi::Interaction.confirm_or_cancel('Are all specs & features green?', 'Please run all tests with `rake`.', default: 'n')
+  Geordi::Interaction.confirm_or_cancel('Have you updated the README?', 'Please update the README with `rake readme`.', default: 'n')
+  Geordi::Interaction.confirm_or_cancel('Have you updated the CHANGELOG?', 'Please update the CHANGELOG with the latest changes.', default: 'n')
 end
 
 task :readme do

@@ -42,11 +42,11 @@ Feature: The security-update command
       And I type "yes"
       # Answer prompt "Deploy staging now?"
       And I type "yes"
-      # Answer prompt "Is the deployment log okay and the application is still running on staging?"
+      # Answer prompt about application running on staging
       And I type "yes"
       # Answer prompt "Deploy other stages now?"
       And I type "yes"
-      # Answer prompt "Is the application still running on all other stages and the logs are okay?"
+      # Answer prompt about application running on all stages
       And I type "yes"
     Then the output should contain:
       """
@@ -59,7 +59,7 @@ Feature: The security-update command
       And the output should contain:
       """
       > About to: push production, checkout & pull master, merge production, push master.
-      Continue? [n]
+      Continue? [y]
       """
       And the output should contain:
       """
@@ -83,7 +83,7 @@ Feature: The security-update command
       # Deploy staging
       > bundle exec cap staging deploy:migrations
       Util.run! bundle exec cap staging deploy:migrations
-      Is the deployment log okay and the application is still running on staging? [y]
+      Is the deployment log okay and is the application still running on staging? [n]
       """
       And the output should contain:
       """
@@ -97,7 +97,7 @@ Feature: The security-update command
       # Deploy production
       > bundle exec cap production deploy:migrations
       Util.run! bundle exec cap production deploy:migrations
-      Is the application still running on all other stages and the logs are okay? [y]
+      Are *all* the deployment logs okay and is the application still running on *all* other stages? [n]
       """
       And the output should contain:
       """
@@ -124,7 +124,7 @@ Feature: The security-update command
     And the output should contain:
       """
       > About to: push production, checkout & pull master, merge production, push master.
-      Continue? [n]
+      Continue? [y]
       """
     And the output should contain:
       """
@@ -153,7 +153,7 @@ Feature: The security-update command
       And I type "yes"
       # Answer prompt "Deploy other stages now?"
       And I type "yes"
-      # Answer prompt "Is the application still running on all other stages and the logs are okay?"
+      # Answer prompt about the application running on all other stages
       And I type "yes"
 
      # Only relevant output excerpt
@@ -177,7 +177,7 @@ Feature: The security-update command
       And I type "yes"
       # Answer prompt "Deploy staging now?"
       And I type "yes"
-      # Answer prompt "Is the deployment log okay and the application is still running on staging?"
+      # Answer prompt about the application running on staging
       And I type "yes"
 
      # Only relevant output excerpt
@@ -192,7 +192,7 @@ Feature: The security-update command
       # Deploy staging
       > bundle exec cap staging deploy:migrations
       Util.run! bundle exec cap staging deploy:migrations
-      Is the deployment log okay and the application is still running on staging? [y]
+      Is the deployment log okay and is the application still running on staging? [n]
       """
       And the output should contain:
       """
@@ -218,7 +218,7 @@ Feature: The security-update command
     Then the output should contain:
       """
       > About to: push production, checkout & pull main, merge production, push main.
-      Continue? [n]
+      Continue? [y]
       """
     And the output should contain:
       """
