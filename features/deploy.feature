@@ -23,7 +23,7 @@ Feature: The deploy command
       And I type "yes"
     Then the output should contain:
       """
-      # You are about to:
+      # Planned actions
       > Merge branch master into target-branch
       > Push these commits:
       Util.run! git --no-pager log origin/target-branch..master --oneline
@@ -37,7 +37,7 @@ Feature: The deploy command
       > cap staging deploy:migrations
       Util.run! cap staging deploy:migrations
 
-      > Deployment complete.
+      > Successfully deployed to staging.
       """
 
 
