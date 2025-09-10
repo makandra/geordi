@@ -11,6 +11,20 @@ module Geordi
 
     API_ENDPOINT = 'https://api.linear.app/graphql'.freeze
 
+    def self.extract_issue_ids(strings)
+      found_ids = []
+
+      regex = /^\[[A-Z]+\d*-\d+\]/
+
+      strings&.each do |string|
+        string&.scan(regex) do |match|
+          found_ids << match
+        end
+      end
+
+      found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
+    end
+
     def initialize
       self.highline = HighLine.new
       self.settings = Settings.new
@@ -85,20 +99,6 @@ module Geordi
 
         issue if Interaction.prompt('Use it?', 'y', /y|yes/i)
       end
-    end
-
-    def extract_issue_ids(commit_messages)
-      found_ids = []
-
-      regex = /^\[[A-Z]+\d*-\d+\]/
-
-      commit_messages&.each do |line|
-        line&.scan(regex) do |match|
-          found_ids << match
-        end
-      end
-
-      found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
     end
 
     def filter_by_issue_ids(list_of_strings, issue_ids)
