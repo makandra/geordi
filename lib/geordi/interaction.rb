@@ -28,7 +28,7 @@ module Geordi
     # Also see Util.run!
     def note_cmd(text)
       message = "> #{text}"
-      puts "\e[35m#{message}\e[0m" # pink
+      puts "\e[36m#{message}\e[0m" # cyan
     end
 
     # Exit execution with status code 1 and give a short note what happened,
@@ -52,7 +52,7 @@ module Geordi
       message = "#{text} "
       message << "[#{default}] " if default
 
-      print "\e[36m#{message}\e[0m" # cyan
+      print "\e[35m#{message}\e[0m" # pink
       input = $stdin.gets.strip
       input = default if input.empty? && default
 
