@@ -18,6 +18,11 @@ database, pass the database name like this:
 geordi dump -d primary
 ```
 
+You can specify a compress algorithm:
+```
+geordi dump -c=zstd:3
+```
+
 When used with the blank `load` option ("dump and source"), the `database` option
 will be respected both for the remote *and* the local database. If these should
 not match, please issue separate commands for dumping (`dump -d`) and sourcing
@@ -26,11 +31,13 @@ DESC
 
 option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[DUMP_FILE]'
 option :database, aliases: '-d', type: :string, desc: 'Target database, if there are multiple databases', banner: 'NAME'
+option :compress_algorithm, aliases: '-c', type: :string, desc: 'Specify a compress algorithm'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'
   require 'geordi/remote'
   database = options[:database] ? "#{options[:database]} " : ''
+  compress_algorithm = "--compress-algorithm=#{options['compress_algorithm']}" if options['compress_algorithm']
 
   if target.nil? # Local …
     if options.load # … dump loading
@@ -46,7 +53,7 @@ def dump(target = nil, *_args)
 
     else # … dump creation
       Interaction.announce 'Dumping the development database'
-      Util.run!("dumple development #{database}")
+      Util.run!(['dumple', compress_algorithm, 'development', options[:database]].compact.join(' '))
       Interaction.success "Successfully dumped the #{database}development database."
     end
 

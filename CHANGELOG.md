@@ -7,6 +7,9 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+- `geordi dump`: Allow to specify a compress algorithm e.g. `geordi dump -c=zstd:3`.
+- `dumple`: Allow to specify a compress algorithm e.g. `dumple --compress-algorithm=zstd:3`.
+
 ### Breaking changes
 
 

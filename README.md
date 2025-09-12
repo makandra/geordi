@@ -226,6 +226,11 @@ database, pass the database name like this:
 geordi dump -d primary
 ```
 
+You can specify a compress algorithm:
+```
+geordi dump -c=zstd:3
+```
+
 When used with the blank `load` option ("dump and source"), the `database` option
 will be respected both for the remote *and* the local database. If these should
 not match, please issue separate commands for dumping (`dump -d`) and sourcing
@@ -234,6 +239,7 @@ not match, please issue separate commands for dumping (`dump -d`) and sourcing
 **Options**
 - `-l, --load=[DUMP_FILE]`: Load a dump
 - `-d, --database=NAME`: Target database, if there are multiple databases
+- `-c, --compress-algorithm=COMPRESS_ALGORITHM`: Specify a compress algorithm
 
 
 ### `geordi help [COMMAND]`
@@ -389,7 +395,10 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 
 **Options**
 - `-i`: Print disk usage of `~/dumps`
+- `--fail-gently`: Prints an error message and exit the script on errors
+- `--for_download`: Uses the dump file `~/dumps/dump_for_download.dump`
 - `--compress`: After dumping, run gzip to compress the dump in place
+- `--compress-algorithm=zstd:3`: Using a specific compress algorithm
 
 
 Contributing
