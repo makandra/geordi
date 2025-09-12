@@ -33,10 +33,12 @@ module Geordi
     end
 
     def dump(options = {})
+      compress_algorithm = "--compress-algorithm=#{options['compress_algorithm']}" if options['compress_algorithm']
       database = options[:database] ? " #{options[:database]}" : ''
+
       # Generate dump on the server
       shell options.merge({
-        remote_command: "dumple #{@config.env}#{database} --for_download",
+        remote_command: ['dumple', compress_algorithm, @config.env, options[:database], '--for_download'].compact.join(' '),
       })
 
       destination_directory = File.join(@config.root, 'tmp')
