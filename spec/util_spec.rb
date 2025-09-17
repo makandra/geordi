@@ -158,4 +158,5 @@ RSpec.describe Geordi::Util do
     end
 
   end
+
 end

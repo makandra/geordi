@@ -50,7 +50,7 @@ def cd_to_project_root(fail_gently)
   end
 end
 
-def dump_command(dump_file, config)
+def dump_command(dump_file, config, compress)
   host = config['host']
   port = config['port']
 
@@ -79,6 +79,7 @@ def dump_command(dump_file, config)
     command << " pg_dump #{config['database']}"
     command << " --clean"
     command << " --format=custom"
+    command << " --compress=#{compress}" if compress.is_a?(String)
     command << " --file=#{dump_file}"
     command << " --username=\"#{config['username']}\""
     command << " --host=#{host}" if host
@@ -133,8 +134,14 @@ end
 
 begin
   fail_gently = ARGV.include?("--fail-gently")
-  compress = ARGV.include?("--compress")
-  environment, database = ARGV.reject { |arg| arg[0].chr == '-' }
+  compress = ARGV.find do |argument|
+    if argument == '--compress'
+      break true
+    elsif argument.start_with?('--compress=')
+      break argument.split('=').last
+    end
+  end
+  environment, database = ARGV.reject { |argument| argument.start_with?('-') }
 
   cd_to_project_root(fail_gently)
   config = find_database_config(DB_CONFIG_PATH, environment, database)
@@ -142,12 +149,17 @@ begin
 
   # Dump!
   given_database = database ? %(#{database} ) : ""
-  command = dump_command(dump_path, config)
+  command = dump_command(dump_path, config, compress)
   puts "> Dumping #{given_database}database for \"#{environment}\" environment ..."
   run command or raise "x Creating the dump failed."
   run "chmod 600 #{dump_path}"
 
-  if compress
+  if config['adapter'] == 'mysql' && compress.is_a?(String)
+    puts "> Cannot compress a MySQL dump with #{compress}, falling back to gzip."
+  end
+
+  # For PostgreSQL, #dump_command will do the compression. MySQL needs manual compression.
+  if config['adapter'] == 'mysql' && compress
     puts "> Compressing the dump ..."
     # gzip compresses in place
     compress_success = run "gzip #{dump_path}"

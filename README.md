@@ -234,6 +234,7 @@ not match, please issue separate commands for dumping (`dump -d`) and sourcing
 **Options**
 - `-l, --load=[DUMP_FILE]`: Load a dump
 - `-d, --database=NAME`: Target database, if there are multiple databases
+- `-c, --compress=[ALGORITHM]`: Compress the dump file (default for PSQL)
 
 
 ### `geordi help [COMMAND]`
@@ -389,7 +390,9 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 
 **Options**
 - `-i`: Print disk usage of `~/dumps`
-- `--compress`: After dumping, run gzip to compress the dump in place
+- `--fail-gently`: On error, do not crash but print a warning and exit(0)
+- `--for_download`: Dump to `~/dumps/dump_for_download.dump`
+- `--compress`: Compress the dump (default for PostgreSQL) and optionally set the compression algorithm (only available for PostgreSQL)
 
 
 Contributing

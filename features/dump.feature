@@ -17,9 +17,7 @@ Feature: The dump command
 
   Scenario: Creating a dump of a remote database
     Given a file named "Capfile" with "Capfile exists"
-    And a file named "config/deploy.rb" with:
-    """
-    """
+    And a file named "config/deploy.rb" with "deploy.rb exists"
     And a file named "config/deploy/staging.rb" with:
     """
     set :rails_env, 'staging'
@@ -176,6 +174,7 @@ Feature: The dump command
         And the output should contain "Util.run! dropdb --if-exists test-other && createdb test-other && pg_restore --no-owner --no-acl --dbname=test-other tmp/production.dump"
       But the output should not contain "Sourcing dump into the test-primary db"
 
+
   Scenario: Sourcing a dump into one of multiple databases without specifying a db
     Given a file named "tmp/production.dump" with "some content"
       And a file named "config/database.yml" with:
@@ -193,3 +192,32 @@ Feature: The dump command
         And the output should contain "Source file: tmp/production.dump"
         And the output should contain "Util.run! dropdb --if-exists test-primary && createdb test-primary && pg_restore --no-owner --no-acl --dbname=test-primary tmp/production.dump"
       But the output should not contain "Sourcing dump into the test-other db"
+
+
+  Scenario: Enforcing compression
+    When I run `geordi dump --compress`
+    Then the output should contain "Util.run! dumple development --compress"
+      And the output should contain "Successfully dumped the development database"
+
+
+  Scenario: Setting a custom compression algorithm
+    When I run `geordi dump --compress=zstd:3`
+    Then the output should contain "Util.run! dumple development --compress=zstd:3"
+    And the output should contain "Successfully dumped the development database"
+
+
+  Scenario: Setting a custom compression algorithm for a remote target
+    Given a file named "Capfile" with "Capfile exists"
+    And a file named "config/deploy.rb" with "deploy.rb exists"
+    And a file named "config/deploy/staging.rb" with:
+    """
+    set :rails_env, 'staging'
+    set :deploy_to, '/var/www/example.com'
+    set :user, 'user'
+
+    server 'www.example.com'
+    """
+
+    When I run `geordi dump staging --compress=zstd:3`
+    Then the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --compress=zstd:3 --for-download'"
+      And the output should contain "> Dumped the staging database to tmp/staging.dump"

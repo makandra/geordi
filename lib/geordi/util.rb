@@ -119,6 +119,21 @@ module Geordi
         end
       end
 
+      def dumple_command(environment, options)
+        compress = if options[:compress] == 'compress'
+          '--compress'
+        elsif options[:compress]
+          "--compress=#{options[:compress]}"
+        end
+
+        cmd = ['dumple']
+        cmd << environment
+        cmd << options[:database]
+        cmd << compress
+        cmd << '--for-download' if options[:for_download]
+
+        cmd.compact.join(' ')
+      end
 
       def deploy_targets
         Dir['config/deploy/*'].map do |f|
@@ -205,6 +220,7 @@ module Geordi
       def rspec_path?(path)
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
+
     end
   end
 end

@@ -26,11 +26,11 @@ DESC
 
 option :load, aliases: '-l', type: :string, desc: 'Load a dump', banner: '[DUMP_FILE]'
 option :database, aliases: '-d', type: :string, desc: 'Target database, if there are multiple databases', banner: 'NAME'
+option :compress, aliases: '-c', type: :string, desc: 'Compress the dump file (default for PSQL)', banner: '[ALGORITHM]'
 
 def dump(target = nil, *_args)
   require 'geordi/dump_loader'
   require 'geordi/remote'
-  database = options[:database] ? "#{options[:database]} " : ''
 
   if target.nil? # Local …
     if options.load # … dump loading
@@ -46,14 +46,17 @@ def dump(target = nil, *_args)
 
     else # … dump creation
       Interaction.announce 'Dumping the development database'
-      Util.run!("dumple development #{database}")
+      Util.run!(Util.dumple_command('development', options))
+
+      database = "#{options[:database]} " if options[:database]
       Interaction.success "Successfully dumped the #{database}development database."
     end
 
   else # Remote dumping …
-    database_label = options[:database] ? " (#{database}database)" : ""
+    database_label = target.dup
+    database_label << " (#{options[:database]} database)" if options[:database]
 
-    Interaction.announce "Dumping the database of #{target}#{database_label}"
+    Interaction.announce "Dumping the database of #{database_label}"
     dump_path = Geordi::Remote.new(target).dump(options)
 
     if options.load # … and dump loading
@@ -65,7 +68,7 @@ def dump(target = nil, *_args)
       Util.run! "rm #{dump_path}"
       Interaction.note "Dump file removed"
 
-      Interaction.success "Your #{loader.config['database']} database has now the data of #{target}#{database_label}."
+      Interaction.success "Your #{loader.config['database']} database has now the data of #{database_label}."
     end
   end
 
