@@ -7,10 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+### Breaking changes
+
+
+## 12.6.0 2025-09-22
+
+### Compatible changes
+
 - `geordi dump`: Allow to forward the compression option to the underlying `dumple` command, e.g. `geordi dump --compress=zstd:3` (for PostgreSQL) or `geordi dump --compress` (for MySQL).
 - `dumple`: Allow to specify a compression algorithm for PostgreSQL, e.g. `dumple --compress=zstd:3`. The already supported compression for MySQL `dumple --compress` is kept untouched.
-
-### Breaking changes
 
 
 ## 12.5.0 2025-09-09
