@@ -125,7 +125,7 @@ def prepare_dump_path(config)
     run "chmod 700 #{DUMPS_DIR}"
   end
 
-  if ARGV.include? '--for_download'
+  if ARGV.include?('--for_download') || ARGV.include?('--for-download')
     "#{DUMPS_DIR}/dump_for_download.dump"
   else
     "#{DUMPS_DIR}/#{config['database']}_#{Time.now.strftime("%Y%m%d_%H%M%S")}.dump"

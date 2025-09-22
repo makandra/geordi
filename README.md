@@ -65,8 +65,8 @@ Example: `geordi chromedriver_update`
 This command will find and install the matching chromedriver for the currently
 installed Chrome.
 
-Setting `auto_update_chromedriver` to `true` in your global Geordi config file 
-(`~/.config/geordi/global.yml`), will automatically update chromedriver before 
+Setting `auto_update_chromedriver` to `true` in your global Geordi config file
+(`~/.config/geordi/global.yml`), will automatically update chromedriver before
 cucumber tests if a newer chromedriver version is available.
 
 
@@ -98,8 +98,8 @@ servers. When passed a number, directly connects to the selected server.
 IRB flags can be given as `irb_flags: '...'` in the global or local Geordi config file
 (`~/.config/geordi/global.yml` / `./.geordi.yml`). If you define irb_flags in both files, the local config file will be
 used. For IRB >=1.2 in combination with Ruby <3 geordi automatically sets the `--nomultiline` flag, to prevent slow
-pasting. You can override this behavior by setting `--multiline` in the global config file or by defining `irb_flags` 
-in the local config file. The latter will always turn off the automatic behavior, even if you don't set any values for 
+pasting. You can override this behavior by setting `--multiline` in the global config file or by defining `irb_flags`
+in the local config file. The latter will always turn off the automatic behavior, even if you don't set any values for
 the irb_flags key.
 
 **Options**
@@ -191,8 +191,8 @@ and offer to delete them. Excluded are databases that are whitelisted. This come
 in handy when you're keeping your currently active projects in the whitelist files
 and perform regular housekeeping with Geordi.
 
-Per default, Geordi will try to connect to the databases as a local user without 
-password authorization.  
+Per default, Geordi will try to connect to the databases as a local user without
+password authorization.
 
 Geordi will ask for confirmation before actually dropping databases and will
 offer to edit the whitelist instead.
@@ -342,7 +342,7 @@ Run all employed tests.
 When running `geordi tests` without any arguments, all unit tests, rspec specs
 and cucumber features will be run.
 
-When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`. 
+When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`.
 All rspec specs and cucumber features matching the given paths will be run.
 
 
@@ -391,7 +391,7 @@ Stores a timestamped database dump for the given Rails environment in `~/dumps`:
 **Options**
 - `-i`: Print disk usage of `~/dumps`
 - `--fail-gently`: On error, do not crash but print a warning and exit(0)
-- `--for_download`: Dump to `~/dumps/dump_for_download.dump`
+- `--for-download`: Dump to `~/dumps/dump_for_download.dump`
 - `--compress`: Compress the dump (default for PostgreSQL) and optionally set the compression algorithm (only available for PostgreSQL)
 
 

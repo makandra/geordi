@@ -1,6 +1,6 @@
 Feature: Creating Rails database dumps with the "dumple" script
 
-  The --for_download option generates a deterministic file name.
+  The --for-download option generates a deterministic file name.
 
   Scenario: Execution outside of a Rails application
     When I run `dumple development`
@@ -20,7 +20,7 @@ Feature: Creating Rails database dumps with the "dumple" script
     Since dumple won't actually dump in tests, we prepare the dump file in advance.
     """
 
-    When I run `dumple development --for_download`
+    When I run `dumple development --for-download`
     Then the output should match /Dumping database for "development" environment/
       And the output should contain "> Dumped to /home/"
       And the output should contain "/geordi/tmp/aruba/dumps/dump_for_download.dump (0 KB)"
@@ -36,7 +36,7 @@ Feature: Creating Rails database dumps with the "dumple" script
     """
     And a mocked home directory
 
-    When I run `dumple development --for_download`
+    When I run `dumple development --for-download`
     Then the output should match %r<system mysqldump -u"user" -p"password"  -r /home/.*/aruba/dumps/dump_for_download.dump --single-transaction --quick -hlocalhost>
 
 
@@ -50,7 +50,7 @@ Feature: Creating Rails database dumps with the "dumple" script
     """
     And a mocked home directory
 
-    When I run `dumple development --for_download`
+    When I run `dumple development --for-download`
     Then the output should match %r<system PGPASSWORD="password" pg_dump  --clean --format=custom --file=/home/.*/aruba/dumps/dump_for_download.dump --username="user">
 
 
@@ -148,7 +148,7 @@ Feature: Creating Rails database dumps with the "dumple" script
     Since dumple won't actually dump in tests, we prepare the dump file in advance.
     """
 
-    When I run `dumple development --for_download --compress`
+    When I run `dumple development --for-download --compress`
     Then the output should match /Dumping database for "development" environment/
       And the output should contain "> Compressing the dump ..."
       And the output should contain "system gzip"
@@ -169,7 +169,7 @@ Feature: Creating Rails database dumps with the "dumple" script
     Since dumple won't actually dump in tests, we prepare the dump file in advance.
     """
 
-    When I run `dumple development --for_download --compress=zstd:3`
+    When I run `dumple development --for-download --compress=zstd:3`
     Then the output should match /Dumping database for "development" environment/
       And the output should contain "> Cannot compress a MySQL dump with zstd:3, falling back to gzip."
       And the output should contain "> Compressing the dump ..."
@@ -188,5 +188,5 @@ Feature: Creating Rails database dumps with the "dumple" script
     """
     And a mocked home directory
 
-    When I run `dumple development --for_download --compress=zstd:3`
+    When I run `dumple development --for-download --compress=zstd:3`
     Then the output should match %r<system PGPASSWORD="password" pg_dump  --clean --format=custom --compress=zstd:3 --file=/home/.*/aruba/dumps/dump_for_download.dump --username="user">
