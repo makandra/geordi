@@ -5,8 +5,8 @@ Example: `geordi chromedriver_update`
 This command will find and install the matching chromedriver for the currently
 installed Chrome.
 
-Setting `auto_update_chromedriver` to `true` in your global Geordi config file 
-(`~/.config/geordi/global.yml`), will automatically update chromedriver before 
+Setting `auto_update_chromedriver` to `true` in your global Geordi config file
+(`~/.config/geordi/global.yml`), will automatically update chromedriver before
 cucumber tests if a newer chromedriver version is available.
 LONGDESC
 

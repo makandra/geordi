@@ -3,7 +3,7 @@ long_desc <<-LONGDESC
 When running `geordi tests` without any arguments, all unit tests, rspec specs
 and cucumber features will be run.
 
-When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`. 
+When passing file paths or directories as arguments, Geordi will forward them to `rspec` and `cucumber`.
 All rspec specs and cucumber features matching the given paths will be run.
 LONGDESC
 
