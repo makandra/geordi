@@ -10,12 +10,18 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ### Breaking changes
 
 
+## 12.6.1 2025-09-23
+
+### Compatible changes
+* User prompts are now pink, and printed commands cyan (colors swapped).
+* Restored backwards compatibility with older versions of `dumple` installed on a server.
+
+
 ## 12.6.0 2025-09-22
 
 ### Compatible changes
-
-- `geordi dump`: Allow to forward the compression option to the underlying `dumple` command, e.g. `geordi dump --compress=zstd:3` (for PostgreSQL) or `geordi dump --compress` (for MySQL).
-- `dumple`: Allow to specify a compression algorithm for PostgreSQL, e.g. `dumple --compress=zstd:3`. The already supported compression for MySQL `dumple --compress` is kept untouched.
+* `geordi dump`: Allow to forward the compression option to the underlying `dumple` command, e.g. `geordi dump --compress=zstd:3` (for PostgreSQL) or `geordi dump --compress` (for MySQL).
+* `dumple`: Allow to specify a compression algorithm for PostgreSQL, e.g. `dumple --compress=zstd:3`. The already supported compression for MySQL `dumple --compress` is kept untouched.
 
 
 ## 12.5.0 2025-09-09
@@ -117,7 +123,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 # 9.6.1 2023-09-22
 
 ### Compatible changes
-* `chromedriver-update` command: Retrieve chromedriver from new location 
+* `chromedriver-update` command: Retrieve chromedriver from new location
 
 
 # 9.6.0 2023-07-24
@@ -129,7 +135,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 # 9.5.1 2023-04-26
 
 ### Compatible changes
-* `cucumber` command: Support the passing of options without "=" 
+* `cucumber` command: Support the passing of options without "="
 
 
 # 9.5.0 2023-03-22
@@ -225,7 +231,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 * Removed VNC test browser support for integration tests – Headless Chrome has
   matured and is almost a drop-in replacement. Also, key binding issues have
   increased with VNC and recent Linux.
-  * Please use a headless Chrome setup <https://makandracards.com/makandra/492109-capybara-running-tests-with-headless-chrome>. 
+  * Please use a headless Chrome setup <https://makandracards.com/makandra/492109-capybara-running-tests-with-headless-chrome>.
   * You might also want to get rid of your local VNC server `sudo apt remove tightvncserver`.
 * Removed support for serial execution of scenarios tagged with @solo. Serial
   execution is not needed with Headless Chrome, as Headless instances cannot
@@ -294,7 +300,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## 4.2.0 2020-10-02
 
 ### Compatible changes
-* Add `auto_update_chromedriver` as global setting option to automatically update chromedriver before cucumber 
+* Add `auto_update_chromedriver` as global setting option to automatically update chromedriver before cucumber
   tests, if Chrome and chromedriver versions don't match.
 * Dump command: Add support for multiple databases (#103 by @kajatiger)
 * Add Ruby 2.7 to list of supported Ruby versions
