@@ -30,7 +30,7 @@ Feature: The dump command
     When I run `geordi dump staging`
     Then the output should contain "# Dumping the database of staging"
       And the output should contain "> Connecting to www.example.com"
-      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for-download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
       And the output should contain "> Downloading remote dump to tmp/staging.dump"
       # Omitting the absolute path in this regex (.*)
       And the output should match:
@@ -60,7 +60,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --load`
     Then the output should contain "# Dumping the database of staging"
-      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for-download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --for_download'"
       And the output should contain "> Dumped the staging database to tmp/staging.dump"
 
       # Loading the dump
@@ -83,7 +83,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --database primary`
     Then the output should contain "# Dumping the database of staging (primary database)"
-      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for-download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
       And the output should contain "> Dumped the primary staging database to tmp/staging.dump"
 
 
@@ -108,7 +108,7 @@ Feature: The dump command
 
     When I run `geordi dump staging --database primary --load`
     Then the output should contain "# Dumping the database of staging (primary database)"
-      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for-download'"
+      And the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging primary --for_download'"
       And the output should contain "> Dumped the primary staging database to tmp/staging.dump"
 
       # Loading the dump
@@ -219,5 +219,5 @@ Feature: The dump command
     """
 
     When I run `geordi dump staging --compress=zstd:3`
-    Then the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --compress=zstd:3 --for-download'"
+    Then the output should contain "Util.run! ssh, user@www.example.com, -t, cd /var/www/example.com/current && bash --login -c 'dumple staging --compress=zstd:3 --for_download'"
       And the output should contain "> Dumped the staging database to tmp/staging.dump"

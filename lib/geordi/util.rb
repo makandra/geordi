@@ -129,7 +129,7 @@ module Geordi
         cmd << environment
         cmd << options[:database]
         cmd << compress
-        cmd << '--for-download' if options[:for_download]
+        cmd << '--for_download' if options[:for_download]
 
         cmd.compact.join(' ')
       end
