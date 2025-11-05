@@ -39,7 +39,8 @@ module Geordi
       if issues.empty?
         Geordi::Interaction.fail('No issues to offer.')
       end
-      issues.sort_by! { |i| -i.dig('state', 'position') }
+      team_ids = settings.linear_team_ids
+      issues.sort_by! { |i| [team_ids.index(i.dig('team', 'id')), -i.dig('state', 'position')] }
 
       highline.choose do |menu|
         max_label_length = 60

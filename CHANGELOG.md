@@ -6,6 +6,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
+* `geordi branch` and `geordi commit` will now order the list of suggested issues by team
 
 ### Breaking changes
 
