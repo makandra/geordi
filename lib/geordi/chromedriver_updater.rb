@@ -92,7 +92,8 @@ module Geordi
 
     # Rescue Errno::NOERROR, Errno::ENOENT, Errno::EACCES, Errno::EFAULT, Errno::ECONNREFUSED, Errno::ECONNABORTED, Errno::ECONNRESET, Errno::EHOSTDOWN, Errno::EHOSTUNREACH, ...,
     # all of which are a subclass of SystemCallError
-    rescue SystemCallError => e
+    # and DNS / resolution errors (SocketError, including Socket::ResolutionError on 3.3+)
+    rescue SystemCallError, SocketError => e
       raise ProcessingError, "Request failed: #{e.message}"
     end
 
@@ -110,15 +111,14 @@ module Geordi
     end
 
     def chromedriver_download_data
-      return @chromedriver_download_data if @chromedriver_download_data
-
-      fetch_response(VERSIONS_PER_MILESTONES_URL, "Could not find chromedriver download data") do |response|
-        begin
-          chromedriver_download_data = JSON.parse(response.body)
-        rescue JSON::ParserError
-          raise ProcessingError, "Could not parse chromedriver download data."
+      @chromedriver_download_data ||= begin
+        fetch_response(VERSIONS_PER_MILESTONES_URL, "Could not find chromedriver download data") do |response|
+          begin
+            JSON.parse(response.body)
+          rescue JSON::ParserError
+            raise ProcessingError, "Could not parse chromedriver download data."
+          end
         end
-        @chromedriver_download_data = chromedriver_download_data
       end
     end
 
