@@ -16,6 +16,13 @@ RSpec.describe Geordi::ChromedriverUpdater do
 
         subject.run(exit_on_failure: false)
       end
+
+      it 'handles offline errors' do
+        allow(Net::HTTP).to receive(:get_response).and_raise(SocketError, 'Failed to open TCP connection to googlechromelabs.github.io:443 (getaddrinfo: Temporary failure in name resolution)')
+        expect(Geordi::Interaction).to receive(:warn).with('Request failed: Failed to open TCP connection to googlechromelabs.github.io:443 (getaddrinfo: Temporary failure in name resolution)')
+
+        subject.run(exit_on_failure: false)
+      end
     end
   end
 end

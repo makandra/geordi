@@ -7,6 +7,8 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
+* `chromedriver-update` command: handles offline and DNS resolution errors.
+
 ### Breaking changes
 
 
