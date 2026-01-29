@@ -13,13 +13,13 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - ruby: 2.7.4
-            gemfile: Gemfile
-          - ruby: 3.0.2
+          - ruby: 3.2.0
             gemfile: Gemfile
           - ruby: 3.3.6
             gemfile: Gemfile
           - ruby: 3.4.2
+            gemfile: Gemfile
+          - ruby: 4.0.0
             gemfile: Gemfile
     env:
       BUNDLE_GEMFILE: "${{ matrix.gemfile }}"
