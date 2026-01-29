@@ -6,10 +6,11 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-
 * `chromedriver-update` command: handles offline and DNS resolution errors.
+* Add support for Ruby 4
 
 ### Breaking changes
+* Drop support for Ruby < 3.2
 
 
 ## 12.6.1 2025-09-23

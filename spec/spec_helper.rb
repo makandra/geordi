@@ -20,6 +20,7 @@ require 'byebug'
 ENV['GEORDI_TESTING'] = 'true'
 
 ::Dir.glob('./lib/geordi/*.rb').each { |f| require f }
+::Dir.glob('./spec/support/*.rb').each { |f| require f }
 
 ENV['GEORDI_TESTING'] = 'true'
 
