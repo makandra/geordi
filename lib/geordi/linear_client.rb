@@ -76,7 +76,7 @@ module Geordi
       issue_identifiers.each do |identifier|
         issue = issues.find { |i| i['identifier'] == identifier }
 
-        skip unless issue && (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
+        next unless issue && (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
 
         update_issue_state(issue['id'], state_id)
       end
