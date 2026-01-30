@@ -7,9 +7,15 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 
-* `chromedriver-update` command: handles offline and DNS resolution errors.
-
 ### Breaking changes
+
+
+## 12.6.2 2026-01-30
+
+### Compatible changes
+* `chromedriver-update` command: handles offline and DNS resolution errors.
+* Remove a newly inherited `tree` command.
+* Fixed a keyword typo in LinearClient.
 
 
 ## 12.6.1 2025-09-23

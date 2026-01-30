@@ -52,7 +52,7 @@ Commands will occasionally print "did you know" hints of other Geordi features.
 You can always run `geordi help <command>` to quickly look up command help.
   TEXT
 
-  Geordi::CLI.all_commands.sort.each do |_, command|
+  Geordi::CLI.all_commands.sort.each do |_name, command|
     next if command.hidden?
 
     geordi_section << "\n### `geordi #{command.usage}`\n"
