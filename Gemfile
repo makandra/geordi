@@ -3,10 +3,14 @@ source 'http://rubygems.org'
 # Specify your gem's dependencies in geordi.gemspec
 gemspec
 
-gem 'aruba', '< 1' # Drops support for Ruby 2.2-
-gem 'rake', '< 13' # Drops support for Ruby 2.1
+# Former standard gems, see https://stdgems.org/
+gem 'logger' # Dependency of aruba
+gem 'abbrev' # Dependency of highline
+gem 'ostruct' # Dependency of pry-byebug
+
+gem 'aruba'
+gem 'rake'
 gem 'rspec'
-gem 'abbrev' # Dependency of Highline
 gem 'parallel_tests'
 gem 'launchy'
 gem 'pry-byebug'
