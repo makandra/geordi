@@ -25,6 +25,12 @@ module Geordi
       found_ids.map { |id| id.delete('[]') } # [W-365] => W-365
     end
 
+    def self.filter_by_issue_ids(list_of_strings, issue_ids)
+      list_of_strings.select do |message|
+        issue_ids.any? { |id| message.start_with?("[#{id}]") }
+      end
+    end
+
     def initialize
       self.highline = HighLine.new
       self.settings = Settings.new
@@ -98,12 +104,6 @@ module Geordi
         puts HighLine::BOLD + "[#{id}] #{title}" + HighLine::RESET
 
         issue if Interaction.prompt('Use it?', 'y', /y|yes/i)
-      end
-    end
-
-    def filter_by_issue_ids(list_of_strings, issue_ids)
-      list_of_strings.select do |message|
-        issue_ids.any? { |id| message.start_with?("[#{id}]") }
       end
     end
 

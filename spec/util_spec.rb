@@ -58,6 +58,55 @@ RSpec.describe Geordi::Util do
 
   end
 
+  describe '.determine_issues_to_move' do
+    let(:source_branch) { 'feature/W-123-my-feature' }
+    let(:target_branch) { 'master' }
+    let(:target_stage) { 'staging' }
+
+    it 'returns Linear issue IDs and relevant commits since the deployed revision' do
+      allow(Geordi::Git).to receive(:commits_between).and_return([
+        '[W-123] Implement feature',
+        'Fix typo without issue',
+      ])
+
+      issue_ids, relevant_commits = described_class.determine_issues_to_move(source_branch, target_branch, target_stage)
+      expect(issue_ids).to eq(['W-123'])
+      expect(relevant_commits).to eq(['[W-123] Implement feature'])
+    end
+
+    it 'fails when no revision can be read from servers' do
+      allow(Geordi::CapistranoConfig).to receive(:current_app_revisions).and_return([])
+
+      expect(Geordi::Interaction).to receive(:fail).with('Could not read a server revision from app:revision output.')
+      described_class.determine_issues_to_move(source_branch, target_branch, target_stage)
+    end
+
+    it 'returns empty arrays, warns and asks for confirmation when deployed revision differs across servers' do
+      allow(Geordi::CapistranoConfig).to receive(:current_app_revisions).and_return(['abc123', 'def456'])
+      allow(Geordi::Interaction).to receive(:confirm_or_cancel)
+
+      expect(Geordi::Interaction).to receive(:warn).with('Currently deployed revision differs on servers.')
+      expect(Geordi::Interaction).to receive(:confirm_or_cancel).with('Continue deployment without moving Linear issues?')
+      issue_ids, relevant_commits = described_class.determine_issues_to_move(source_branch, target_branch, target_stage)
+      expect(issue_ids).to eq([])
+      expect(relevant_commits).to eq([])
+    end
+
+    it 'warns and falls back to commits between branches when the app:revision task is missing' do
+      allow(Geordi::CapistranoConfig).to receive(:task_defined?).and_return(false)
+      allow(Geordi::Git).to receive(:commits_between).and_return([
+        '[W-456] Another feature',
+        'Commit without issue',
+      ])
+
+      expect(Geordi::Interaction).to receive(:warn).with('Missing Capistrano task "app:revision". See `geordi help deploy`.')
+      issue_ids, relevant_commits = described_class.determine_issues_to_move(source_branch, target_branch, target_stage)
+      expect(issue_ids).to eq(['W-456'])
+      expect(relevant_commits).to eq(['[W-456] Another feature'])
+    end
+
+  end
+
   describe '.console_command', type: :aruba do
     let(:global_settings_file_path) { File.expand_path('./tmp/global_settings.yml') }
     let(:local_settings_file_path) { File.expand_path('./tmp/local_settings.yml') }

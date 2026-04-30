@@ -7,11 +7,11 @@ RSpec.describe Geordi::LinearClient do
     end
   end
 
-  describe '#filter_by_issue_ids' do
+  describe '.filter_by_issue_ids' do
     it 'returns all commits starting with any given linear issue id' do
       commit_messages = ["first example commit", "[W-365] Linear Issue Commit", "Commit with id [W-365] that gets ignored", "[W-366] Linear Issue Commit 2"]
       relevant_ids = %w[W-365 W-366]
-      expect(described_class.new.filter_by_issue_ids(commit_messages, relevant_ids)).to eq  ["[W-365] Linear Issue Commit", "[W-366] Linear Issue Commit 2"]
+      expect(described_class.filter_by_issue_ids(commit_messages, relevant_ids)).to eq  ["[W-365] Linear Issue Commit", "[W-366] Linear Issue Commit 2"]
     end
   end
 

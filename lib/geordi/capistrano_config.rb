@@ -51,6 +51,19 @@ module Geordi
       'bash --login'
     end
 
+    def self.current_app_revisions(target_stage)
+      return ['a76fdd46e5319a202f7daa3f0fbdadb0c6f44408'] if Util.testing?
+      output = `cap #{target_stage} app:revision`
+
+      # git revisions are in SHA-1 format => 40-byte hexadecimal string
+      output.scan(/[a-f0-9]{40}/).uniq
+    end
+
+    def self.task_defined?(task_name)
+      return true if Util.testing?
+      `cap -T`.split.include?(task_name)
+    end
+
     private
 
     attr_accessor :deploy_info, :stage

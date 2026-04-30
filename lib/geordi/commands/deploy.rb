@@ -28,7 +28,21 @@ Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
 is a file config/deploy/makandra.rb.
 
-If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state. Disable this with "skip".
+If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state.
+Disable this with "skip".
+By default, Geordi will only consider issues it pushes itself during deploy.
+To consider all new commits deployed to the server, add this Capistrano task to your project:
+
+namespace :app do
+  desc 'Show current revision'
+  task :revision do
+    on roles :app do
+      within current_path do
+        info "REVISION: \#{capture(:cat, 'REVISION')}"
+      end
+    end
+  end
+end
 
 If your project is running Capistrano 2, Geordi will use `cap deploy:migrations` by default. Skip migrations by passing the -M option: `geordi deploy -M staging`.
 LONGDESC
@@ -84,12 +98,7 @@ def deploy(target_stage = nil)
 
   merge_needed = (source_branch != target_branch)
   push_needed = merge_needed || `git cherry -v | wc -l`.strip.to_i > 0
-  linear_issue_ids = []
-  if push_needed
-    commit_messages = Git.commits_between(source_branch, target_branch)
-    linear_issue_ids = LinearClient.extract_issue_ids(commit_messages)
-  end
-  move_issues = !linear_issue_ids.empty? && target_state && !target_state.empty?
+  move_issues = target_state && !target_state.empty?
 
   # Checks #####################################################################
   Interaction.note "Checking whether your #{source_branch} branch is ready"
@@ -117,9 +126,11 @@ def deploy(target_stage = nil)
   Interaction.note "From current branch #{source_branch}" if options.current_branch
 
   if move_issues
-    relevant_commits = linear_client.filter_by_issue_ids(commit_messages, linear_issue_ids)
-    Interaction.note("Move these Linear issues to state \"#{target_state}\":")
-    puts relevant_commits.join("\n")
+    linear_issue_ids, relevant_commits = Util.determine_issues_to_move(source_branch, target_branch, target_stage)
+    if relevant_commits.any?
+      Interaction.note("Move these Linear issues to state \"#{target_state}\":")
+      puts relevant_commits.join("\n")
+    end
   end
 
   # Execute ####################################################################
@@ -142,7 +153,7 @@ def deploy(target_stage = nil)
 
     Util.run!(capistrano_call, show_cmd: true)
 
-    if move_issues
+    if move_issues && !linear_issue_ids.empty?
       linear_client.move_issues_to_state(linear_issue_ids, target_state)
       settings.persist_linear_state_after_deploy(target_stage, target_state)
     end
