@@ -73,6 +73,12 @@ module Geordi
       nil
     end
 
+    def filter_existing_issue_ids(identifiers)
+      return identifiers if Util.testing?
+      issues = fetch_linear_issues
+      identifiers.select { |id| issues.any? { |i| i['identifier'] == id } }
+    end
+
     def move_issues_to_state(issue_identifiers, state)
       return if Util.testing?
 

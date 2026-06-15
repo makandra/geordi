@@ -126,10 +126,10 @@ def deploy(target_stage = nil)
   Interaction.note "From current branch #{source_branch}" if options.current_branch
 
   if move_issues
-    linear_issue_ids, relevant_commits = Util.determine_issues_to_move(source_branch, target_branch, target_stage)
+    linear_issue_ids, relevant_commits = Util.determine_issues_to_move(source_branch, target_branch, target_stage, linear_client: linear_client)
     if relevant_commits.any?
       Interaction.note("Move these Linear issues to state \"#{target_state}\":")
-      puts relevant_commits.join("\n")
+      puts relevant_commits.uniq.join("\n")
     end
   end
 

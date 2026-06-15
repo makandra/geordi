@@ -220,7 +220,7 @@ module Geordi
         %r{(^|\/)spec|_spec\.rb($|:)}.match?(path)
       end
 
-      def determine_issues_to_move(source_branch, target_branch, target_stage)
+      def determine_issues_to_move(source_branch, target_branch, target_stage, linear_client: LinearClient.new)
         commit_messages = []
         if CapistranoConfig.task_defined?('app:revision')
           revision = CapistranoConfig.current_app_revisions(target_stage)
@@ -241,6 +241,7 @@ module Geordi
         end
 
         linear_issue_ids = LinearClient.extract_issue_ids(commit_messages)
+        linear_issue_ids = linear_client.filter_existing_issue_ids(linear_issue_ids)
         relevant_commits = LinearClient.filter_by_issue_ids(commit_messages, linear_issue_ids)
         [linear_issue_ids, relevant_commits]
       end
