@@ -10,14 +10,6 @@ Feature: Creating a git commit from a Linear issue
     Then the output should contain "No issues to offer."
 
 
-  Scenario: It creates a commit with the linear issue url as description
-    Given I have staged changes
-
-    When I run `geordi commit` interactively
-      # No optional message
-    And I type ""
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, -m, Issue: https://www.issue-url.com"
-
   Scenario: It uses the current branch to preselect an issue
     Given the current branch matches an issue
 
@@ -39,7 +31,7 @@ Feature: Creating a git commit from a Linear issue
     When I run `geordi commit --extra-option` interactively
       # No optional message
       And I type ""
-    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, -m, Issue: https://www.issue-url.com, --extra-option"
+    Then the output should contain "Util.run! git, commit, --allow-empty, -m, [team-123] Test Issue, --extra-option"
 
 
   Scenario: With no staged changes, a warning is printed

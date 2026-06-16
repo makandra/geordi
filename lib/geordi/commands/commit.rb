@@ -22,10 +22,9 @@ def commit(*git_args)
 
   issue = linear_client.issue_from_branch || linear_client.choose_issue
   title = "[#{issue['identifier']}] #{issue['title']}"
-  description = "Issue: #{issue['url']}"
   extra = highline.ask("\nAdd an optional message").strip
   title << ' - ' << extra if extra != ''
-  Util.run!(['git', 'commit', '--allow-empty', '-m', title, '-m', description, *git_args])
+  Util.run!(['git', 'commit', '--allow-empty', '-m', title, *git_args])
 
   Hint.did_you_know [
     :branch,
