@@ -7,6 +7,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 
 ### Compatible changes
 * Add support for Ruby 4
+* `geordi commit`: No longer add linear URL to commit message, as this breaks Linear <-> Gitlab integration.
 
 ### Breaking changes
 
