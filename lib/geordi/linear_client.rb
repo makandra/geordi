@@ -83,12 +83,18 @@ module Geordi
       return if Util.testing?
 
       issues = fetch_linear_issues # This only retrieves issues for the configured linear team ids
-      state_ids_by_team_id = state_ids_by_team_id(state)
 
-      issue_identifiers.each do |identifier|
-        issue = issues.find { |i| i['identifier'] == identifier }
+      # Only look up states for teams that actually have issues being moved
+      # This avoids warning about missing states in teams with no relevant issues.
+      relevant_issues = issue_identifiers.filter_map { |id| issues.find { |i| i['identifier'] == id } }
+      return if relevant_issues.empty?
 
-        next unless issue && (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
+      relevant_team_ids = relevant_issues.map { |i| i.dig('team', 'id') }.uniq
+
+      state_ids_by_team_id = state_ids_by_team_id(state, team_ids: relevant_team_ids)
+
+      relevant_issues.each do |issue|
+        next unless (state_id = state_ids_by_team_id[issue.dig('team', 'id')])
 
         update_issue_state(issue['id'], state_id)
       end
@@ -173,10 +179,9 @@ module Geordi
       end
     end
 
-    def state_ids_by_team_id(state_name)
+    def state_ids_by_team_id(state_name, team_ids: settings.linear_team_ids)
       result = {}
 
-      team_ids = settings.linear_team_ids
       filter = {
         "team": {
           "id": {
