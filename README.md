@@ -170,7 +170,21 @@ Finds available Capistrano stages by their prefix, e.g. `geordi deploy p` will
 deploy production, `geordi deploy mak` will deploy a `makandra` stage if there
 is a file config/deploy/makandra.rb.
 
-If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state. Disable this with "skip".
+If Linear team ids are configured (see `geordi commit`), will offer to move deployed issues to a new state.
+Disable this with "skip".
+By default, Geordi will only consider issues it pushes itself during deploy.
+To consider all new commits deployed to the server, add this Capistrano task to your project:
+
+namespace :app do
+  desc 'Show current revision'
+  task :revision do
+    on roles :app do
+      within current_path do
+        info "REVISION: #{capture(:cat, 'REVISION')}"
+      end
+    end
+  end
+end
 
 If your project is running Capistrano 2, Geordi will use `cap deploy:migrations` by default. Skip migrations by passing the -M option: `geordi deploy -M staging`.
 

@@ -6,10 +6,16 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## Unreleased
 
 ### Compatible changes
-* Add support for Ruby 4
-* `geordi commit`: No longer add linear URL to commit message, as this breaks Linear <-> Gitlab integration.
 
 ### Breaking changes
+
+
+## 12.7.0 2026-07-16
+
+### Compatible changes
+* `geordi deploy` will now consider actually *deployed* commits for moving Linear issues
+* Support for Ruby 4 added
+* `geordi commit`: No longer add Linear URL to commit message (breaks Linear <-> Gitlab integration)
 
 
 ## 12.6.2 2026-01-30
@@ -37,7 +43,7 @@ This project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html
 ## 12.5.0 2025-09-09
 
 ### Compatible changes
-* `geordi deploy` will now offer to move deployed issues to a new state if linear_team_ids are configured.
+* `geordi deploy` will now offer to move pushed issues to a new state if linear_team_ids are configured.
 
 
 ## 12.4.0 2025-08-29
